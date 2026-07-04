@@ -1,0 +1,126 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# OmniRide — Lambda Hotfix Workflow
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Manual trigger only (workflow_dispatch).
+# Use this when you need to patch the Lambda backend WITHOUT rebuilding
+# the entire frontend (e.g. bug fix in aws/lambda/index.js).
+#
+# Takes < 2 minutes vs the full 8-minute deploy pipeline.
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Lambda Hotfix
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for hotfix (shown in Lambda description)'
+        required: true
+        default: 'Emergency backend patch'
+
+env:
+  NODE_VERSION: '20'
+  AWS_REGION:   ${{ secrets.AWS_REGION }}
+  LAMBDA_FUNCTION_NAME: omniride-api
+
+jobs:
+  hotfix:
+    name: ⚡ Lambda Hotfix Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - name: ⬇️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: aws/lambda/package-lock.json
+
+      - name: 📦 Install Lambda deps (production only)
+        working-directory: aws/lambda
+        run: npm ci --omit=dev
+
+      - name: 🗜️ Zip Lambda
+        working-directory: aws/lambda
+        run: |
+          zip -r ../lambda-hotfix.zip . \
+            --exclude "*.test.js" --exclude "*.md"
+          echo "Hotfix package: $(du -sh ../lambda-hotfix.zip | awk '{print $1}')"
+
+      - name: 🔑 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+
+      - name: 🚀 Update Lambda code
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --zip-file fileb://aws/lambda-hotfix.zip \
+            --region ${{ env.AWS_REGION }} \
+            --output json | jq '{FunctionName,CodeSize,LastModified}'
+
+      - name: ⏳ Wait for update
+        run: |
+          aws lambda wait function-updated \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --region ${{ env.AWS_REGION }}
+
+      - name: 🏷️ Publish hotfix version
+        id: version
+        run: |
+          VERSION=$(aws lambda publish-version \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --description "HOTFIX: ${{ github.event.inputs.reason }} | SHA:${{ github.sha }}" \
+            --region ${{ env.AWS_REGION }} \
+            --query 'Version' \
+            --output text)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "✅ Hotfix version: $VERSION"
+
+          # Move 'live' alias to hotfix version
+          aws lambda update-alias \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --name live \
+            --function-version $VERSION \
+            --region ${{ env.AWS_REGION }} || \
+          aws lambda create-alias \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --name live \
+            --function-version $VERSION \
+            --region ${{ env.AWS_REGION }}
+
+      - name: 🧪 Quick smoke test
+        run: |
+          sleep 5
+          RESPONSE=$(curl -sf \
+            "${{ secrets.VITE_API_BASE_URL }}/platform/settings" \
+            -w "\nHTTP:%{http_code}" 2>&1)
+          STATUS=$(echo "$RESPONSE" | grep "HTTP:" | cut -d: -f2)
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ Smoke test passed: HTTP $STATUS"
+          else
+            echo "❌ Smoke test FAILED: HTTP $STATUS"
+            exit 1
+          fi
+
+      - name: 📝 Hotfix summary
+        if: always()
+        run: |
+          echo "## ⚡ Lambda Hotfix" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** ${{ github.event.inputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Function | \`${{ env.LAMBDA_FUNCTION_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Version | \`${{ steps.version.outputs.version }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deployed by | @${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY

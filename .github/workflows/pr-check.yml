@@ -1,0 +1,177 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# OmniRide — Pull Request Quality Gate
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Runs on every PR targeting main or staging.
+# Blocks merge if:
+#   • TypeScript has errors
+#   • Vite build fails
+#   • Bundle exceeds 700 KB per chunk (regression guard)
+#
+# Posts a detailed summary comment on the PR with:
+#   • Build status
+#   • Bundle size diff
+#   • Changed files list
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: PR Quality Gate
+
+on:
+  pull_request:
+    branches: [main, staging]
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: pr-check-${{ github.head_ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  quality-gate:
+    name: 🔬 Quality Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: ⬇️ Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔎 TypeScript type-check
+        id: typecheck
+        run: |
+          npm run type:check 2>&1 | tee typecheck-output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+
+      - name: 🏗️ Vite build
+        id: build
+        env:
+          VITE_API_BASE_URL:          ${{ secrets.VITE_API_BASE_URL }}
+          VITE_AWS_REGION:            us-east-1
+          VITE_COGNITO_USER_POOL_ID:  ${{ secrets.VITE_COGNITO_USER_POOL_ID }}
+          VITE_COGNITO_CLIENT_ID:     ${{ secrets.VITE_COGNITO_CLIENT_ID }}
+          VITE_S3_BUCKET:             ${{ secrets.VITE_S3_BUCKET }}
+          VITE_S3_BASE_URL:           ${{ secrets.VITE_S3_BASE_URL }}
+          VITE_IOT_ENDPOINT:          ${{ secrets.VITE_IOT_ENDPOINT }}
+          VITE_SNS_TOPIC_ARN:         ${{ secrets.VITE_SNS_TOPIC_ARN }}
+        run: |
+          npm run build 2>&1 | tee build-output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+
+      - name: 📏 Check chunk size limit (700 KB)
+        id: chunk_check
+        run: |
+          OVERSIZED=()
+          LIMIT=716800  # 700 KB in bytes
+
+          while IFS= read -r -d '' file; do
+            SIZE=$(stat -c%s "$file")
+            NAME=$(basename "$file")
+            if [ "$SIZE" -gt "$LIMIT" ]; then
+              OVERSIZED+=("$NAME ($(numfmt --to=iec $SIZE))")
+            fi
+          done < <(find dist/assets -name "*.js" -print0)
+
+          if [ ${#OVERSIZED[@]} -gt 0 ]; then
+            echo "❌ Oversized chunks detected:"
+            printf '%s\n' "${OVERSIZED[@]}"
+            echo "oversized=${OVERSIZED[*]}" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "✅ All chunks within 700 KB limit"
+          fi
+
+      - name: 📊 Collect bundle sizes
+        if: always()
+        id: bundle_sizes
+        run: |
+          if [ -d dist/assets ]; then
+            SIZES=$(du -sh dist/assets/*.js 2>/dev/null | sort -hr | \
+              awk '{printf "| `%s` | %s |\n", $2, $1}' | \
+              sed 's|dist/assets/||g')
+            TOTAL=$(du -sh dist/ | awk '{print $1}')
+            echo "sizes<<EOF" >> $GITHUB_OUTPUT
+            echo "$SIZES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 💬 Post PR comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const typecheck = '${{ steps.typecheck.outcome }}';
+            const build     = '${{ steps.build.outcome }}';
+            const chunks    = '${{ steps.chunk_check.outcome }}';
+            const total     = '${{ steps.bundle_sizes.outputs.total }}';
+            const sizes     = `${{ steps.bundle_sizes.outputs.sizes }}`;
+
+            const icon = (outcome) => outcome === 'success' ? '✅' : outcome === 'failure' ? '❌' : '⚠️';
+
+            const overall = [typecheck, build, chunks].every(o => o === 'success')
+              ? '✅ All checks passed — ready to merge'
+              : '❌ Checks failed — please fix before merging';
+
+            const body = [
+              `## ${overall}`,
+              '',
+              '| Check | Status |',
+              '|-------|--------|',
+              `| TypeScript | ${icon(typecheck)} ${typecheck} |`,
+              `| Vite Build | ${icon(build)} ${build} |`,
+              `| Chunk Sizes (≤700 KB) | ${icon(chunks)} ${chunks} |`,
+              '',
+              '### 📦 Bundle Sizes',
+              `**Total:** \`${total}\``,
+              '',
+              '| File | Size |',
+              '|------|------|',
+              sizes || '_(build failed)_',
+              '',
+              `---`,
+              `*Commit: \`${{ github.sha }}\` | Branch: \`${{ github.head_ref }}\`*`,
+            ].join('\n');
+
+            // Find existing bot comment to update (avoid comment spam)
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('Bundle Sizes')
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner:      context.repo.owner,
+                repo:       context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

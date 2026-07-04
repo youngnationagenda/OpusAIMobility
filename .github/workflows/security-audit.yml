@@ -1,0 +1,156 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# OmniRide — Weekly Security Audit
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Runs every Monday at 08:00 UTC + on every push to main.
+# Audits both the frontend and Lambda dependencies for known CVEs.
+# Opens a GitHub Issue automatically if critical vulnerabilities are found.
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Security Audit
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'   # Every Monday at 08:00 UTC
+  push:
+    branches: [main]
+    paths:
+      - 'package-lock.json'
+      - 'aws/lambda/package-lock.json'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: 🔒 Dependency Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: ⬇️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🔒 Audit frontend dependencies
+        id: frontend_audit
+        run: |
+          npm audit --audit-level=high --json > frontend-audit.json 2>&1 || true
+          VULNS=$(node -e "
+            const r = require('./frontend-audit.json');
+            const meta = r.metadata?.vulnerabilities || {};
+            console.log(JSON.stringify({
+              critical: meta.critical || 0,
+              high: meta.high || 0,
+              moderate: meta.moderate || 0,
+              total: meta.total || 0
+            }));
+          ")
+          echo "result=$VULNS" >> $GITHUB_OUTPUT
+          echo "Frontend audit: $VULNS"
+
+      - name: 🔒 Audit Lambda dependencies
+        id: lambda_audit
+        run: |
+          cd aws/lambda
+          npm audit --audit-level=high --json > ../../lambda-audit.json 2>&1 || true
+          cd ../..
+          VULNS=$(node -e "
+            const r = require('./lambda-audit.json');
+            const meta = r.metadata?.vulnerabilities || {};
+            console.log(JSON.stringify({
+              critical: meta.critical || 0,
+              high: meta.high || 0,
+              moderate: meta.moderate || 0,
+              total: meta.total || 0
+            }));
+          ")
+          echo "result=$VULNS" >> $GITHUB_OUTPUT
+          echo "Lambda audit: $VULNS"
+
+      - name: 📝 Audit summary
+        run: |
+          echo "## 🔒 Security Audit Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Frontend" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.frontend_audit.outputs.result }}' >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Lambda" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.lambda_audit.outputs.result }}' >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🚨 Open issue if critical vulnerabilities found
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fe = JSON.parse('${{ steps.frontend_audit.outputs.result }}');
+            const la = JSON.parse('${{ steps.lambda_audit.outputs.result }}');
+            const totalCritical = (fe.critical || 0) + (la.critical || 0);
+            const totalHigh     = (fe.high || 0)     + (la.high || 0);
+
+            if (totalCritical === 0 && totalHigh === 0) {
+              console.log('✅ No critical or high vulnerabilities found.');
+              return;
+            }
+
+            const title = `🚨 Security: ${totalCritical} critical, ${totalHigh} high vulnerabilities found`;
+            const body = [
+              '## Security Audit Alert',
+              '',
+              `Automated weekly scan detected vulnerabilities in OmniRide dependencies.`,
+              '',
+              '### Frontend',
+              '```json',
+              JSON.stringify(fe, null, 2),
+              '```',
+              '',
+              '### Lambda',
+              '```json',
+              JSON.stringify(la, null, 2),
+              '```',
+              '',
+              '### Action Required',
+              '1. Run `npm audit fix` in the project root',
+              '2. Run `npm audit fix` in `aws/lambda/`',
+              '3. Test and push fixes to a branch',
+              '4. Merge via PR to trigger CI quality gate',
+              '',
+              `*Detected on commit \`${{ github.sha }}\`*`,
+            ].join('\n');
+
+            // Check if issue already open
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              state: 'open',
+              labels: 'security',
+            });
+
+            const existing = issues.find(i => i.title.includes('Security Audit Alert'));
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: existing.number,
+                body:         `**New scan results:**\n\n${body}`,
+              });
+              console.log(`Updated existing issue #${existing.number}`);
+            } else {
+              await github.rest.issues.create({
+                owner:  context.repo.owner,
+                repo:   context.repo.repo,
+                title,
+                body,
+                labels: ['security', 'dependencies'],
+              });
+              console.log('Created new security issue');
+            }
