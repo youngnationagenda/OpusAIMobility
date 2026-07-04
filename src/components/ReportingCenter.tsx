@@ -43,7 +43,7 @@ const ReportingCenter: React.FC<ReportingCenterProps> = ({ adminRole }) => {
   const handleExport = async () => {
     setIsSpooling(true);
     const data = await reportingApi.spoolFinancialData('current');
-    reportingApi.generateCSV(data, 'OmniRide_Financial_Report');
+    reportingApi.generateCSV(data as unknown as Record<string, unknown>[], 'OmniRide_Financial_Report');
     setIsSpooling(false);
   };
 

@@ -66,16 +66,21 @@ const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose, adminUser }) =
     icon: '🚗'
   });
 
-  const collectionAccount = useMemo(() => omniApi.getCollectionAccount(), [activeTab]);
+  const [collectionAccount, setCollectionAccount] = useState(omniApi.getCollectionAccount());
+  const [auditLogs, setAuditLogs] = useState<import('../types').AuditLog[]>([]);
 
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
       // AWS cache key — populated by omniApi._warmCaches() on startup
       const users = JSON.parse(localStorage.getItem('omniride-users') || '[]');
       setManagedUsers(users);
       setFleetConfig(omniApi.getFleetConfig());
       setPricingConfig(omniApi.getPricingConfig());
       setPlatformSettings(omniApi.getPlatformSettings());
+      setCollectionAccount(omniApi.getCollectionAccount());
+      // Fetch audit logs async from Lambda/DynamoDB
+      const logs = await auditApi.getLogs();
+      setAuditLogs(logs);
     };
     fetchData();
   }, [activeTab]);
@@ -511,7 +516,7 @@ const AdminInterface: React.FC<AdminInterfaceProps> = ({ onClose, adminUser }) =
                        <History className="w-6 h-6 text-indigo-600" />
                        <h3 className="text-xl font-black">Platform Audit Log</h3>
                     </div>
-                    {auditApi.getLogs().map(log => (
+                    {auditLogs.map(log => (
                       <div key={log.id} className="p-6 bg-gray-50 rounded-3xl flex justify-between items-center text-xs border border-transparent hover:border-gray-200 transition-all group">
                          <div className="flex items-center gap-6">
                             <div className={`w-2 h-10 rounded-full ${log.severity === 'high' ? 'bg-red-500' : log.severity === 'medium' ? 'bg-amber-500' : 'bg-blue-500'}`} />

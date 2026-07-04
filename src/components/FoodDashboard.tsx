@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Filter, Star, Clock, Bike, Heart, MapPin, Navigation, Tag, Sparkles } from 'lucide-react';
 import { Restaurant, User } from '../types';
 import { vendorApi } from '../services/vendorService';
@@ -24,23 +24,27 @@ const FoodDashboard: React.FC<FoodDashboardProps> = ({ onSelectRestaurant, user,
 
   const foodCoupons = useMemo(() => MOCK_COUPONS.filter(c => c.category === 'food' || c.category === 'all'), []);
 
-  const filteredRestaurants = useMemo(() => {
-    const vendors = vendorApi.getNearbyRestaurants(userCoords.lat, userCoords.lng);
+  const [allVendors, setAllVendors] = useState<Awaited<ReturnType<typeof vendorApi.getNearbyRestaurants>>>([]);
 
-    return vendors.filter(r => {
+  useEffect(() => {
+    vendorApi.getNearbyRestaurants(userCoords.lat, userCoords.lng).then(setAllVendors);
+  }, []);
+
+  const filteredRestaurants = useMemo(() => {
+    return allVendors.filter(r => {
       const searchStr = (r.businessName + r.category).toLowerCase();
       const matchesSearch = searchStr.includes(searchQuery.toLowerCase());
       const matchesPrice = filter.price ? 2 <= filter.price : true;
       const matchesRating = filter.minRating ? 4.8 >= filter.minRating : true;
       return matchesSearch && matchesPrice && matchesRating;
     }).sort((a, b) => {
-        const aFav = user.favorites.includes(a.id);
-        const bFav = user.favorites.includes(b.id);
-        if (aFav && !bFav) return -1;
-        if (!aFav && bFav) return 1;
-        return a.distance - b.distance;
+      const aFav = user.favorites.includes(a.id);
+      const bFav = user.favorites.includes(b.id);
+      if (aFav && !bFav) return -1;
+      if (!aFav && bFav) return 1;
+      return a.distance - b.distance;
     });
-  }, [searchQuery, filter, user.favorites]);
+  }, [allVendors, searchQuery, filter, user.favorites]);
 
   return (
     <div className="flex-1 overflow-y-auto hide-scrollbar bg-white h-full pb-20">
