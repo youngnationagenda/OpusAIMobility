@@ -1,0 +1,35 @@
+{
+  "PoolName": "omniride-users",
+  "AutoVerifiedAttributes": ["email"],
+  "UsernameAttributes": ["email"],
+  "Policies": {
+    "PasswordPolicy": {
+      "MinimumLength": 8,
+      "RequireUppercase": true,
+      "RequireLowercase": true,
+      "RequireNumbers": true,
+      "RequireSymbols": false
+    }
+  },
+  "Schema": [
+    {
+      "Name": "role",
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Required": false,
+      "StringAttributeConstraints": { "MinLength": "1", "MaxLength": "50" }
+    },
+    {
+      "Name": "permissions",
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Required": false,
+      "StringAttributeConstraints": { "MinLength": "2", "MaxLength": "1000" }
+    }
+  ],
+  "AccountRecoverySetting": {
+    "RecoveryMechanisms": [{ "Priority": 1, "Name": "verified_email" }]
+  },
+  "UserPoolAddOns": { "AdvancedSecurityMode": "OFF" },
+  "EmailConfiguration": { "EmailSendingAccount": "COGNITO_DEFAULT" }
+}
