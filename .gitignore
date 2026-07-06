@@ -11,8 +11,9 @@ dist-ssr/
 aws/lambda.zip
 aws/lambda-p*.json
 
-# ── Environment — keep template, never commit real secrets ───────────────────
-# .env.local is kept (it contains only PLACEHOLDER values, no real keys)
+# ── Environment — never commit real secrets ───────────────────────────────────
+.env.local
+.env*.local
 *.local.secret
 
 # ── Logs ──────────────────────────────────────────────────────────────────────

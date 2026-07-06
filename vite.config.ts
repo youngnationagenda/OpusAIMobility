@@ -17,7 +17,24 @@ export default defineConfig(({ mode }) => {
     },
 
     // ─── Plugins ───────────────────────────────────────────────────────────
-    plugins: [react()],
+    plugins: [
+      react(),
+      // Inject Google Maps key into index.html at build time
+      {
+        name: 'inject-google-maps-key',
+        transformIndexHtml(html: string) {
+          const key = env.VITE_GOOGLE_MAPS_KEY || '';
+          return html
+            .replace('__GMAPS_KEY_PLACEHOLDER__', key)
+            .replace(
+              '</head>',
+              key
+                ? `<script async defer src="https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places"></script>\n</head>`
+                : '</head>'
+            );
+        },
+      },
+    ],
 
     // ─── Env injection ─────────────────────────────────────────────────────
     // VITE_* vars are automatically exposed to import.meta.env by Vite.
@@ -35,6 +52,8 @@ export default defineConfig(({ mode }) => {
       // Legacy Gemini key shim (key now lives in Lambda — this is dev-only)
       'process.env.API_KEY':                    JSON.stringify(env.GEMINI_API_KEY),
       'process.env.GEMINI_API_KEY':             JSON.stringify(env.GEMINI_API_KEY),
+      // Google Maps key — baked in at build time & also injected via index.html at runtime
+      'process.env.VITE_GOOGLE_MAPS_KEY':       JSON.stringify(env.VITE_GOOGLE_MAPS_KEY),
     },
 
     // ─── Path Aliases ──────────────────────────────────────────────────────

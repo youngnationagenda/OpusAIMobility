@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { BookingState, Location } from '../types';
 import { MapPin, Navigation, Crosshair, RefreshCw, Plus, Minus, Leaf } from 'lucide-react';
+import { addRoadTiles } from '../services/mapUtils';
 
 interface MapViewProps {
   booking: BookingState;
@@ -27,9 +28,7 @@ const MapView: React.FC<MapViewProps> = ({ booking, onLocationUpdate }) => {
       attributionControl: false
     }).setView([1.2879, 103.8517], 15);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      maxZoom: 20
-    }).addTo(map);
+    addRoadTiles(map);
 
     leafletMap.current = map;
 

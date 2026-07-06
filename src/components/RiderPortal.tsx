@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import L from 'leaflet';
+import { addDarkTiles } from '../services/mapUtils';
 import { 
   Bike, ChevronLeft, ShieldCheck, Zap, Battery, MapPin, Navigation, User, 
   ArrowRight, Phone, CheckCircle2, Navigation2, Moon, Sun, Briefcase, Activity, Package,
@@ -47,9 +48,7 @@ const RiderPortal: React.FC<RiderPortalProps> = ({ onClose, riderProfile, onUpda
         attributionControl: false
       }).setView([-1.2863, 36.8172], 14);
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19
-      }).addTo(map);
+      addDarkTiles(map);
 
       const riderIcon = L.divIcon({
         className: 'rider-node-icon',

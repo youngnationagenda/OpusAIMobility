@@ -10,7 +10,8 @@
     "preview":    "vite preview",
     "type:check": "tsc --noEmit",
     "server":     "node server/server.js",
-    "server:dev": "nodemon server/server.js"
+    "server:dev": "nodemon server/server.js",
+    "deploy":     "node aws/deploy-frontend.cjs"
   },
   "dependencies": {
     "leaflet":      "1.9.4",

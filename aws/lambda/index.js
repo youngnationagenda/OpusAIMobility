@@ -16,7 +16,41 @@ const dbGet=async(t,k)=>{const r=await ddb.send(new GetCommand({TableName:t,Key:
 const dbPut=async(t,i)=>{await ddb.send(new PutCommand({TableName:t,Item:i}));return i;};
 const dbDel=async(t,k)=>ddb.send(new DeleteCommand({TableName:t,Key:k}));
 const dbScan=async(t)=>{const r=await ddb.send(new ScanCommand({TableName:t}));return r.Items||[];};
-async function callGemini(p,f){const k=await getGeminiKey(),m='gemini-2.0-flash',u='https://generativelanguage.googleapis.com/v1beta/models/'+m+':generateContent?key='+k,b=JSON.stringify({contents:[{parts:[{text:p}]}],generationConfig:f==='json'?{responseMimeType:'application/json'}:{}});return new Promise((res,rej)=>{const req=https.request(u,{method:'POST',headers:{'Content-Type':'application/json','Content-Length':Buffer.byteLength(b)}},(r)=>{let d='';r.on('data',c=>d+=c);r.on('end',()=>{try{res(JSON.parse(d).candidates?.[0]?.content?.parts?.[0]?.text||'');}catch(e){rej(e);}});});req.on('error',rej);req.write(b);req.end();});}
+async function callGemini(p,f){
+  const k=await getGeminiKey();
+  const m='gemini-2.0-flash';
+  const u='https://generativelanguage.googleapis.com/v1beta/models/'+m+':generateContent?key='+k;
+  const b=JSON.stringify({contents:[{parts:[{text:p}]}],generationConfig:f==='json'?{responseMimeType:'application/json'}:{}});
+  return new Promise((res,rej)=>{
+    const req=https.request(u,{method:'POST',headers:{'Content-Type':'application/json','Content-Length':Buffer.byteLength(b)}},(r)=>{
+      let d='';
+      r.on('data',c=>d+=c);
+      r.on('end',()=>{
+        try{
+          const parsed=JSON.parse(d);
+          console.log('[Gemini] status='+r.statusCode+' finish='+parsed?.candidates?.[0]?.finishReason);
+          if(r.statusCode!==200){
+            console.error('[Gemini] error body:',d.slice(0,500));
+            return rej(new Error('Gemini HTTP '+r.statusCode+': '+(parsed?.error?.message||d.slice(0,200))));
+          }
+          // Extract text from candidates — handle all finish reasons
+          const candidate=parsed?.candidates?.[0];
+          const text=candidate?.content?.parts?.map(pt=>pt.text||'').join('')||'';
+          if(!text && candidate?.finishReason && candidate.finishReason!=='STOP'){
+            console.warn('[Gemini] blocked/empty, reason:',candidate.finishReason);
+          }
+          res(text);
+        }catch(e){
+          console.error('[Gemini] parse error:',e.message,'raw:',d.slice(0,300));
+          rej(e);
+        }
+      });
+    });
+    req.on('error',rej);
+    req.write(b);
+    req.end();
+  });
+}
 async function authSignup(b){const{email,password,name,phone,role}=b;await cognito.send(new SignUpCommand({ClientId:CLIENT_ID,Username:email,Password:password,UserAttributes:[{Name:'email',Value:email},{Name:'name',Value:name},{Name:'phone_number',Value:phone||''},{Name:'custom:role',Value:role||'user'},{Name:'custom:permissions',Value:'[]'}]}));const id='usr_'+Date.now().toString(36);const u={id,email,name,phone:phone||'',role:role||'user',status:'active',joinedAt:Date.now(),walletBalance:0,rating:5,totalTrips:0,points:0,favorites:[],language:'en',paymentMethods:[],coupons:[]};await dbPut(T.USERS,u);return ok({user:u,message:'Signup successful. Check email to verify.'});}
 async function authSignin(b){const{email,password}=b;const r=await cognito.send(new InitiateAuthCommand({AuthFlow:'USER_PASSWORD_AUTH',ClientId:CLIENT_ID,AuthParameters:{USERNAME:email,PASSWORD:password}}));const tokens=r.AuthenticationResult;const users=await dbScan(T.USERS);let u=users.find(x=>x.email===email);if(!u){u={id:'usr_'+Date.now().toString(36),email,name:email.split('@')[0],role:'user',status:'active',joinedAt:Date.now(),walletBalance:0,rating:5,totalTrips:0,points:0,favorites:[],language:'en',paymentMethods:[],coupons:[]};await dbPut(T.USERS,u);}return ok({user:u,accessToken:tokens.AccessToken,idToken:tokens.IdToken,refreshToken:tokens.RefreshToken});}
 async function authRefresh(b){const{refreshToken}=b;const r=await cognito.send(new InitiateAuthCommand({AuthFlow:'REFRESH_TOKEN_AUTH',ClientId:CLIENT_ID,AuthParameters:{REFRESH_TOKEN:refreshToken}}));return ok({accessToken:r.AuthenticationResult.AccessToken,idToken:r.AuthenticationResult.IdToken});}

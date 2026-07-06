@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import L from 'leaflet';
+import { addDarkTiles } from '../services/mapUtils';
 import { 
   Zap, Battery, MapPin, ChevronLeft, ArrowRight, Loader2, CheckCircle2, 
   Clock, Navigation, Sparkles, ShieldCheck, Thermometer, Activity,
@@ -61,9 +62,7 @@ const EnergyPortal: React.FC<EnergyPortalProps> = ({ profile, onClose, onUpdateR
         attributionControl: false
       }).setView([-1.2863, 36.8172], 12);
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19
-      }).addTo(map);
+      addDarkTiles(map);
 
       mapInstanceRef.current = map;
     }
