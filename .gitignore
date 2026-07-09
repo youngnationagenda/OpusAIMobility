@@ -68,3 +68,5 @@ npm-debug.log*
 # package-lock.json is tracked at root; ignore nested ones from Lambda deploys
 aws/lambda/*/package-lock.json
 server/package-lock.json
+
+TerraAI/.claude/
