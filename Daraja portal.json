@@ -1,0 +1,83 @@
+check this file
+Safaricom APIs.postman_collection.json in root folder
+
+Consumer Key: vIM22PqF28VwSlqpVVDsl6iY7Jx0scfYxS2LuP6PbwGoWd7K
+
+Consumer Secret: gZX7LcSxyXTHbL5GXq4qy0pZKHvaSJ4BumGMAMYLnlem2bra8vo4agvq5xuiYvE5
+
+Generates an access token used for authorization when calling allowed APIs.
+
+https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials
+
+Endpoints
+
+https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials
+
+
+const payload = "Headers\nKey: Authorization\nValue: Basic dklNMjJQcUYyOFZ3U2xxcFZWRHNsNmlZN0p4MHNjZll4UzJMdVA2UGJ3R29XZDdLOmdaWDdMY1N4eVhUSGJMNUdYcTRxeTBwWktIdmFTSjRCdW1HTUFNWUxubGVtMmJyYTh2bzRhZ3ZxNXh1aVl2RTU=";
+
+fetch("https://api.safaricom.co.ke/YOUR_ENDPOINT", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer <ACCESS_TOKEN>"
+  },
+  body: JSON.stringify(payload)
+})
+  .then(res => res.json())
+  .then(console.log)
+  .catch(console.error);
+
+
+
+Test Credentials
+
+Test Environment
+Initiator Name:
+
+testapi
+
+Initiator Password:
+
+Safaricom123!!
+
+Party A:
+
+600977
+
+Party B:
+
+600000
+
+Phone No:
+
+254708374149
+
+Business ShortCode:
+
+174379
+
+Passkey:
+
+bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919
+
+
+Use this to invoke requests to the API
+
+Select or search App
+
+OpusAIMobility
+Select or search one of your apps *
+Consumer Key
+
+vIM22PqF28VwSlqpVVDsl6iY7Jx0scfYxS2LuP6PbwGoWd7K
+
+Consumer Secret
+
+gZX7LcSxyXTHbL5GXq4qy0pZKHvaSJ4BumGMAMYLnlem2bra8vo4agvq5xuiYvE5
+
+Basic Authorization
+
+dklNMjJQcUYyOFZ3U2xxcFZWRHNsNmlZN0p4MHNjZll4UzJMdVA2UGJ3R29XZDdLOmdaWDdMY1N4eVhUSGJMNUdYcTRxeTBwWktIdmFTSjRCdW1HTUFNWUxubGVtMmJyYTh2bzRhZ3ZxNXh1aVl2RTU=
+
+
