@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/payWith_Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".ride.payment.PayWithFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <RelativeLayout
+                android:id="@+id/backBtn"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/horizontal_margin"
+                    app:srcCompat="@drawable/ic_cross" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:fontFamily="@font/airbnbcerealbold"
+                android:text="@string/pay_with"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_size_heading" />
+
+            <RelativeLayout
+                android:id="@+id/creditOrDebitCardLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:background="@drawable/custom_ripple"
+                android:paddingVertical="@dimen/_10sdp">
+
+                <ImageView
+                    android:id="@+id/creditOrDebitCard"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:scaleType="centerCrop"
+
+                    android:layout_marginStart="@dimen/horizontal_margin"
+                    android:layout_marginEnd="@dimen/horizontal_margin"
+                    app:srcCompat="@drawable/ic_credit_debut_card" />
+
+                <TextView
+                    android:id="@+id/tvCurrentLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_toEndOf="@+id/creditOrDebitCard"
+                    android:fontFamily="@font/airbnbcerealbook"
+                    android:text="@string/credit_or_debit_card"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="@dimen/text_Size11" />
+
+                <ImageView
+                    android:layout_width="@dimen/_14sdp"
+                    android:layout_height="@dimen/_14sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/horizontal_margin"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_arrow_right" />
+
+            </RelativeLayout>
+
+
+            <View
+                android:id="@+id/separator"
+                android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/lite_gray" />
+
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_ripple"
+                android:paddingVertical="@dimen/_10sdp">
+
+                <ImageView
+                    android:id="@+id/payPalImage"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_marginStart="@dimen/horizontal_margin"
+                    android:layout_height="@dimen/_18sdp"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_paypall" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_toEndOf="@+id/payPalImage"
+                    android:fontFamily="@font/airbnbcerealbook"
+                    android:text="@string/paypal"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="@dimen/text_Size11" />
+
+
+                <ImageView
+                    android:layout_width="@dimen/_14sdp"
+                    android:layout_height="@dimen/_14sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/horizontal_margin"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_arrow_right" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

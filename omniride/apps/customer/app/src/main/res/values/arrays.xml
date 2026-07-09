@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="app_language">
+        <item>English</item>
+        <item>عربی</item>
+    </string-array>
+<!--    apply same number of language with same number of laguage code-->
+
+    <string-array name="app_language_code">
+        <item>en</item>
+        <item>ar</item>
+    </string-array>
+
+
+</resources>

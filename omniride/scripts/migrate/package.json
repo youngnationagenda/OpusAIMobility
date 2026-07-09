@@ -1,0 +1,25 @@
+{
+  "name": "@opusaimobility/migrate",
+  "version": "1.0.0",
+  "description": "Migration tooling for TerraAI database, users, and files",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "export-db": "tsx export-db.ts",
+    "import-db": "tsx import-db.ts",
+    "verify": "tsx verify.ts",
+    "migrate-users": "tsx migrate-users.ts",
+    "migrate-files": "tsx migrate-files.ts",
+    "snapshot": "tsx snapshot.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.0.0",
+    "@aws-sdk/client-rds": "^3.0.0",
+    "@aws-sdk/client-s3": "^3.0.0",
+    "mysql2": "^3.22.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "~5.8.2"
+  }
+}

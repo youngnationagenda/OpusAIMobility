@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/_50sdp"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_round_card"
+        android:orientation="vertical"
+        android:padding="@dimen/_12sdp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tell_us_why_you_want_to_cancel"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/toolbarTextSize" />
+
+
+        <RadioGroup
+            android:id="@+id/cancelRideRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp">
+
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/_15sdp"
+                android:text="@string/i_don_t_need_a_ride_anymore"
+                android:textSize="@dimen/text_Size10" />
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:paddingStart="@dimen/_15sdp"
+                android:text="@string/i_want_to_change_my_booking_details"
+                android:textSize="@dimen/text_Size10" />
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:paddingStart="@dimen/_15sdp"
+                android:text="@string/it_took_too_long_to_find_a_captain"
+                android:textSize="@dimen/text_Size10" />
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:paddingStart="@dimen/_15sdp"
+                android:text="@string/other"
+                android:textSize="@dimen/text_Size10" />
+
+        </RadioGroup>
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/submitReasonBtn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/gray_btn_bg"
+        android:elevation="0dp"
+        android:gravity="center"
+        android:enabled="false"
+        android:layout_marginHorizontal="@dimen/horizontal_margin"
+        android:stateListAnimator="@null"
+        android:text="@string/submit"
+        android:textAllCaps="false"
+        android:textColor="@color/lite_gray"
+        android:textSize="@dimen/btn_textSize" />
+
+</LinearLayout>

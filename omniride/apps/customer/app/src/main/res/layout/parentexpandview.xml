@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/gray2"
+        android:layout_marginBottom="10dp"
+        android:padding="10dp">
+
+
+        <TextView
+            android:id="@+id/parent_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:fontFamily="@font/airbnbcerealbold"
+            android:includeFontPadding="false"
+            android:text="Choice of preparation"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/_14sdp" />
+
+        <TextView
+            android:id="@+id/tvRequired"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/parent_tv"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:includeFontPadding="false"
+            android:text="Required"
+            android:textColor="@color/dark_gray"
+            android:textSize="@dimen/_11sdp" />
+
+        <RelativeLayout
+            android:layout_alignParentEnd="true"
+            android:layout_width="@dimen/_23sdp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:background="@drawable/white_circle_with_stroke"
+            android:layout_height="@dimen/_23sdp">
+
+            <ImageView
+                android:id="@+id/parent_indicator_img"
+                android:layout_width="@dimen/_8sdp"
+                android:layout_height="@dimen/_8sdp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/ic_arrow_up" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

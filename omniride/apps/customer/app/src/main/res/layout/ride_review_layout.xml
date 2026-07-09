@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sheet_round"
+    android:clickable="true"
+    android:focusable="true"
+    app:behavior_peekHeight="@dimen/_410sdp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/driverProfileImage"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_15sdp"
+            app:actualImageScaleType="centerCrop"
+            app:placeholderImageScaleType="centerCrop"
+            app:roundAsCircle="true" />
+
+        <TextView
+            android:id="@+id/timeTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/driverProfileImage"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="@string/thursday_02_39_pm"
+            android:textSize="@dimen/text_Size9" />
+
+        <TextView
+            android:id="@+id/askingExperienceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/timeTxt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/airbnbcerealbold"
+            android:text="@string/how_was_your_experience_with_john"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/text_Size11" />
+
+        <RatingBar
+
+            style="?android:attr/ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/askingExperienceText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:progressBackgroundTint="@color/dark_gray_text"
+            android:progressTint="@color/app_color"
+            android:visibility="gone" />
+
+
+        <me.zhanghai.android.materialratingbar.MaterialRatingBar
+            android:id="@+id/ratingBar"
+            style="@style/Widget.MaterialRatingBar.RatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/askingExperienceText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:numStars="5"
+            android:theme="@style/ratingBarYellow" />
+
+        <TextView
+            android:id="@+id/doneReviewBtn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_below="@+id/ratingBar"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:background="@drawable/green_button_bg"
+            android:gravity="center"
+            android:text="@string/done"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/btn_textSize"
+            android:visibility="gone" />
+
+
+        <RelativeLayout
+            android:id="@+id/earningPointsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ratingBar"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:background="@drawable/gray_border_bg"
+            android:paddingVertical="@dimen/_5sdp"
+            android:paddingEnd="@dimen/_12sdp"
+            android:visibility="gone">
+
+
+            <ImageView
+                android:id="@+id/earnedPointsImage"
+                android:layout_width="@dimen/_42sdp"
+                android:layout_height="@dimen/_42sdp"
+                android:padding="@dimen/_5sdp"
+                app:srcCompat="@drawable/ic_earned_points" />
+
+
+            <TextView
+                android:id="@+id/earnedPointsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_toEndOf="@+id/earnedPointsImage"
+                android:fontFamily="@font/airbnbcerealbold"
+                android:text="@string/you_ve_earned_103_points"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_Size10" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/earnedPointsText"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_toStartOf="@+id/farwardImage"
+                android:layout_toEndOf="@+id/earnedPointsImage"
+                android:text="@string/more_points_mean"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/text_Size10" />
+
+
+            <ImageView
+                android:id="@+id/farwardImage"
+                android:layout_width="@dimen/horizontal_margin"
+                android:layout_height="@dimen/horizontal_margin"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_farward" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/earningPointsLayout"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:background="@drawable/gray_border_bg"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:id="@+id/fareDetailbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_1sdp"
+                android:layout_marginTop="@dimen/_1sdp"
+                android:layout_marginEnd="@dimen/_1sdp"
+                android:layout_marginBottom="@dimen/_1sdp"
+                android:background="@drawable/lite_gray_round_bg"
+                android:paddingVertical="@dimen/_15sdp"
+                android:paddingStart="@dimen/_12sdp"
+                android:paddingEnd="@dimen/_12sdp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/total_ride_fare"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/text_Size11" />
+
+                <TextView
+                    android:id="@+id/tvTotalFare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:layout_toStartOf="@+id/upArrowImage"
+                    android:text="@string/_295"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/text_Size12" />
+
+                <ImageView
+                    android:id="@+id/upArrowImage"
+                    android:layout_width="@dimen/_12sdp"
+                    android:layout_height="@dimen/_12sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_arrow_down" />
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/fare_detail_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:id="@+id/cashLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:paddingEnd="@dimen/_12sdp">
+
+                    <ImageView
+                        android:id="@+id/cashImage"
+                        android:layout_width="@dimen/_32sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_centerVertical="true"
+                        android:scaleType="centerCrop"
+                        android:padding="@dimen/_4sdp"
+                        app:srcCompat="@drawable/ic_cash" />
+
+
+                    <TextView
+                        android:id="@+id/paymentType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_toEndOf="@+id/cashImage"
+                        android:text="@string/cash"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_11sdp" />
+
+
+                    <TextView
+                        android:id="@+id/tv_cash_paid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_22sdp"
+                        android:text="@string/_300"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_12sdp" />
+
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/gograbPayLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_11sdp"
+                    android:paddingEnd="@dimen/horizontal_margin">
+
+                    <ImageView
+                        android:id="@+id/payImage"
+                        android:layout_width="@dimen/_32sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_centerVertical="true"
+                        android:padding="@dimen/_4sdp"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_gogarb_pay" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_toEndOf="@+id/payImage"
+                        android:text="@string/gograb_paid"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_11sdp" />
+
+
+                    <TextView
+                        android:id="@+id/tv_wallet_pay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_22sdp"
+                        android:text="@string/_300"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_12sdp" />
+
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/cashBackLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:paddingEnd="@dimen/_12sdp">
+
+                    <ImageView
+                        android:id="@+id/backWalletImage"
+                        android:layout_width="@dimen/_32sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_centerVertical="true"
+                        android:scaleType="centerInside"
+                        android:padding="@dimen/_2sdp"
+                        app:srcCompat="@drawable/ic_back_wallet" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_toEndOf="@+id/backWalletImage"
+                        android:fontFamily="@font/airbnbcerealbold"
+                        android:text="@string/credited_back_to_wallet"
+                        android:textColor="@color/app_color"
+                        android:textSize="@dimen/_11sdp" />
+
+
+                    <TextView
+                        android:id="@+id/walletPayment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_22sdp"
+                        android:fontFamily="@font/airbnbcerealbold"
+                        android:text="@string/_5"
+                        android:textColor="@color/app_color"
+                        android:textSize="@dimen/_12sdp" />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="toolbar_height">@dimen/_40sdp</dimen>
+
+    <dimen name="text_size_heading">@dimen/_23sdp</dimen>
+
+    <dimen name="toolbarTextSize">@dimen/_14sdp</dimen>
+
+    <dimen name="text_Size10">@dimen/_10sdp</dimen>
+
+    <dimen name="text_Size9">@dimen/_9sdp</dimen>
+
+    <dimen name="text_Size11">@dimen/_11sdp</dimen>
+
+    <dimen name="text_Size12">@dimen/_12sdp</dimen>
+
+    <dimen name="text_Size8">@dimen/_8sdp</dimen>
+
+    <dimen name="btn_textSize">@dimen/_12sdp</dimen>
+
+    <dimen name="btn_height">@dimen/_38sdp</dimen>
+
+    <dimen name="horizontal_margin">@dimen/_12sdp</dimen>
+
+    <dimen name="horizontal_margin_toolbar">@dimen/_9sdp</dimen>
+
+</resources>

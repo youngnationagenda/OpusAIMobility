@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/otpContainer_F"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <RelativeLayout
+                android:id="@+id/backBtn"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/horizontal_margin_toolbar"
+                    app:srcCompat="@drawable/ic_arrow_left" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:fontFamily="@font/airbnbcerealbold"
+            android:text="@string/enter_4_digit_code"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/text_size_heading" />
+
+        <TextView
+            android:id="@+id/tv_sub_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:text="@string/we_sent_a_code_to_email_enter_the_code_in_that_message"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/_11sdp" />
+
+
+        <com.chaos.view.PinView
+            android:id="@+id/pinView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:cursorVisible="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="start"
+            android:inputType="number"
+            android:textColor="@color/text_color_black"
+            android:textColorHint="@color/black"
+            android:textSize="@dimen/_19sdp"
+            app:cursorColor="@color/app_color"
+            app:hideLineWhenFilled="false"
+            app:itemCount="4"
+            app:itemSpacing="@dimen/_20sdp"
+            app:lineColor="@color/pin_line_colors"
+            app:lineWidth="@dimen/_3sdp"
+            app:viewType="line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/didn_t_get_it"
+                android:textColor="@color/dark_gray" />
+
+            <TextView
+                android:id="@+id/tv_send_again"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:text="@string/try_again"
+                android:textColor="@color/app_color" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

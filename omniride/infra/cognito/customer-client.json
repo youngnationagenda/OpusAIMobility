@@ -1,0 +1,59 @@
+{
+  "description": "Cognito app client for the Customer App (TerraAI). Uses the same opusaimobility-users pool as the rider client but with a separate client ID for analytics separation.",
+  "UserPoolId": "${COGNITO_USER_POOL_ID}",
+  "ClientName": "opusaimobility-customer-client",
+  "GenerateSecret": false,
+  "ExplicitAuthFlows": [
+    "ALLOW_USER_SRP_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_USER_PASSWORD_AUTH",
+    "ALLOW_CUSTOM_AUTH"
+  ],
+  "SupportedIdentityProviders": ["COGNITO"],
+  "AllowedOAuthFlows": ["code", "implicit"],
+  "AllowedOAuthScopes": [
+    "email",
+    "openid",
+    "profile",
+    "phone",
+    "aws.cognito.signin.user.admin"
+  ],
+  "AllowedOAuthFlowsUserPoolClient": true,
+  "CallbackURLs": [
+    "opusaimobility-customer://callback",
+    "http://localhost:3000/callback"
+  ],
+  "LogoutURLs": [
+    "opusaimobility-customer://logout",
+    "http://localhost:3000/logout"
+  ],
+  "TokenValidityUnits": {
+    "AccessToken": "hours",
+    "IdToken": "hours",
+    "RefreshToken": "days"
+  },
+  "AccessTokenValidity": 1,
+  "IdTokenValidity": 1,
+  "RefreshTokenValidity": 30,
+  "PreventUserExistenceErrors": "ENABLED",
+  "EnableTokenRevocation": true,
+  "ReadAttributes": [
+    "email",
+    "name",
+    "phone_number",
+    "custom:role",
+    "custom:permissions"
+  ],
+  "WriteAttributes": [
+    "email",
+    "name",
+    "phone_number"
+  ],
+  "notes": {
+    "userPool": "Uses the same 'opusaimobility-users' Cognito User Pool as the existing 'opusaimobility-rider-client' (Rider app). The pool is defined in /aws/cognito-pool.json.",
+    "clientIdSeparation": "A separate client ID enables per-app analytics, token management, and independent OAuth callback URL configuration without affecting the Rider app.",
+    "authFlows": "Matches the Rider client: USER_SRP_AUTH for secure password-based auth, REFRESH_TOKEN for session continuity, USER_PASSWORD_AUTH for migration trigger compatibility, CUSTOM_AUTH for future MFA/challenge flows.",
+    "oauthScopes": "Full set of standard scopes plus admin scope for Cognito user operations, matching Rider client configuration.",
+    "crossAppAuth": "Because both clients share the same user pool, a user registered through either app can authenticate via either client with the same credentials (Requirement 7.1, 7.2)."
+  }
+}

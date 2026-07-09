@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpusAIMobility — 100% Zero-Emission Mobility</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <!-- Google Maps JS API — key baked in by Vite at build time -->
+    <script>window.__GOOGLE_MAPS_KEY__ = '__GMAPS_KEY_PLACEHOLDER__';</script>
+
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .leaflet-container {
+        height: 100%;
+        width: 100%;
+        background: #f3f4f6;
+      }
+      .leaflet-vignette {
+        box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.1);
+        pointer-events: none;
+        z-index: 1000;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div id="root"></div>
+    <!-- Vite resolves this via the bundler — no importmap needed -->
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

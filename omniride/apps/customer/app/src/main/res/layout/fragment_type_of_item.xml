@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".parcel.fragmentandactivities.TypeOfItemFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/type_of_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:fontFamily="@font/airbnbcerealmedium"
+            android:text="@string/type_of_item_1"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/_13sdp" />
+
+        <include android:id="@+id/shimmer_frame_container"
+            android:layout_below="@+id/type_of_item"
+            layout="@layout/shimmer_layout_delivery"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/typesOfItemRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/type_of_item"
+            android:layout_marginHorizontal="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_15sdp" />
+
+    </RelativeLayout>
+
+
+</FrameLayout>

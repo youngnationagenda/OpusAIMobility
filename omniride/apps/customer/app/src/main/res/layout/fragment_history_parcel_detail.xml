@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/history_detail_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true">
+
+            <RelativeLayout
+                android:id="@+id/backBtn"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/horizontal_margin_toolbar"
+                    app:srcCompat="@drawable/ic_arrow_left" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/_35sdp"
+                android:layout_marginEnd="@dimen/_35sdp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_13sdp"
+                android:textStyle="normal" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/tab_track_order"
+            android:layout_below="@+id/toolbar"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/iv_map"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_226sdp"
+                app:actualImageScaleType="fitXY"
+                app:placeholderImageScaleType="centerCrop"
+                />
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:gravity="center_vertical|start"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/horizontal_margin"
+                            android:layout_toStartOf="@+id/tv_ride_fare"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_dropoff_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical|start"
+                                android:includeFontPadding="false"
+                                android:singleLine="true"
+                                android:text=""
+                                android:textAlignment="viewStart"
+                                android:textAllCaps="false"
+                                android:textColor="@color/text_color_black"
+                                android:textSize="@dimen/_12sdp"
+                                android:textStyle="normal" />
+
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_ride_fare"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/horizontal_margin"
+                            android:gravity="center_vertical|end"
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:text=""
+                            android:textAlignment="viewEnd"
+                            android:textAllCaps="false"
+                            android:textColor="@color/text_color_black"
+                            android:textSize="@dimen/_12sdp"
+                            android:textStyle="normal" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="@dimen/horizontal_margin"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_goods_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:gravity="center_vertical"
+                            android:includeFontPadding="false"
+                            android:text=""
+                            android:textColor="@color/text_color_black"
+                            android:textSize="@dimen/_12sdp" />
+
+                        <TextView
+                            android:id="@+id/tv_weight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:gravity="center_vertical"
+                            android:includeFontPadding="false"
+                            android:text=""
+                            android:textColor="@color/text_color_black"
+                            android:textSize="@dimen/_11sdp"
+                            android:textStyle="normal" />
+
+                    </LinearLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/_10sdp"
+                        android:paddingBottom="@dimen/_10sdp">
+
+
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/horizontal_margin">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <RelativeLayout
+                                        android:id="@+id/view_left"
+                                        android:layout_width="24dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentStart="true">
+
+                                        <ImageView
+                                            android:id="@+id/iv_pickup"
+                                            android:layout_width="@dimen/_16sdp"
+                                            android:layout_height="@dimen/_16sdp"
+                                            android:layout_centerInParent="true"
+                                            android:background="@drawable/ic_blue_drop_location" />
+
+
+                                        <ImageView
+                                            android:id="@+id/image1"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:scaleType="centerCrop"
+                                            android:layout_weight="1"
+                                            android:layout_below="@+id/iv_pickup"
+                                            app:srcCompat="@drawable/dotted" />
+
+
+                                    </RelativeLayout>
+
+                                    <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="vertical"
+                                     android:layout_marginHorizontal="@dimen/_10sdp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical"
+                                        android:includeFontPadding="false"
+                                        android:text="@string/pickup_location"
+                                        android:textColor="@color/text_color_black"
+                                        android:textSize="@dimen/_12sdp"
+                                        android:textStyle="normal" />
+
+                                    <TextView
+                                        android:id="@+id/tv_pickup_loc"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:gravity="center_vertical"
+                                        android:includeFontPadding="false"
+                                        android:maxLength="500"
+                                        android:text=""
+                                        android:textColor="@color/dark_gray"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="normal" />
+
+                                    <TextView
+                                        android:id="@+id/tv_sender_name"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/_2sdp"
+                                        android:gravity="center_vertical"
+                                        android:includeFontPadding="false"
+                                        android:text=""
+                                        android:textColor="@color/dark_gray"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="normal" />
+
+                                    <TextView
+                                        android:id="@+id/tv_sender_phone"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/_2sdp"
+                                        android:gravity="center_vertical"
+                                        android:includeFontPadding="false"
+                                        android:text=""
+                                        android:textColor="@color/dark_gray"
+                                        android:textSize="@dimen/_10sdp"
+                                        android:textStyle="normal" />
+
+                                </LinearLayout>
+
+                                </LinearLayout>
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/recyclerview"
+                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                            </LinearLayout>
+
+
+                        </RelativeLayout>
+
+
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:id="@+id/tab_rating"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_50sdp"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:paddingHorizontal="@dimen/horizontal_margin"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/iv_driver_pic"
+                            android:layout_width="@dimen/_38sdp"
+                            android:layout_height="@dimen/_38sdp"
+                            android:layout_centerVertical="true"
+                            app:actualImageScaleType="centerCrop"
+                            app:roundAsCircle="true"
+                            app:roundedCornerRadius="@dimen/_4sdp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:layout_toEndOf="@+id/iv_driver_pic">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerVertical="true"
+                                android:gravity="center_vertical"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_driver_name"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:includeFontPadding="false"
+                                    android:text="@string/user_name"
+                                    android:textColor="@color/text_color_black"
+                                    android:textSize="@dimen/_11sdp"
+                                    android:textStyle="normal" />
+
+
+                            </LinearLayout>
+
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/tab_track_order"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_48sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/horizontal_margin"
+            android:visibility="gone">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp">
+
+                <LinearLayout
+                    android:id="@+id/btn_track_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/green_button_bg"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="@string/track_order"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/btn_textSize"
+                        android:textStyle="normal" />
+
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

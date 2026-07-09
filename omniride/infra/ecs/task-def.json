@@ -1,0 +1,50 @@
+{
+  "family": "terraai-api",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "${EXECUTION_ROLE_ARN}",
+  "taskRoleArn": "${TASK_ROLE_ARN}",
+  "containerDefinitions": [
+    {
+      "name": "terra-api",
+      "image": "${ECR_REPOSITORY}:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -f http://localhost/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
+      "environment": [
+        { "name": "DB_PORT", "value": "3306" },
+        { "name": "COGNITO_REGION", "value": "us-east-1" }
+      ],
+      "secrets": [
+        { "name": "DB_HOST", "valueFrom": "${DB_HOST_SECRET_ARN}" },
+        { "name": "DB_NAME", "valueFrom": "${DB_NAME_SECRET_ARN}" },
+        { "name": "DB_USER", "valueFrom": "${DB_USER_SECRET_ARN}" },
+        { "name": "DB_PASS", "valueFrom": "${DB_PASS_SECRET_ARN}" },
+        { "name": "COGNITO_USER_POOL_ID", "valueFrom": "${COGNITO_POOL_SECRET_ARN}" },
+        { "name": "S3_UPLOAD_BUCKET", "valueFrom": "${S3_BUCKET_SECRET_ARN}" },
+        { "name": "SNS_TOPIC_ARN", "valueFrom": "${SNS_TOPIC_SECRET_ARN}" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/terraai-api",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "terra-api"
+        }
+      }
+    }
+  ]
+}

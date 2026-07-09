@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_ripple"
+        android:paddingStart="@dimen/horizontal_margin"
+        android:paddingEnd="@dimen/horizontal_margin">
+
+        <ImageView
+            android:id="@+id/locationImage"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_22sdp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:padding="@dimen/_2sdp"
+            app:srcCompat="@drawable/ic_place_location" />
+
+        <RelativeLayout
+            android:id="@+id/location_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_toEndOf="@+id/locationImage"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/locationName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/imageView1"
+                android:ellipsize="end"
+                android:textAlignment="viewStart"
+                android:fontFamily="@font/airbnbcerealmedium"
+                android:singleLine="true"
+                android:text="@string/terminal_arjosri"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_Size10" />
+
+            <TextView
+                android:id="@+id/locationAddressText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/locationName"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_toStartOf="@+id/imageView1"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textAlignment="viewStart"
+                android:text="@string/terminal_arjosri"
+                android:textColor="@color/dark_gray"
+                android:textSize="@dimen/text_Size9" />
+
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="@dimen/_14sdp"
+                android:layout_height="@dimen/_14sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_arrow_right" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_below="@+id/location_layout"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:background="@color/light_gray" />
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/bgLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_9sdp"
+        android:layout_marginEnd="@dimen/_1sdp"
+        android:padding="@dimen/_8sdp">
+
+        <TextView
+            android:id="@+id/tvRecipeName"
+            android:layout_width="wrap_content"
+            android:includeFontPadding="false"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_10sdp"
+            android:textColor="@color/text_color_black"
+            android:text="Picked for you"/>
+
+
+    </RelativeLayout>
+
+</LinearLayout>
