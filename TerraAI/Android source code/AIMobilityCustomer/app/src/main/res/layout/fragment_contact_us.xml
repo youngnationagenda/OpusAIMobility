@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".ride.ContactUsFragment">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <RelativeLayout
+                android:id="@+id/backBtn"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/horizontal_margin_toolbar"
+                    app:srcCompat="@drawable/ic_arrow_left" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/sendMessageBtn"
+            android:layout_below="@+id/toolbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:fontFamily="@font/airbnbcerealbold"
+                    android:gravity="center_vertical"
+                    android:text="@string/contact_us"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/text_size_heading" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:fontFamily="@font/airbnbcerealbold"
+                    android:gravity="center_vertical"
+                    android:text="Reason"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/text_size_heading" />
+
+
+                <TextView
+                    android:id="@+id/reasonTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/dark_gray_color"
+                    android:textSize="@dimen/_11sdp" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:gravity="center_vertical"
+                    android:text="@string/please_share_further"
+                    android:textColor="@color/dark_gray_color"
+                    android:textSize="@dimen/_11sdp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_200sdp"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@drawable/edittext_bg_stroke">
+
+                    <EditText
+                        android:id="@+id/complaintEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:background="@null"
+                        android:gravity="top"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_13sdp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/continueBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/un_selected_btn_grey">
+
+                    <ImageView
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_toStartOf="@+id/tvAttach"
+                        app:srcCompat="@drawable/ic_gray_camera" />
+
+                    <TextView
+                        android:id="@+id/tvAttach"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/attach_an_image"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_13sdp" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/image_rlt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:visibility="gone">
+
+
+                    <TextView
+                        android:id="@+id/textFileName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:textColor="@color/text_color_grey" />
+
+
+                    <ImageButton
+                        android:id="@+id/delete_btn"
+                        android:layout_width="@dimen/_12sdp"
+                        android:layout_height="@dimen/_12sdp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/ic_cross" />
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+
+        <RelativeLayout
+            android:id="@+id/sendMessageBtn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="@dimen/horizontal_margin"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:background="@drawable/un_selected_btn_grey">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/send_message"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13sdp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

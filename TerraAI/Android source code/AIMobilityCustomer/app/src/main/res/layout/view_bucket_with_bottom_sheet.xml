@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_bicket_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".ride.payment.PayWithBottomSheetFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="@dimen/_38sdp"
+                android:layout_height="@dimen/_5sdp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:background="@drawable/gray_round_view" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view"
+                android:layout_marginTop="-1dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_resturant_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/airbnbcerealmedium"
+                    android:gravity="center"
+                    android:maxWidth="@dimen/_250sdp"
+                    android:maxLines="2"
+                    android:text="Charles Corner Pizza ,Deli Grocery"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/_16sdp" />
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@drawable/lite_gray_line" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:layout_width="match_parent"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_height="wrap_content" />
+
+
+                <RelativeLayout
+                    android:id="@+id/sub_total_div"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_5sdp">
+
+                    <TextView
+                        android:id="@+id/sub_total_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/sub_total"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <TextView
+                        android:id="@+id/sub_total_price_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="$0.0"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_12sdp" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/checkout_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@drawable/app_color_bg_btn">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:includeFontPadding="false"
+                        android:text="@string/go_to_checkout"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/btn_textSize" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/add_item_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:background="@drawable/light_gray_color_bg_btn">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:includeFontPadding="false"
+                        android:text="@string/add_more_item"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/btn_textSize" />
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>

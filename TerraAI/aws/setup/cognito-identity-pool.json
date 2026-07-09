@@ -1,0 +1,16 @@
+{
+  "IdentityPoolName": "aimobility_identity_pool",
+  "AllowUnauthenticatedIdentities": false,
+  "AllowClassicFlow": false,
+  "CognitoIdentityProviders": [
+    {
+      "ProviderName": "cognito-idp.us-east-1.amazonaws.com/us-east-1_HA6twtr4a",
+      "ClientId": "5nd3067cl29ka0b3a2k8me2ijh",
+      "ServerSideTokenCheck": false
+    }
+  ],
+  "IdentityPoolTags": {
+    "Project": "aimobility",
+    "Environment": "prod"
+  }
+}

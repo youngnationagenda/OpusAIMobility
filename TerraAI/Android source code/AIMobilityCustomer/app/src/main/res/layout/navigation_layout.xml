@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/_220sdp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/profileLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/userProfileImage"
+                android:layout_width="@dimen/_70sdp"
+                android:layout_height="@dimen/_70sdp"
+                android:layout_gravity="center"
+                app:actualImageScaleType="centerCrop"
+                app:placeholderImageScaleType="centerCrop"
+                app:roundAsCircle="true" />
+
+            <TextView
+                android:id="@+id/usernameTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/airbnbcerealbold"
+                android:text="@string/john_doe"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_16sdp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:background="@color/lite_gray" />
+
+
+        <LinearLayout
+            android:id="@+id/yourRidesLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@drawable/custom_ripple"
+            android:paddingHorizontal="@dimen/horizontal_margin">
+
+
+            <ImageView
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:padding="@dimen/_6sdp"
+                app:srcCompat="@drawable/ic_your_ride" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:fontFamily="@font/airbnbcerealbold"
+                android:text="@string/your_rides"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_11sdp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/setting_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@drawable/custom_ripple"
+            android:paddingHorizontal="@dimen/horizontal_margin">
+
+
+            <ImageView
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:padding="@dimen/_6sdp"
+                app:srcCompat="@drawable/ic_gray_setting" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:fontFamily="@font/airbnbcerealbold"
+                android:text="@string/setting"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_11sdp" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/_20sdp">
+
+            <LinearLayout
+                android:id="@+id/become_caption_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginHorizontal="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/_10sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_drive" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:text="@string/become_a_captain"
+                    android:textColor="@color/app_color"
+                    android:textSize="@dimen/_11sdp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

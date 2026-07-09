@@ -1,0 +1,51 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": "cloudfront:*",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": "true"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": "true"
+        }
+      }
+    },
+    {
+      "Sid": "PinpointSNSSES",
+      "Effect": "Allow",
+      "Action": [
+        "mobiletargeting:*",
+        "sns:*",
+        "ses:*",
+        "sesv2:*",
+        "dynamodb:*",
+        "cognito-idp:*",
+        "cognito-identity:*",
+        "iam:PassRole",
+        "iam:CreateRole",
+        "iam:PutRolePolicy",
+        "iam:AttachRolePolicy",
+        "iam:GetRole",
+        "iam:ListRoles",
+        "logs:*",
+        "cloudwatch:*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

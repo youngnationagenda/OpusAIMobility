@@ -1,0 +1,65 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:us-east-1:683541453923:log-group:/aws/lambda/aimobility-push:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sns:CreatePlatformEndpoint",
+        "sns:DeleteEndpoint",
+        "sns:GetEndpointAttributes",
+        "sns:SetEndpointAttributes",
+        "sns:ListEndpointsByPlatformApplication",
+        "sns:Publish",
+        "sns:Subscribe",
+        "sns:Unsubscribe",
+        "sns:ListSubscriptionsByTopic"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:683541453923:table/aimobility-push-endpoints",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/aimobility-push-endpoints/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/aimobility-users",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/aimobility-users/index/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "mobiletargeting:SendMessages",
+        "mobiletargeting:SendUsersMessages",
+        "mobiletargeting:UpdateEndpoint",
+        "mobiletargeting:GetEndpoint",
+        "mobiletargeting:PutEvents"
+      ],
+      "Resource": "arn:aws:mobiletargeting:us-east-1:683541453923:apps/f1db6e3aea754decb0f3988dab0b4c7a/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sqs:SendMessage",
+        "sqs:GetQueueAttributes"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:683541453923:aimobility-push-dlq"
+    }
+  ]
+}

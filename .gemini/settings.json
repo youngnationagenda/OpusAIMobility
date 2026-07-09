@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "visualization": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\user\\.antigravity-ide\\extensions\\googlecloudtools.datacloud-0.5.2-universal\\mcp_servers\\cli\\mcp_proxy_bundle.js",
+        "visualization-antigravityide"
+      ]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:fontFamily="@font/airbnbcerealbold"
+        android:gravity="start"
+        android:text="Less than 1kg"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/_12sdp" />
+
+
+    <TextView
+        android:id="@+id/tvtimeOpening"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:fontFamily="@font/airbnbcerealbook"
+        android:gravity="start"
+        android:text="Less than 1kg"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/_10sdp" />
+
+    <TextView
+        android:id="@+id/tvtimeClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:fontFamily="@font/airbnbcerealbook"
+        android:gravity="start"
+        android:text="Less than 1kg"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/_10sdp" />
+
+</LinearLayout>

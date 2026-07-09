@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".parcel.fragmentandactivities.DeliveryDetailsFragment">
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_12sdp"
+                            android:layout_marginTop="@dimen/_30sdp"
+                            android:layout_marginEnd="@dimen/_12sdp"
+                            android:background="@drawable/grey_stroke_bg"
+                            android:orientation="vertical">
+
+                            <RelativeLayout
+                                android:id="@+id/recipientLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_30sdp"
+                                android:layout_marginHorizontal="@dimen/horizontal_margin"
+                                android:layout_marginTop="@dimen/_10sdp"
+                                android:layout_marginBottom="@dimen/_10sdp">
+
+                                <ImageView
+                                    android:id="@+id/icLocation"
+                                    android:layout_width="@dimen/_14sdp"
+                                    android:layout_height="@dimen/_14sdp"
+                                    android:layout_centerVertical="true"
+                                    android:scaleType="centerCrop"
+                                    app:srcCompat="@drawable/ic_red_location" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginStart="@dimen/_15sdp"
+                                    android:layout_toEndOf="@+id/icLocation"
+                                    android:text="@string/recipient"
+                                    android:textColor="@color/text_color_black"
+                                    android:textSize="@dimen/_13sdp" />
+
+                                <ImageView
+                                    android:id="@+id/recipientArrow"
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="@dimen/_10sdp"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:scaleType="centerCrop"
+                                    app:srcCompat="@drawable/ic_arrow_up" />
+
+                            </RelativeLayout>
+
+                            <View
+                                android:id="@+id/viewRecipient"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/_1sdp"
+                                android:background="@color/light_grey" />
+
+
+
+                            <LinearLayout
+                                android:id="@+id/anonymousLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/horizontal_margin"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_recipent_name"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/etName"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:textColor="@color/dark_gray" />
+
+                                <TextView
+                                    android:id="@+id/tv_recipent_phone"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:hint="@string/etPhoneNumber"
+                                    android:textColor="@color/dark_gray"
+                                    android:textSize="@dimen/_10sdp" />
+
+                                <TextView
+                                    android:id="@+id/tv_recipent_address"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:hint="@string/add_dropoff_location_delivery"
+                                    android:maxLines="1"
+                                    android:textColor="@color/dark_gray"
+                                    android:textSize="@dimen/_10sdp" />
+
+                                <TextView
+                                    android:id="@+id/tv_recipent_instruction"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:hint="@string/etName"
+                                    android:maxLines="1"
+                                    android:textColor="@color/dark_gray"
+                                    android:textSize="@dimen/_10sdp" />
+
+                                <TextView
+                                    android:id="@+id/tv_item_type"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:hint="@string/type_of_item"
+                                    android:maxLines="1"
+                                    android:textColor="@color/dark_gray"
+                                    android:textSize="@dimen/_10sdp" />
+
+                                <TextView
+                                    android:id="@+id/tv_item_size"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/total_weight"
+                                    android:maxLines="1"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:textColor="@color/dark_gray"
+                                    android:textSize="@dimen/_10sdp" />
+
+                                <TextView
+                                    android:id="@+id/tv_total"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentEnd="true"
+                                    android:fontFamily="@font/airbnbcerealbold"
+                                    android:text="$ 0.0"
+                                    android:textColor="@color/dark_gray"
+                                    android:textSize="@dimen/_10sdp"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_marginBottom="@dimen/_10sdp"/>
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+
+
+</RelativeLayout>

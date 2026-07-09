@@ -1,0 +1,12 @@
+{
+  "name": "terraai-telemetry-ingest",
+  "version": "1.0.0",
+  "description": "IoT Core telemetry ingestion Lambda — TERRA-010",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0",
+    "@aws-sdk/client-cloudwatch": "^3.0.0",
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.0.0"
+  }
+}

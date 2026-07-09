@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/order_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".food.OrdersFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:includeFontPadding="false"
+                android:text="@string/your_orders"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/toolbarTextSize" />
+
+
+        </RelativeLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/yourOrdersRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <ProgressBar
+            android:id="@+id/load_more_progress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:visibility="gone" />
+
+
+        <include
+            android:id="@+id/shimmer_view"
+            layout="@layout/shimmer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar" />
+
+
+        <include
+            android:id="@+id/cart_view"
+            layout="@layout/view_cart_layout" />
+
+        <include
+            android:id="@+id/no_data_layout"
+            layout="@layout/no_data_order" />
+
+
+        <include
+            android:id="@+id/no_internet_layout"
+            layout="@layout/layout_no_internet" />
+
+    </RelativeLayout>
+
+
+</FrameLayout>

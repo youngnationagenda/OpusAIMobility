@@ -1,0 +1,14 @@
+{
+  "name": "aimobility-push",
+  "version": "1.0.0",
+  "description": "aimobility Push Notification Lambda — SNS + Pinpoint",
+  "main": "index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1079.0",
+    "@aws-sdk/client-sns": "^3.1079.0",
+    "@aws-sdk/lib-dynamodb": "^3.1079.0"
+  }
+}

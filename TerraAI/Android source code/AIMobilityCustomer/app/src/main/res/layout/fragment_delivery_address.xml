@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/delivery_address_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".food.DeliveryAddressFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/toolbar_height"
+                android:layout_marginEnd="@dimen/_12sdp">
+
+                <RelativeLayout
+                    android:id="@+id/backBtn"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/toolbar_height"
+                    android:layout_centerVertical="true">
+
+                    <ImageView
+                        android:layout_width="@dimen/_16sdp"
+                        android:layout_height="@dimen/_16sdp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/horizontal_margin"
+                        app:layout_collapseMode="parallax"
+                        app:srcCompat="@drawable/ic_cross" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:includeFontPadding="false"
+                    android:text="@string/delivery_address"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/toolbarTextSize" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/searchLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_37sdp"
+                android:layout_marginHorizontal="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/_15sdp">
+
+                <ImageView
+                    android:id="@+id/icSearch"
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_search_dark" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:layout_toEndOf="@+id/icSearch"
+                    android:fontFamily="@font/airbnbcereallight"
+                    android:gravity="center_vertical"
+                    android:includeFontPadding="false"
+                    android:text="@string/enter_a_new_address"
+                    android:textColor="@color/dark_gray"
+                    android:textColorHint="@color/dark_gray"
+                    android:textSize="@dimen/_13sdp" />
+
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:background="@color/light_grey" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:includeFontPadding="false"
+                android:text="@string/nearby"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_10sdp" />
+
+
+            <LinearLayout
+                android:id="@+id/currentBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:background="@drawable/custom_ripple"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:text="@string/current_location"
+                    android:textColor="@color/text_color_black" />
+
+                <TextView
+                    android:id="@+id/tv_current_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_15sdp"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false"
+                    android:maxLines="2"
+                    android:text="your location"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="@dimen/_10sdp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:background="@color/light_grey" />
+
+
+            <RelativeLayout
+                android:id="@+id/savedPlacesBtn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:background="@drawable/custom_ripple">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:includeFontPadding="false"
+                    android:text="@string/saved_places"
+                    android:textColor="@color/text_color_black" />
+
+                <ImageView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_arrow_right_stylish" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                 android:background="@color/light_grey" />
+
+
+            <TextView
+                android:id="@+id/tv_recent_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:includeFontPadding="false"
+                android:text="@string/recent_locations"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_10sdp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recentLocationRcView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp" />
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>
