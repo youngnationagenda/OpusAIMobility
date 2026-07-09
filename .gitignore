@@ -70,3 +70,5 @@ aws/lambda/*/package-lock.json
 server/package-lock.json
 
 TerraAI/.claude/
+
+TerraAI/.claude/
