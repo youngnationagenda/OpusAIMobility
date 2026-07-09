@@ -429,6 +429,7 @@ jobs:
 
       - name: Decode keystore
         run: |
+          mkdir -p omniride/apps/customer/app
           echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > omniride/apps/customer/app/release.keystore
 
       - name: Build signed release APK
