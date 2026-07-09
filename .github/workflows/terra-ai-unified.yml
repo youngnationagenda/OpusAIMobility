@@ -1,12 +1,3 @@
-- name: Get gradle version action
-  uses: thecodemonkey/action-get-gradle-version@v1.0
-  
-- name: Get Gradle build version
-  uses: EmberCM/action-get-gradle-version@1.0.0
-  
-- name: Gradle Version Incrementer
-  uses: sardul3/gradle-version-incrementer@1.0.10
-  
 name: "Deploy — OpusAIMobility Unified CI/CD"
 # TICKET: TERRA-093 — Unified monorepo pipeline
 # All source is inside omniride/ (NOT opusaimobility/)
