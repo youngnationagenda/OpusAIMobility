@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide IoT Service  —  AWS IoT Core
+ * OpusAIMobility IoT Service  —  AWS IoT Core
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Connects to AWS IoT Core via MQTT over WebSocket for real-time telemetry.
@@ -21,7 +21,18 @@ import { TelemetryData } from '../types';
 import { awsGet, awsPost } from './awsClient';
 import { LAMBDA_ROUTES, IOT_ENDPOINT } from './awsConfig';
 
-const CACHE_KEY = 'omniride-telemetry';
+// TERRA-012: Real IoT WebSocket URL fetched from Lambda (signed endpoint)
+let _streamUrl: string | null = null;
+async function getSignedStreamUrl(riderId: string): Promise<string> {
+  if (_streamUrl) return _streamUrl;
+  try {
+    const { data } = await awsPost<{ wsUrl: string }>(LAMBDA_ROUTES.IOT_STREAM_URL, { riderId });
+    if (data?.wsUrl) { _streamUrl = data.wsUrl; return data.wsUrl; }
+  } catch { /* fall through to default */ }
+  return `${IOT_ENDPOINT}?clientId=opusaimobility-${riderId}`;
+}
+
+const CACHE_KEY = 'opusaimobility-telemetry';
 
 /** Simulated realistic telemetry (offline fallback). */
 function simulateTelemetry(): TelemetryData {
@@ -87,11 +98,10 @@ export const iotApi = {
    * @param riderId  The rider's ID (used as MQTT client ID)
    * @returns        Signed IoT WebSocket URL
    */
+  // TERRA-012: Now fetches signed URL from Lambda instead of PLACEHOLDER
   getStreamUrl: (riderId: string): string => {
-    // In production, Lambda generates a pre-signed IoT URL
-    // and the frontend opens a WebSocket directly to it.
-    // For now, return the configured endpoint placeholder.
-    return `${IOT_ENDPOINT}?clientId=omniride-${riderId}`;
+    // Returns synchronous fallback; use subscribeToTelemetry for async signed URL
+    return `${IOT_ENDPOINT}?clientId=opusaimobility-${riderId}`;
   },
 
   /**
@@ -107,47 +117,48 @@ export const iotApi = {
     onData:   (data: TelemetryData) => void,
     onError:  (err: string) => void,
   ): (() => void) => {
-    const wsUrl = iotApi.getStreamUrl(riderId);
+    // TERRA-012: fetch signed URL from Lambda, then open real WebSocket
+    let cancelled = false;
+    let ws: WebSocket | null = null;
+    let pollInterval: any = null;
 
-    // Only attempt if the endpoint is configured (not placeholder)
-    if (wsUrl.includes('PLACEHOLDER')) {
-      // Simulate streaming with setInterval when IoT not configured
-      const interval = setInterval(() => {
-        onData(simulateTelemetry());
-      }, 5_000);
-      return () => clearInterval(interval);
-    }
+    getSignedStreamUrl(riderId).then(wsUrl => {
+      if (cancelled) return;
 
-    let ws: WebSocket;
-    try {
-      ws = new WebSocket(wsUrl);
-
-      ws.onmessage = (event) => {
-        try {
-          const parsed = JSON.parse(event.data as string);
-          // IoT Rule publishes to topic: omniride/telemetry/{riderId}
-          // Lambda transforms to TelemetryData shape
-          onData(parsed as TelemetryData);
-        } catch { /* skip malformed */ }
-      };
-
-      ws.onerror = () => onError('IoT Core WebSocket error');
-
-      ws.onclose = (ev) => {
-        if (ev.code !== 1000) {
-          onError(`IoT Core connection closed: ${ev.code}`);
-        }
-      };
-    } catch (err: any) {
-      onError(err?.message ?? 'Failed to open IoT WebSocket');
-      // Fallback polling
-      const interval = setInterval(() => onData(simulateTelemetry()), 5_000);
-      return () => clearInterval(interval);
-    }
+      // TERRA-012: Connect to real IoT Core WebSocket
+      try {
+        ws = new WebSocket(wsUrl);
+        ws.onmessage = (event) => {
+          try {
+            const parsed = JSON.parse(event.data as string);
+            onData(parsed as TelemetryData);
+          } catch { /* skip malformed */ }
+        };
+        ws.onerror = () => {
+          onError('IoT Core WebSocket error — falling back to polling');
+          pollInterval = setInterval(() => onData(simulateTelemetry()), 5_000);
+        };
+        ws.onclose = (ev) => {
+          if (ev.code !== 1000 && !cancelled) {
+            // Reconnect after 3s
+            setTimeout(() => {
+              if (!cancelled) iotApi.subscribeToTelemetry(riderId, onData, onError);
+            }, 3_000);
+          }
+        };
+      } catch (err: any) {
+        onError(err?.message ?? 'Failed to open IoT WebSocket');
+        pollInterval = setInterval(() => onData(simulateTelemetry()), 5_000);
+      }
+    }).catch(() => {
+      if (!cancelled) pollInterval = setInterval(() => onData(simulateTelemetry()), 5_000);
+    });
 
     // Return unsubscribe function
     return () => {
+      cancelled = true;
       if (ws && ws.readyState === WebSocket.OPEN) ws.close(1000, 'Component unmounted');
+      if (pollInterval) clearInterval(pollInterval);
     };
   },
 };

@@ -1,5 +1,5 @@
 {
-  "PoolName": "omniride-users",
+  "PoolName": "opusaimobility-users",
   "AutoVerifiedAttributes": ["email"],
   "UsernameAttributes": ["email"],
   "Policies": {

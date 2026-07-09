@@ -1,0 +1,56 @@
+{
+  "CallerReference": "opusaimobility-api-waf-20260707",
+  "Comment": "OpusAIMobility API - WAF protected proxy to HTTP API Gateway",
+  "Enabled": true,
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "api-gateway-origin",
+        "DomainName": "0wv2nyk3je.execute-api.us-east-1.amazonaws.com",
+        "OriginPath": "/prod",
+        "CustomOriginConfig": {
+          "HTTPPort": 80,
+          "HTTPSPort": 443,
+          "OriginProtocolPolicy": "https-only",
+          "OriginSslProtocols": {
+            "Quantity": 1,
+            "Items": ["TLSv1.2"]
+          },
+          "OriginReadTimeout": 30,
+          "OriginKeepaliveTimeout": 5
+        }
+      }
+    ]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "api-gateway-origin",
+    "ViewerProtocolPolicy": "https-only",
+    "AllowedMethods": {
+      "Quantity": 7,
+      "Items": ["GET", "HEAD", "OPTIONS", "PUT", "PATCH", "POST", "DELETE"],
+      "CachedMethods": {
+        "Quantity": 2,
+        "Items": ["GET", "HEAD"]
+      }
+    },
+    "ForwardedValues": {
+      "QueryString": true,
+      "Cookies": { "Forward": "none" },
+      "Headers": {
+        "Quantity": 3,
+        "Items": ["Authorization", "Content-Type", "Origin"]
+      }
+    },
+    "MinTTL": 0,
+    "DefaultTTL": 0,
+    "MaxTTL": 0,
+    "Compress": true
+  },
+  "WebACLId": "arn:aws:wafv2:us-east-1:683541453923:global/webacl/opusaimobility-api-waf/6d59000b-568f-448f-9256-1dce840dbcbe",
+  "PriceClass": "PriceClass_100",
+  "HttpVersion": "http2and3",
+  "ViewerCertificate": {
+    "CloudFrontDefaultCertificate": true
+  }
+}

@@ -1,13 +1,13 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide Audit Service  —  CloudWatch via API Gateway / Lambda
+ * OpusAIMobility Audit Service  —  CloudWatch via API Gateway / Lambda
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Every significant platform action is logged here.
  * Logs are:
  *  • Written immediately to a local in-memory + localStorage buffer
  *  • Shipped asynchronously to Lambda → CloudWatch Logs
- *  • Retrievable by admin from DynamoDB: omniride-audit-logs
+ *  • Retrievable by admin from DynamoDB: opusaimobility-audit-logs
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -15,7 +15,7 @@ import { AuditLog } from '../types';
 import { awsPost, awsGet } from './awsClient';
 import { LAMBDA_ROUTES } from './awsConfig';
 
-const CACHE_KEY = 'omniride-audit-logs';
+const CACHE_KEY = 'opusaimobility-audit-logs';
 
 // ── Seed in-memory store with cache on startup ──────────────────────────────
 let memoryLogs: AuditLog[] = (() => {

@@ -1,5 +1,5 @@
 /**
- * OmniRide — Full AWS Deployment Script
+ * OpusAIMobility — Full AWS Deployment Script
  * Run: node aws/deploy.js
  *
  * Executes in order:
@@ -21,7 +21,7 @@ const path = require('path');
 
 const REGION  = 'us-east-1';
 const ACCOUNT = '683541453923';
-const PREFIX  = 'omniride';
+const PREFIX  = 'opusaimobility';
 const ROOT    = path.resolve(__dirname, '..');
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -151,16 +151,16 @@ console.log(' STEP 3 — DynamoDB Tables');
 console.log('═══════════════════════════════════════════════════');
 
 const tables = [
-  { name: 'omniride-users',        pk: 'id',         billing: 'PAY_PER_REQUEST' },
-  { name: 'omniride-trips',        pk: 'id',         billing: 'PAY_PER_REQUEST' },
-  { name: 'omniride-orders',       pk: 'id',         billing: 'PAY_PER_REQUEST' },
-  { name: 'omniride-errands',      pk: 'id',         billing: 'PAY_PER_REQUEST' },
-  { name: 'omniride-transactions', pk: 'id',         billing: 'PAY_PER_REQUEST' },
-  { name: 'omniride-swap-stations',pk: 'id',         billing: 'PAY_PER_REQUEST' },
-  { name: 'omniride-inventory',    pk: 'id',         billing: 'PAY_PER_REQUEST' },
-  { name: 'omniride-blockchain',   pk: 'id',         billing: 'PAY_PER_REQUEST' },
-  { name: 'omniride-audit-logs',   pk: 'id',         billing: 'PAY_PER_REQUEST' },
-  { name: 'omniride-platform',     pk: 'configKey',  billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-users',        pk: 'id',         billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-trips',        pk: 'id',         billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-orders',       pk: 'id',         billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-errands',      pk: 'id',         billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-transactions', pk: 'id',         billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-swap-stations',pk: 'id',         billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-inventory',    pk: 'id',         billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-blockchain',   pk: 'id',         billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-audit-logs',   pk: 'id',         billing: 'PAY_PER_REQUEST' },
+  { name: 'opusaimobility-platform',     pk: 'configKey',  billing: 'PAY_PER_REQUEST' },
 ];
 
 for (const t of tables) {
@@ -181,7 +181,7 @@ for (const t of tables) {
 console.log('  Seeding platform config...');
 try {
   aws(
-    `dynamodb put-item --table-name omniride-platform --item` +
+    `dynamodb put-item --table-name opusaimobility-platform --item` +
     ` "{\"configKey\":{\"S\":\"settings\"},\"deductionTime\":{\"S\":\"23:59\"},\"systemWeeklyFee\":{\"N\":\"10\"},\"autoSettlementEnabled\":{\"BOOL\":true}}"`
   );
   console.log('  ✔ Platform config seeded');
@@ -196,7 +196,7 @@ console.log('\n═════════════════════�
 console.log(' STEP 4 — Secrets Manager');
 console.log('═══════════════════════════════════════════════════');
 
-const secretName = 'omniride/gemini-api-key';
+const secretName = 'opusaimobility/gemini-api-key';
 try {
   aws(`secretsmanager create-secret --name ${secretName} --secret-string PLACEHOLDER_SET_IN_CONSOLE`);
   console.log(`  ✔ Secret created: ${secretName}`);
@@ -213,7 +213,7 @@ console.log('\n═════════════════════�
 console.log(' STEP 5 — S3 Assets Bucket');
 console.log('═══════════════════════════════════════════════════');
 
-const bucketName = `omniride-assets-prod`;
+const bucketName = `opusaimobility-assets-prod`;
 try {
   // us-east-1 does NOT take CreateBucketConfiguration
   run(`aws s3api create-bucket --bucket ${bucketName} --region ${REGION} --output json`, 'Create S3 bucket');
@@ -237,8 +237,8 @@ console.log(' STEP 6 — SNS Topic');
 console.log('═══════════════════════════════════════════════════');
 
 let snsArn;
-const snsRes = json(aws(`sns create-topic --name omniride-notifications`));
-snsArn = snsRes?.TopicArn || `arn:aws:sns:${REGION}:${ACCOUNT}:omniride-notifications`;
+const snsRes = json(aws(`sns create-topic --name opusaimobility-notifications`));
+snsArn = snsRes?.TopicArn || `arn:aws:sns:${REGION}:${ACCOUNT}:opusaimobility-notifications`;
 console.log(`  ✔ SNS Topic: ${snsArn}`);
 env.VITE_SNS_TOPIC_ARN = snsArn;
 
@@ -392,7 +392,7 @@ console.log(' STEP 11 — Writing .env.local');
 console.log('═══════════════════════════════════════════════════');
 
 const envContent = `# ─────────────────────────────────────────────────────────────────────────────
-# OmniRide — AWS Environment (auto-generated by aws/deploy.js)
+# OpusAIMobility — AWS Environment (auto-generated by aws/deploy.js)
 # Generated: ${new Date().toISOString()}
 # Account:   ${ACCOUNT}
 # Region:    ${REGION}
@@ -409,7 +409,7 @@ VITE_SNS_TOPIC_ARN=${env.VITE_SNS_TOPIC_ARN}
 
 # ─── Gemini key is now in Secrets Manager ─────────────────────────────────────
 # Set the real key at:
-# https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/secret?name=omniride/gemini-api-key
+# https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/secret?name=opusaimobility/gemini-api-key
 GEMINI_API_KEY=SEE_SECRETS_MANAGER
 `;
 
@@ -420,14 +420,14 @@ console.log(`  ✔ .env.local written with all live AWS values`);
 // Summary
 // ─────────────────────────────────────────────────────────────────────────────
 console.log('\n╔══════════════════════════════════════════════════╗');
-console.log('║          OmniRide AWS Deployment Complete        ║');
+console.log('║          OpusAIMobility AWS Deployment Complete        ║');
 console.log('╠══════════════════════════════════════════════════╣');
 console.log(`║  Cognito Pool  : ${env.VITE_COGNITO_USER_POOL_ID}`);
 console.log(`║  App Client    : ${env.VITE_COGNITO_CLIENT_ID}`);
 console.log(`║  API Gateway   : ${env.VITE_API_BASE_URL}`);
 console.log(`║  S3 Bucket     : ${env.VITE_S3_BUCKET}`);
 console.log(`║  IoT Endpoint  : ${iotHost}`);
-console.log(`║  SNS Topic     : omniride-notifications`);
+console.log(`║  SNS Topic     : opusaimobility-notifications`);
 console.log('╠══════════════════════════════════════════════════╣');
 console.log('║  NEXT STEPS:                                     ║');
 console.log('║  1. Set Gemini key in Secrets Manager            ║');

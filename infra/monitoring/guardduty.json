@@ -1,0 +1,55 @@
+{
+  "guardduty": {
+    "description": "EventBridge rule to route GuardDuty HIGH/MEDIUM findings to SNS",
+    "eventbridge_rule": {
+      "Name": "terraai-guardduty-findings",
+      "Description": "Route GuardDuty HIGH and MEDIUM severity findings to omniride-notifications",
+      "EventPattern": {
+        "source": ["aws.guardduty"],
+        "detail-type": ["GuardDuty Finding"],
+        "detail": {
+          "severity": [{ "numeric": [">=", 4] }]
+        }
+      },
+      "State": "ENABLED",
+      "Targets": [
+        {
+          "Id": "GuardDutySnsTarget",
+          "Arn": "arn:aws:sns:us-east-1:683541453923:omniride-notifications",
+          "InputTransformer": {
+            "InputPathsMap": {
+              "severity": "$.detail.severity",
+              "type": "$.detail.type",
+              "region": "$.region",
+              "accountId": "$.account",
+              "title": "$.detail.title",
+              "description": "$.detail.description"
+            },
+            "InputTemplate": "{\"default\": \"GuardDuty Finding [<severity>] in <region>: <type> - <title>\", \"email\": \"GuardDuty Security Alert\\nSeverity: <severity>\\nType: <type>\\nTitle: <title>\\nDescription: <description>\\nAccount: <accountId>\\nRegion: <region>\"}"
+          }
+        }
+      ]
+    }
+  },
+  "xray": {
+    "description": "X-Ray sampling rule for terraai-api service",
+    "sampling_rule": {
+      "RuleName": "terraai-api-sampling",
+      "Priority": 1000,
+      "FixedRate": 0.05,
+      "ReservoirSize": 1,
+      "ServiceName": "terraai-api",
+      "ServiceType": "*",
+      "Host": "*",
+      "HTTPMethod": "*",
+      "URLPath": "/*",
+      "ResourceARN": "*",
+      "Version": 1,
+      "Attributes": {
+        "environment": "production",
+        "service": "terraai-api"
+      }
+    },
+    "note": "Deploy with: aws xray create-sampling-rule --cli-input-json file://guardduty.json"
+  }
+}

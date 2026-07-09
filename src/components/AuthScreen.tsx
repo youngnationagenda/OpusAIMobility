@@ -51,13 +51,13 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
     if (password === '123456789') {
       if (phone === 'admin') {
         demoUser = {
-          id: 'adm_root', email: 'admin@omniride.ev', name: 'System Administrator', phone: 'admin',
+          id: 'adm_root', email: 'admin@opusaimobility.ev', name: 'System Administrator', phone: 'admin',
           role: 'admin', status: 'active', joinedAt: Date.now(), rating: 5, totalTrips: 0,
           points: 1000, walletBalance: 100, favorites: [], language: 'en', paymentMethods: [], coupons: []
         };
       } else if (phone === 'rider') {
         demoUser = {
-          id: 'rid_demo', email: 'rider@omniride.ev', name: 'Elite Rider Alex', phone: 'rider',
+          id: 'rid_demo', email: 'rider@opusaimobility.ev', name: 'Elite Rider Alex', phone: 'rider',
           role: 'rider', status: 'active', joinedAt: Date.now(), rating: 4.9, totalTrips: 152,
           points: 500, walletBalance: 50, favorites: [], language: 'en', paymentMethods: [], coupons: [],
           riderProfile: {
@@ -83,14 +83,14 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         };
       } else if (phone === 'business') {
         demoUser = {
-          id: 'biz_demo', email: 'corporate@omniride.ev', name: 'Global Logistics Hub', phone: 'business',
+          id: 'biz_demo', email: 'corporate@opusaimobility.ev', name: 'Global Logistics Hub', phone: 'business',
           role: 'business', status: 'active', joinedAt: Date.now(), rating: 5, totalTrips: 0,
           points: 0, walletBalance: 2500, favorites: [], language: 'en', paymentMethods: [], coupons: [],
           businessProfile: { companyName: 'Global Logistics Hub', billingMode: 'pay_per_km', allocatedRiders: 2, walletBalance: 2500.00, inProcessBalance: 0, employees: [] }
         };
       } else if (phone === 'user') {
         demoUser = {
-          id: 'usr_demo', email: 'passenger@omniride.ev', name: 'Guest Passenger', phone: 'user',
+          id: 'usr_demo', email: 'passenger@opusaimobility.ev', name: 'Guest Passenger', phone: 'user',
           role: 'user', status: 'active', joinedAt: Date.now(), rating: 5, totalTrips: 12,
           points: 150, walletBalance: 142.50, favorites: [], language: 'en', paymentMethods: [{ id: 'pm_1', type: 'mpesa', phone: '0700000000', isDefault: true }], coupons: ['OMNI50']
         };
@@ -121,7 +121,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
       }
 
       // Fallback: check local cache for offline use
-      const cached = JSON.parse(localStorage.getItem('omniride-users') || '[]');
+      const cached = JSON.parse(localStorage.getItem('opusaimobility-users') || '[]');
       const existing = cached.find((u: any) => u.email === phone || u.phone === phone);
       if (existing) {
         setTempUser(existing);
@@ -196,7 +196,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
     try {
       const { data, error } = await awsPost<{ user: UserProfile; message: string }>(
         LAMBDA_ROUTES.AUTH_SIGNUP,
-        { email, password: password || 'OmniRide2025!', name, phone, role: newUser.role }
+        { email, password: password || 'OpusAIMobility2025!', name, phone, role: newUser.role }
       );
       if (!error && data?.user) {
         // Merge any extra fields the Lambda created
@@ -242,7 +242,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         </div>
 
         <div className="text-center space-y-2">
-           <h1 className="text-4xl font-black text-gray-900 tracking-tighter">OmniRide</h1>
+           <h1 className="text-4xl font-black text-gray-900 tracking-tighter">OpusAIMobility</h1>
            <p className="text-gray-400 font-bold text-[10px] uppercase tracking-[0.3em]">Unified Mobility Protocol</p>
         </div>
 

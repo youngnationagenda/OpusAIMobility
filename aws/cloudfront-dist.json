@@ -1,13 +1,13 @@
 {
-  "CallerReference": "omniride-prod-2026",
-  "Comment": "OmniRide Production",
+  "CallerReference": "opusaimobility-prod-2026",
+  "Comment": "OpusAIMobility Production",
   "DefaultRootObject": "index.html",
   "Origins": {
     "Quantity": 1,
     "Items": [
       {
-        "Id": "omniride-s3-origin",
-        "DomainName": "omniride-assets-prod.s3.us-east-1.amazonaws.com",
+        "Id": "opusaimobility-s3-origin",
+        "DomainName": "opusaimobility-assets-prod.s3.us-east-1.amazonaws.com",
         "S3OriginConfig": {
           "OriginAccessIdentity": ""
         },
@@ -16,7 +16,7 @@
     ]
   },
   "DefaultCacheBehavior": {
-    "TargetOriginId": "omniride-s3-origin",
+    "TargetOriginId": "opusaimobility-s3-origin",
     "ViewerProtocolPolicy": "redirect-to-https",
     "AllowedMethods": {
       "Quantity": 2,

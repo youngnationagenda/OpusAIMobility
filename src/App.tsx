@@ -29,11 +29,12 @@ import { omniApi } from './services/api';
 import { searchLocations, calculateRoadDistance } from './services/geminiService';
 import { MOCK_ORDERS, MOCK_RIDE_HISTORY } from './constants';
 import { t } from './services/i18n';
+import { notificationService, PushNotification } from './services/notificationService';
 import { Navigation, History, Settings, ChevronLeft, LogOut, Bike, Package, Bell, ShieldAlert, Building2, Clock, ShieldCheck, RefreshCw, Smartphone, X, Utensils, Wallet, ListChecks, Search, MapPin, Loader2, Zap, Activity, BarChart3, Store } from 'lucide-react';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(() => {
-    const saved = localStorage.getItem('omniride_user');
+    const saved = localStorage.getItem('opusaimobility_user');
     return saved ? JSON.parse(saved) : null;
   });
 
@@ -84,7 +85,7 @@ const App: React.FC = () => {
     if (user) {
       omniApi.syncUser(user);
     } else {
-      localStorage.removeItem('omniride_user');
+      localStorage.removeItem('opusaimobility_user');
     }
   }, [user]);
 
@@ -157,6 +158,34 @@ const App: React.FC = () => {
     setNotifications(prev => [newNotif, ...prev]);
     setNotificationToast({ title, message, type: type as NotificationType });
   }, []);
+
+  // Connect to real-time push notifications via IoT Core MQTT
+  useEffect(() => {
+    if (!user?.id) return;
+
+    notificationService.connect(user.id);
+
+    const unsubNotif = notificationService.onNotification((push: PushNotification) => {
+      const typeMap: Record<string, Notification['type']> = {
+        ride_confirmed: 'rider', ride_cancelled: 'rider', driver_assigned: 'rider',
+        driver_arrived: 'rider', order_update: 'order', parcel_update: 'order',
+        message: 'admin', payment: 'promo', campaign: 'promo'
+      };
+      const notifType = typeMap[push.type] || 'admin';
+      const newNotif: Notification = {
+        id: push.notificationId || Math.random().toString(36).substr(2, 9),
+        title: push.title, message: push.body,
+        type: notifType, timestamp: Date.now(), read: false
+      };
+      setNotifications(prev => [newNotif, ...prev]);
+      setNotificationToast({ title: push.title, message: push.body, type: notifType as NotificationType });
+    });
+
+    return () => {
+      unsubNotif();
+      notificationService.disconnect();
+    };
+  }, [user?.id]);
 
   const handleConfirmBooking = () => {
     if (!booking.selectedRide || !user) return;
@@ -390,10 +419,10 @@ const App: React.FC = () => {
            <div className="flex-1 h-full bg-white overflow-hidden animate-in fade-in duration-500">
               <OrderHistory 
                 orders={[]} 
-                rides={JSON.parse(localStorage.getItem('omniride-trips') || '[]').filter((t: any) => t.riderId === user.riderProfile?.id)}
-                deliveries={JSON.parse(localStorage.getItem('omniride-orders') || '[]').filter((o: any) => o.riderId === user.riderProfile?.id)} 
-                errands={JSON.parse(localStorage.getItem('omniride-errands') || '[]').filter((e: any) => e.riderId === user.riderProfile?.id)}
-                payments={JSON.parse(localStorage.getItem('omniride-transactions') || '[]')} 
+                rides={JSON.parse(localStorage.getItem('opusaimobility-trips') || '[]').filter((t: any) => t.riderId === user.riderProfile?.id)}
+                deliveries={JSON.parse(localStorage.getItem('opusaimobility-orders') || '[]').filter((o: any) => o.riderId === user.riderProfile?.id)} 
+                errands={JSON.parse(localStorage.getItem('opusaimobility-errands') || '[]').filter((e: any) => e.riderId === user.riderProfile?.id)}
+                payments={JSON.parse(localStorage.getItem('opusaimobility-transactions') || '[]')} 
                 onRate={() => {}} 
                 onReorder={() => {}} 
               />
@@ -606,11 +635,11 @@ const App: React.FC = () => {
         {mode === 'business' && user.role === 'business' && <BusinessPortal user={user} onUpdateUser={setUser} onTrackOrder={setTrackingOrder} onClose={() => setMode('rides')} />}
         
         {mode === 'activity' && user.role !== 'rider' && <OrderHistory 
-          orders={JSON.parse(localStorage.getItem('omniride-orders') || '[]').filter((o: any) => o.customerId === user.id && !('fee' in o) && !('plan' in o))} 
-          rides={JSON.parse(localStorage.getItem('omniride-trips') || '[]').filter((t: any) => t.customerId === user.id)}
-          deliveries={JSON.parse(localStorage.getItem('omniride-orders') || '[]').filter((o: any) => o.customerId === user.id && ('fee' in o))} 
-          errands={JSON.parse(localStorage.getItem('omniride-errands') || '[]').filter((e: any) => e.customerId === user.id)}
-          payments={JSON.parse(localStorage.getItem('omniride-transactions') || '[]')} 
+          orders={JSON.parse(localStorage.getItem('opusaimobility-orders') || '[]').filter((o: any) => o.customerId === user.id && !('fee' in o) && !('plan' in o))} 
+          rides={JSON.parse(localStorage.getItem('opusaimobility-trips') || '[]').filter((t: any) => t.customerId === user.id)}
+          deliveries={JSON.parse(localStorage.getItem('opusaimobility-orders') || '[]').filter((o: any) => o.customerId === user.id && ('fee' in o))} 
+          errands={JSON.parse(localStorage.getItem('opusaimobility-errands') || '[]').filter((e: any) => e.customerId === user.id)}
+          payments={JSON.parse(localStorage.getItem('opusaimobility-transactions') || '[]')} 
           onRate={() => {}} 
           onReorder={() => {}} 
         />}

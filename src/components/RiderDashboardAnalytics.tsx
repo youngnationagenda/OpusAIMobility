@@ -13,6 +13,8 @@ import { RiderProfile, TelemetryData, RiderJobHistoryItem, LeaderboardRank } fro
 import { iotApi } from '../services/iotService';
 import { awsPost } from '../services/awsClient';
 import { LAMBDA_ROUTES } from '../services/awsConfig';
+import { syncService } from '../services/syncService'; // TERRA-070
+import { useRiderNotifications, useEnergyTelemetry } from '../services/wsService'; // TERRA-011
 
 interface RiderDashboardAnalyticsProps {
   profile: RiderProfile;
@@ -27,6 +29,24 @@ const RiderDashboardAnalytics: React.FC<RiderDashboardAnalyticsProps> = ({ profi
   const [showLogsModal, setShowLogsModal] = useState(false);
   const [logSearch, setLogSearch] = useState('');
   const [completedMissions, setCompletedMissions] = useState<any[]>([]);
+
+  // TERRA-011: Live notification toast state
+  const [toastQueue, setToastQueue] = useState<{ id: number; title: string; body: string; type: string }[]>([]);
+  const toastCounterRef = React.useRef(0);
+
+  // TERRA-011: Real-time notifications via WebSocket
+  const { latest: latestNotif, isConnected: wsConnected } = useRiderNotifications(profile.id);
+
+  // Show toast when a new notification arrives
+  React.useEffect(() => {
+    if (!latestNotif) return;
+    const toast = { id: ++toastCounterRef.current, title: latestNotif.title, body: latestNotif.body, type: latestNotif.type };
+    setToastQueue(prev => [toast, ...prev].slice(0, 3)); // max 3 visible toasts
+    const timer = setTimeout(() => {
+      setToastQueue(prev => prev.filter(t => t.id !== toast.id));
+    }, 5_000);
+    return () => clearTimeout(timer);
+  }, [latestNotif]);
 
   // Helpers for time-based filtering
   const isToday = (timestamp: number) => {
@@ -45,27 +65,29 @@ const RiderDashboardAnalytics: React.FC<RiderDashboardAnalyticsProps> = ({ profi
     return date.getTime() >= startOfWeek.getTime();
   };
 
-  // Fetch Live Data from Storage
+  // TERRA-070: Fetch missions from DynamoDB via syncService (with localStorage fallback)
   useEffect(() => {
-    const fetchMissions = () => {
-      const orders = JSON.parse(localStorage.getItem('omniride-orders') || '[]');
-      const errands = JSON.parse(localStorage.getItem('omniride-errands') || '[]');
-      const trips = JSON.parse(localStorage.getItem('omniride-trips') || '[]');
+    const fetchMissions = async () => {
+      const [orders, errands, trips] = await Promise.all([
+        syncService.getOrders(profile.id),
+        syncService.getErrands(profile.id),
+        syncService.getTrips(profile.id),
+      ]);
 
       const all = [
-        ...orders.filter((o: any) => (o.riderId === profile.id || o.allocatedRiderId === profile.id) && o.status === 'delivered')
-          .map((o: any) => ({ ...o, type: o.restaurantName ? 'Food' : 'Delivery', timestamp: o.timestamp, amount: o.total || o.fee })),
-        ...errands.filter((e: any) => e.riderId === profile.id && e.status === 'completed')
-          .map((e: any) => ({ ...e, type: 'Errand', timestamp: e.timestamp, amount: (e.baseFee + e.shoppingTotal) })),
-        ...trips.filter((t: any) => t.riderId === profile.id && t.status === 'completed')
-          .map((t: any) => ({ ...t, type: 'Ride', timestamp: t.timestamp, amount: t.price }))
+        ...(orders as any[]).filter((o) => (o.riderId === profile.id || o.allocatedRiderId === profile.id) && o.status === 'delivered')
+          .map((o) => ({ ...o, type: o.restaurantName ? 'Food' : 'Delivery', timestamp: o.timestamp, amount: o.total || o.fee })),
+        ...(errands as any[]).filter((e) => e.riderId === profile.id && e.status === 'completed')
+          .map((e) => ({ ...e, type: 'Errand', timestamp: e.timestamp, amount: (e.baseFee + e.shoppingTotal) })),
+        ...(trips as any[]).filter((t) => t.riderId === profile.id && t.status === 'completed')
+          .map((t) => ({ ...t, type: 'Ride', timestamp: t.timestamp, amount: t.price }))
       ].sort((a, b) => b.timestamp - a.timestamp);
 
       setCompletedMissions(all);
     };
 
     fetchMissions();
-    const interval = setInterval(fetchMissions, 5000);
+    const interval = setInterval(fetchMissions, 8000); // reduced polling — DynamoDB calls
     return () => clearInterval(interval);
   }, [profile.id]);
 
@@ -117,6 +139,16 @@ const RiderDashboardAnalytics: React.FC<RiderDashboardAnalyticsProps> = ({ profi
     { rank: 10, name: "Jane D.", rides: 90, distanceKm: 550, energySavedKwh: 20, rating: 5.0, earnings: 580.00 },
   ];
 
+  // TERRA-011: Live IoT energy telemetry via WebSocket (real-time, replaces polling)
+  const { frame: energyFrame, isConnected: iotWsConnected } = useEnergyTelemetry(
+    profile.vehicleRegNo || profile.id,
+    profile.id,
+  );
+
+  // Note: energyFrame only carries batteryPct/chargeRateKw/rangeKm/chargingStatus.
+  // Full TelemetryData (motorTemp etc.) is still fetched via iotApi REST fallback.
+
+  // REST polling for full TelemetryData (motor temp, brake wear, etc.)
   useEffect(() => {
     const fetchIoT = async () => {
       const data = await iotApi.getLiveTelemetry();
@@ -147,6 +179,25 @@ const RiderDashboardAnalytics: React.FC<RiderDashboardAnalyticsProps> = ({ profi
 
   return (
     <div className="absolute inset-0 z-[250] bg-[#020617] flex flex-col animate-in slide-in-from-bottom duration-500 overflow-hidden text-white font-sans">
+      {/* TERRA-011: Toast notification overlay */}
+      <div className="absolute top-20 right-4 z-[600] space-y-2 pointer-events-none">
+        {toastQueue.map(toast => (
+          <div key={toast.id} className="bg-slate-800 border border-white/10 rounded-2xl p-3 shadow-2xl w-72 animate-in slide-in-from-right duration-300 pointer-events-auto">
+            <div className="flex items-start gap-2.5">
+              <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
+                toast.type === 'success' ? 'bg-emerald-400' :
+                toast.type === 'warning' ? 'bg-amber-400' :
+                toast.type === 'error'   ? 'bg-red-400'   : 'bg-cyan-400'
+              } animate-pulse`} />
+              <div>
+                <p className="text-xs font-black text-white leading-tight">{toast.title}</p>
+                <p className="text-[10px] font-medium text-gray-400 mt-0.5 leading-tight">{toast.body}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {/* Header - Compact */}
       <div className="p-4 bg-slate-900/50 border-b border-white/5 flex items-center justify-between sticky top-0 z-20 backdrop-blur-xl shrink-0">
         <div className="flex items-center gap-3">
@@ -156,12 +207,20 @@ const RiderDashboardAnalytics: React.FC<RiderDashboardAnalyticsProps> = ({ profi
           <div>
             <h2 className="text-lg font-black tracking-tight text-white leading-none">Fleet Telemetry Active</h2>
             <p className="text-[8px] font-black text-cyan-400 uppercase tracking-[0.2em] mt-1.5 flex items-center gap-1.5">
-               <div className="w-1 h-1 bg-cyan-500 rounded-full animate-pulse" /> Operational Node: {profile.id}
+               <div className={`w-1 h-1 rounded-full ${iotWsConnected ? 'bg-cyan-500 animate-pulse' : 'bg-yellow-500'}`} />
+               {iotWsConnected ? 'IoT Live · ' : 'REST · '}Operational Node: {profile.id}
             </p>
           </div>
         </div>
-        <div className="bg-indigo-600/20 text-indigo-400 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border border-indigo-500/20 flex items-center gap-1.5">
-           <Trophy className="w-3 h-3" /> Rank #{userRank}
+        <div className="flex items-center gap-2">
+          {/* TERRA-011: WS connection status */}
+          <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase border ${wsConnected ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${wsConnected ? 'bg-cyan-400 animate-pulse' : 'bg-red-400'}`} />
+            {wsConnected ? 'LIVE' : 'Offline'}
+          </div>
+          <div className="bg-indigo-600/20 text-indigo-400 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border border-indigo-500/20 flex items-center gap-1.5">
+             <Trophy className="w-3 h-3" /> Rank #{userRank}
+          </div>
         </div>
       </div>
 

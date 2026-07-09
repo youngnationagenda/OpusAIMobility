@@ -1,5 +1,5 @@
 {
-  "name": "OmniRide: 100% Zero-Emission Mobility",
+  "name": "OpusAIMobility: 100% Zero-Emission Mobility",
   "description": "A comprehensive ride-hailing dashboard that aggregates electric-only mobility services like RoamAir, Spiro, and BasiGo with AI-powered carbon tracking.",
   "version": "1.0.0",
   "requestFramePermissions": [

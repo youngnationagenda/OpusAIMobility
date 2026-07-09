@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide AI Service  —  AWS Lambda proxy for Google Gemini
+ * OpusAIMobility AI Service  —  AWS Lambda proxy for Google Gemini
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * All Gemini calls are routed through:

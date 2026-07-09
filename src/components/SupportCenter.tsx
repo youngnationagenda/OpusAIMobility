@@ -63,7 +63,7 @@ const SupportCenter: React.FC = () => {
             title="Call Support Desk" 
             desc="Talk to a human agent 24/7"
             color="bg-green-50 text-green-600"
-            action={() => window.location.href = 'tel:+1800OMNIRIDE'}
+            action={() => window.location.href = 'tel:+1800OPUSAIMOBILITY'}
           />
           <SupportTile 
             icon={ShieldAlert} 

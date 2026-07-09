@@ -1,10 +1,10 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide Vendor Service  —  DynamoDB via API Gateway / Lambda
+ * OpusAIMobility Vendor Service  —  DynamoDB via API Gateway / Lambda
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Manages restaurant/vendor profiles, menus, and order history.
- * DynamoDB table: omniride-users (vendors are User records with vendorProfile)
+ * DynamoDB table: opusaimobility-users (vendors are User records with vendorProfile)
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -12,7 +12,7 @@ import { VendorProfile, VendorStatus, User, Restaurant } from '../types';
 import { awsGet, awsPatch } from './awsClient';
 import { LAMBDA_ROUTES }    from './awsConfig';
 
-const CACHE_KEY = 'omniride-vendors';
+const CACHE_KEY = 'opusaimobility-vendors';
 
 // ── Seed records (displayed immediately while Lambda warms up) ────────────────
 const SEED_VENDORS: VendorProfile[] = [
@@ -95,7 +95,7 @@ export const vendorApi = {
 
     // Merge with business-user restaurant nodes (local only — no extra call)
     const users: User[] = (() => {
-      try { return JSON.parse(localStorage.getItem('omniride-users') ?? '[]'); }
+      try { return JSON.parse(localStorage.getItem('opusaimobility-users') ?? '[]'); }
       catch { return []; }
     })();
 

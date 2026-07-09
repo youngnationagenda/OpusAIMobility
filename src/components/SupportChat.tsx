@@ -10,7 +10,7 @@ interface SupportChatProps {
 
 const SupportChat: React.FC<SupportChatProps> = ({ onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', sender: 'support', text: "Hi! I'm your OmniRide Assistant. How can I help you today?", timestamp: Date.now() }
+    { id: '1', sender: 'support', text: "Hi! I'm your OpusAIMobility Assistant. How can I help you today?", timestamp: Date.now() }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);

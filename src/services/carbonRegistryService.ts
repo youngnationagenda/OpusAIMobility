@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide Carbon Registry Service  —  AWS Lambda
+ * OpusAIMobility Carbon Registry Service  —  AWS Lambda
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Lambda acts as the bridge to the external carbon credit registry (VCS/Gold Standard).
@@ -15,7 +15,7 @@
 import { awsPost, awsGet } from './awsClient';
 import { LAMBDA_ROUTES }   from './awsConfig';
 
-const RATE_CACHE_KEY = 'omniride-carbon-rate';
+const RATE_CACHE_KEY = 'opusaimobility-carbon-rate';
 
 export const carbonRegistryApi = {
 

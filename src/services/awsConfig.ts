@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide AWS Configuration
+ * OpusAIMobility AWS Configuration
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * All environment variables are injected by Vite at build time from .env.local.
@@ -37,21 +37,23 @@ export const AWS_REGION: string =
   'us-east-1';
 
 // ── Cognito ───────────────────────────────────────────────────────────────────
+// TERRA-001: Updated to unified pool opusaimobility-production
 export const COGNITO_USER_POOL_ID: string =
   (import.meta as any).env?.VITE_COGNITO_USER_POOL_ID ??
   process.env.VITE_COGNITO_USER_POOL_ID ??
-  'us-east-1_PLACEHOLDER';
+  'us-east-1_LKa4ElQem';
 
+// TERRA-001: Unified web client ID
 export const COGNITO_CLIENT_ID: string =
   (import.meta as any).env?.VITE_COGNITO_CLIENT_ID ??
   process.env.VITE_COGNITO_CLIENT_ID ??
-  'PLACEHOLDER_COGNITO_CLIENT_ID';
+  '3a207uin5o3p4k1ngk334crntl';
 
 // ── S3 ────────────────────────────────────────────────────────────────────────
 export const S3_BUCKET_NAME: string =
   (import.meta as any).env?.VITE_S3_BUCKET ??
   process.env.VITE_S3_BUCKET ??
-  'omniride-assets-placeholder';
+  'opusaimobility-assets-placeholder';
 
 export const S3_BASE_URL: string =
   (import.meta as any).env?.VITE_S3_BASE_URL ??
@@ -65,11 +67,23 @@ export const IOT_ENDPOINT: string =
   process.env.VITE_IOT_ENDPOINT ??
   'wss://PLACEHOLDER.iot.us-east-1.amazonaws.com/mqtt';
 
+// ── WebSocket endpoint (API Gateway — TERRA-040/041 driver location) ──────────
+export const WS_ENDPOINT: string =
+  (import.meta as any).env?.VITE_WS_ENDPOINT ??
+  process.env.VITE_WS_ENDPOINT ??
+  'wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod';
+
 // ── SNS Topic ARN (used by Lambda — here for reference/documentation) ─────────
 export const SNS_TOPIC_ARN: string =
   (import.meta as any).env?.VITE_SNS_TOPIC_ARN ??
   process.env.VITE_SNS_TOPIC_ARN ??
-  'arn:aws:sns:us-east-1:PLACEHOLDER:omniride-notifications';
+  'arn:aws:sns:us-east-1:PLACEHOLDER:opusaimobility-notifications';
+
+// ── Amazon Pinpoint (push notification campaign management + analytics) ────────
+export const PINPOINT_APP_ID: string =
+  (import.meta as any).env?.VITE_PINPOINT_APP_ID ??
+  process.env.VITE_PINPOINT_APP_ID ??
+  '20d7e36cc4094a04b63b7fd1e5596fcf';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Lambda route paths  (appended to API_BASE_URL)
@@ -152,6 +166,13 @@ export const LAMBDA_ROUTES = {
   // ── IoT Telemetry ───────────────────────────────────────────────────────────
   IOT_TELEMETRY:        '/iot/telemetry',         // GET  → latest snapshot
   IOT_FIRMWARE:         '/iot/firmware',          // POST → trigger OTA update
+  IOT_STREAM_URL:       '/iot/stream-url',        // GET  → TERRA-012: signed WS URL
+
+  // ── M-Pesa Callback (Daraja webhook) ────────────────────────────────────────
+  PAYMENTS_MPESA_CALLBACK: '/payments/mpesa/callback', // POST → Daraja confirms payment
+
+  // ── Stripe Webhook ──────────────────────────────────────────────────────────
+  PAYMENTS_STRIPE_WEBHOOK: '/payments/stripe/webhook', // POST → Stripe event
 
   // ── Platform / Admin ────────────────────────────────────────────────────────
   PLATFORM_SETTINGS:    '/platform/settings',     // GET | PUT
@@ -162,20 +183,21 @@ export const LAMBDA_ROUTES = {
 
   // ── Notifications ───────────────────────────────────────────────────────────
   NOTIFY_PUSH:          '/notifications/push',    // POST → SNS
+  NOTIFICATIONS:        '/notifications',         // GET  → notification history
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DynamoDB Table Names  (used by Lambda — listed here for documentation)
 // ─────────────────────────────────────────────────────────────────────────────
 export const DYNAMO_TABLES = {
-  USERS:             'omniride-users',
-  TRIPS:             'omniride-trips',
-  ORDERS:            'omniride-orders',
-  ERRANDS:           'omniride-errands',
-  TRANSACTIONS:      'omniride-transactions',
-  SWAP_STATIONS:     'omniride-swap-stations',
-  INVENTORY:         'omniride-inventory',
-  BLOCKCHAIN_LEDGER: 'omniride-blockchain',
-  AUDIT_LOGS:        'omniride-audit-logs',
-  PLATFORM_SETTINGS: 'omniride-platform',
+  USERS:             'opusaimobility-users',
+  TRIPS:             'opusaimobility-trips',
+  ORDERS:            'opusaimobility-orders',
+  ERRANDS:           'opusaimobility-errands',
+  TRANSACTIONS:      'opusaimobility-transactions',
+  SWAP_STATIONS:     'opusaimobility-swap-stations',
+  INVENTORY:         'opusaimobility-inventory',
+  BLOCKCHAIN_LEDGER: 'opusaimobility-blockchain',
+  AUDIT_LOGS:        'opusaimobility-audit-logs',
+  PLATFORM_SETTINGS: 'opusaimobility-platform',
 } as const;

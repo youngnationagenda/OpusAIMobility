@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide — Map Utilities
+ * OpusAIMobility — Map Utilities
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Central helper for all Leaflet map tile configuration.

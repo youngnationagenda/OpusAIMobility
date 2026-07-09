@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/restaurantMenu_f"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".food.RestaurantMenuFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="190dp">
+
+                    <RelativeLayout
+                        android:id="@+id/arc_viewpager"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/menuImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentEnd="true"
+                            android:scaleType="centerCrop"
+                            android:visibility="visible"
+                            app:actualImageScaleType="centerCrop"
+                            app:placeholderImageScaleType="centerCrop" />
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+                <include
+                    android:id="@+id/linear_bottom_sheet"
+                    layout="@layout/bottom_sheet_resturant_menu" />
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+            <include
+                android:id="@+id/cart_view_container"
+                layout="@layout/view_cart_layout"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/headerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_85sdp"
+            android:background="@color/white"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:elevation="1dp"
+                android:orientation="vertical"
+                app:contentInsetStart="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/toolbar_height">
+
+                    <RelativeLayout
+                        android:id="@+id/backBtn"
+                        android:layout_width="@dimen/_50sdp"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true">
+
+                        <ImageView
+                            android:layout_width="@dimen/_16sdp"
+                            android:layout_height="@dimen/_16sdp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/horizontal_margin_toolbar"
+                            app:srcCompat="@drawable/ic_arrow_left" />
+
+                    </RelativeLayout>
+
+
+                    <TextView
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_toEndOf="@+id/backBtn"
+                        android:includeFontPadding="false"
+                        android:text="Flowers Cafe"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/toolbarTextSize" />
+
+
+                </RelativeLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/menuRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_marginTop="@dimen/_5sdp" />
+
+
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_2sdp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/light_grey" />
+
+        </RelativeLayout>
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:background="@android:color/transparent"
+            android:clipToPadding="false"
+            android:elevation="1dp"
+            android:visibility="visible"
+            app:contentInsetStart="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/toolbar_height"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
+
+                <RelativeLayout
+                    android:id="@+id/back_btn_nav"
+                    android:layout_width="@dimen/_26sdp"
+                    android:layout_height="@dimen/_26sdp"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:background="@drawable/shadow_round">
+
+                    <ImageView
+                        android:id="@+id/iv_back"
+                        android:layout_width="@dimen/_12sdp"
+                        android:layout_height="@dimen/_12sdp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_back_wop" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/fav_btn"
+                    android:layout_width="@dimen/_26sdp"
+                    android:layout_height="@dimen/_26sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:background="@drawable/shadow_round"
+                    android:elevation="@dimen/_5sdp">
+
+
+                    <ImageView
+                        android:id="@+id/fav_iv"
+                        android:layout_width="@dimen/_26sdp"
+                        android:layout_height="@dimen/_26sdp"
+                        android:scaleType="center"
+                        app:srcCompat="@drawable/ic_heart_black" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </RelativeLayout>
+
+</FrameLayout>

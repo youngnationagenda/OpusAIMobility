@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide Core API  —  DynamoDB via API Gateway / Lambda
+ * OpusAIMobility Core API  —  DynamoDB via API Gateway / Lambda
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Primary store   →  DynamoDB (via Lambda + API Gateway)
@@ -31,9 +31,9 @@ const CACHE = {
   ORDERS:            DYNAMO_TABLES.ORDERS,
   TRIPS:             DYNAMO_TABLES.TRIPS,
   TRANSACTIONS:      DYNAMO_TABLES.TRANSACTIONS,
-  FINANCE_RESERVE:   'omniride-collection',
-  FLEET_CONFIG:      'omniride-fleet-config',
-  PRICING_CONFIG:    'omniride-pricing-config',
+  FINANCE_RESERVE:   'opusaimobility-collection',
+  FLEET_CONFIG:      'opusaimobility-fleet-config',
+  PRICING_CONFIG:    'opusaimobility-pricing-config',
   ERRANDS:           DYNAMO_TABLES.ERRANDS,
   INVENTORY:         DYNAMO_TABLES.INVENTORY,
   PLATFORM_SETTINGS: DYNAMO_TABLES.PLATFORM_SETTINGS,
@@ -123,7 +123,7 @@ export const omniApi = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Swap Stations  →  DynamoDB: omniride-swap-stations
+  // Swap Stations  →  DynamoDB: opusaimobility-swap-stations
   // ───────────────────────────────────────────────────────────────────────────
   getSwapStations: async (): Promise<SwapStation[]> => {
     const { data, fromCache } = await awsGet<SwapStation[]>(
@@ -175,7 +175,7 @@ export const omniApi = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Platform Settings  →  DynamoDB: omniride-platform
+  // Platform Settings  →  DynamoDB: opusaimobility-platform
   // ───────────────────────────────────────────────────────────────────────────
   getPlatformSettings: (): PlatformSettings => {
     return (
@@ -190,7 +190,7 @@ export const omniApi = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Inventory  →  DynamoDB: omniride-inventory
+  // Inventory  →  DynamoDB: opusaimobility-inventory
   // ───────────────────────────────────────────────────────────────────────────
   getInventory: (): InventoryItem[] => readCache<InventoryItem>(CACHE.INVENTORY),
 
@@ -210,7 +210,7 @@ export const omniApi = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Errands  →  DynamoDB: omniride-errands
+  // Errands  →  DynamoDB: opusaimobility-errands
   // ───────────────────────────────────────────────────────────────────────────
   getErrands: (): ErrandOrder[] => readCache<ErrandOrder>(CACHE.ERRANDS),
 
@@ -310,7 +310,7 @@ export const omniApi = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Collection Account  →  DynamoDB: omniride-platform
+  // Collection Account  →  DynamoDB: opusaimobility-platform
   // ───────────────────────────────────────────────────────────────────────────
   getCollectionAccount: (): CollectionAccount =>
     JSON.parse(localStorage.getItem(CACHE.FINANCE_RESERVE) ?? 'null') ??
@@ -330,7 +330,7 @@ export const omniApi = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Users  →  DynamoDB: omniride-users
+  // Users  →  DynamoDB: opusaimobility-users
   // ───────────────────────────────────────────────────────────────────────────
 
   /**
@@ -345,11 +345,11 @@ export const omniApi = {
     writeCache(CACHE.USERS, next);
 
     // Update active session
-    const session = localStorage.getItem('omniride_user');
+    const session = localStorage.getItem('opusaimobility_user');
     if (session) {
       try {
         const s = JSON.parse(session);
-        if (s.id === user.id) localStorage.setItem('omniride_user', JSON.stringify(user));
+        if (s.id === user.id) localStorage.setItem('opusaimobility_user', JSON.stringify(user));
       } catch { /* ignore */ }
     }
 
@@ -402,7 +402,7 @@ export const omniApi = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Rides  →  DynamoDB: omniride-trips
+  // Rides  →  DynamoDB: opusaimobility-trips
   // ───────────────────────────────────────────────────────────────────────────
   requestRide: async (ride: RideHistoryItem): Promise<User | null> => {
     // Optimistic: add trip to local cache immediately
@@ -438,7 +438,7 @@ export const omniApi = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Orders (Food + Delivery)  →  DynamoDB: omniride-orders
+  // Orders (Food + Delivery)  →  DynamoDB: opusaimobility-orders
   // ───────────────────────────────────────────────────────────────────────────
   placeGlobalOrder: async (order: Order | DeliveryOrder): Promise<User | null> => {
     writeCache(CACHE.ORDERS, [...readCache(CACHE.ORDERS), order]);
@@ -503,7 +503,7 @@ export const omniApi = {
   // ───────────────────────────────────────────────────────────────────────────
   logout: (_userId: string, _userName: string): void => {
     tokenStore.clearTokens();
-    localStorage.removeItem('omniride_user');
+    localStorage.removeItem('opusaimobility_user');
     window.location.reload();
   },
 

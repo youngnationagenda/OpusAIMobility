@@ -72,13 +72,14 @@ const ErrandPortal: React.FC<ErrandPortalProps> = ({ user, onClose, onOrderPlace
     return Object.values(stores);
   }, [errandCart]);
 
+  // TERRA-080: Wire errand order to DynamoDB via omniApi.placeErrandOrder
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
-    await new Promise(r => setTimeout(r, 2000));
-    
+
     const order: ErrandOrder = {
-      id: 'ERR-' + Math.floor(Math.random() * 100000),
+      id: 'ERR-' + Date.now().toString(36).toUpperCase(),
       customerId: user.id,
+      clientName: user.name,
       plan: selectedPlan,
       durationHours: plans[selectedPlan].hours,
       type: errandType,
@@ -93,10 +94,13 @@ const ErrandPortal: React.FC<ErrandPortalProps> = ({ user, onClose, onOrderPlace
         quantity: c.quantity,
         unit: c.item.unit,
         vendorId: c.item.vendorId,
-        vendorName: c.item.vendorName
+        vendorName: c.item.vendorName,
       })),
-      customInstructions
+      customInstructions,
     };
+
+    // Persist to DynamoDB + deduct wallet (omniApi handles both)
+    await omniApi.placeErrandOrder(order);
 
     onOrderPlaced(order);
     setIsProcessing(false);

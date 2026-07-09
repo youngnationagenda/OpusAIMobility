@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bottom_sheet_round"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    app:behavior_hideable="false"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/add_item_bg"/>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:fillViewport="true"
+            android:paddingTop="@dimen/_5sdp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_4sdp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:background="@drawable/gray_round_view" />
+
+                <TextView
+                    android:id="@+id/tv_resturant_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:fontFamily="@font/airbnbcerealbold"
+                    android:includeFontPadding="false"
+                    android:text="Timmy's Italian Cantonment"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/_18sdp" />
+
+            <LinearLayout
+                android:id="@+id/mainLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_resturant_name"
+                android:layout_gravity="start"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_delivery_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/airbnbcereallight"
+                        android:includeFontPadding="false"
+                        android:text="25-30 min - Delivery"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_10sdp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/rating_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_3sdp"
+                        android:fontFamily="@font/airbnbcereallight"
+                        android:includeFontPadding="false"
+                        android:text="4.3"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_10sdp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        app:srcCompat="@drawable/ic_star" />
+
+
+                    <TextView
+                        android:id="@+id/ratingCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_6sdp"
+                        android:fontFamily="@font/airbnbcereallight"
+                        android:includeFontPadding="false"
+                        android:text="(200+)"
+                        android:textColor="@color/gray"
+                        android:textSize="@dimen/_10sdp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/min_order_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:fontFamily="@font/airbnbcereallight"
+                    android:includeFontPadding="false"
+                    android:text="Min order $20"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="@dimen/_10sdp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:id="@+id/freeDeliveryLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/lite_green"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_min_order_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_7sdp"
+                        android:includeFontPadding="false"
+                        android:text="@string/_0_delivery_fee_on_50_order"
+                        android:textColor="@color/app_color"
+                        android:textSize="@dimen/_11sdp" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@color/light_grey" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:fontFamily="@font/airbnbcerealbold"
+                    android:includeFontPadding="false"
+                    android:text="@string/store_info"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/_14sdp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_8sdp">
+
+                    <ImageView
+                        android:id="@+id/ivLocation"
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        app:srcCompat="@drawable/ic_location" />
+
+                    <TextView
+                        android:id="@+id/tvAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_toStartOf="@+id/tvMoreInfo"
+                        android:layout_toEndOf="@+id/ivLocation"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:maxLines="2"
+                        android:text="160 Broadway, NEW YORK, NY 10038"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_10sdp" />
+
+                    <TextView
+                        android:padding="@dimen/_5sdp"
+                        android:id="@+id/tvMoreInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/custom_ripple"
+                        android:includeFontPadding="false"
+                        android:text="@string/more_info"
+                        android:textColor="@color/app_color"
+                        android:textSize="@dimen/_10sdp" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@color/light_grey" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_10sdp"
+                    android:background="@color/gray2" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_12sdp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:text="@string/menu"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <ImageView
+                        android:id="@+id/searchBtn"
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_search_dark" />
+
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/menu_item_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="vertical" />
+
+            </LinearLayout>
+
+
+                <include
+                    android:id="@+id/shimmerViewContainer"
+                    layout="@layout/shimmer_menu_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    android:visibility="visible" />
+
+        </RelativeLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <include
+            android:id="@+id/no_internet_layout"
+            layout="@layout/layout_no_internet" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

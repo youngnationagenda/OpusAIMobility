@@ -1,0 +1,515 @@
+<resources>
+    <string name="app_name" translatable="false">aimobility</string>
+
+
+    <!--    for map functionality Use-->
+       <string name="google_map_key" translatable="false">google_map_key_here</string>
+   
+    <string name="google_map_route_key" translatable="false">google_map_route_key</string>
+ 
+
+
+    <!--    for google login-->
+       <string name="google_web_client_id" translatable="false">google_web_client_id_from_developer_console_here</string>
+  
+
+       <string name="facebook_app_id" translatable="false">facebook_app_id</string>
+       <string name="fb_login_protocol_scheme" translatable="false">fb(facebook_app_id)</string>
+      <string name="facebook_client_token" translatable="false">facebook_client_token</string>
+
+   
+    <string name="tap_again" translatable="false">Tap Again To Exit</string>
+
+    <string name="show"><u>Show</u></string>
+    <string name="show_wo">Show</string>
+
+    <string name="forgot_password"><u>Forgot password</u></string>
+    <string name="we_ll_call_or_text_to_confirm">We\'ll call or text to confirm your number, Standard message and data rates apply.</string>
+    <string name="enter_the_email_address">Enter the email address associated with your account and we will email you a link to reset your password</string>
+
+    <string name="make_sure_it_matches">Make sure it matches the name on your government ID.</string>
+    <string name="to_sign_up_you_need">To sign up you need to be at least 18. Your birthday won\'t be shared with other people who use aimobility</string>
+    <string name="we_ll_email_you_trip_confirmation_and_receipts">We\'ll email you trip confirmation and receipts.</string>
+    <string name="by_selecting_agree_and_continue_below">By selecting Agree and continue below, I agree to aimobility\'s Terms of Service, Payments Terms of Service, Privacy Policy, and Nondiscrimination Policy.</string>
+
+    <string name="go_grab_will_send_you">aimobility will send you members-only deals, inspiration, marketing emails, and push notifications. You can opt out of receiving these at any time in your account settings or directly from the marketing notification.</string>
+    <string name="i_dont_want_to_receive_message">I don\'t want to receive messages from aimobility</string>
+
+    <string name="alert">Alert !!!</string>
+    <string name="new_cant_empty">Password can\'t empty !</string>
+    <string name="confirm_cant_empty">Confirm can\'t empty !</string>
+    <string name="password_must_match">Confirm password must be match</string>
+
+    <string name="scheduled">SCHEDULED</string>
+    <string name="history">HISTORY</string>
+    <string name="history_one">History</string>
+    <string name="report_your_lost_items">Report your lost item by tapping on \'Call US\' or \'Email US\' below. Please make sure to give as much information as possible, and our team willreach out to you soon.\n\nNote that aimobility is not responsible for items left in a car after a ride. We\'ll try to help you, but we are unable to guarantee that a Captain has your item or can immediately deliver it to you.</string>
+
+    <string name="home">Home</string>
+    <string name="payment">Payment</string>
+    <string name="account">Account</string>
+    <string name="gograb">aimobility</string>
+    <string name="car">Car</string>
+    <string name="bike">Bike</string>
+    <string name="food">Food</string>
+    <string name="delivery">Delivery</string>
+    <string name="order_food">ORDER FOOD</string>
+    <string name="order_food_with_gograb">Order food with aimobility</string>
+    <string name="use_promo_gograb200_and_get_r_200_off_on_norders_worth_rs_800_or_above">Use promo AIMOBILITY200 and get Rs. 200 off on\norders worth Rs. 800 or above</string>
+    <string name="oder_now">Oder now</string>
+    <string name="book_a_ride">BOOK A RIDE</string>
+    <string name="current_location">Your current location</string>
+    <string name="where_do_you_want_to_go">Where do you want to go ?</string>
+    <string name="select_dropoff">Select dropoff</string>
+    <string name="stay_safe">STAY SAFE</string>
+    <string name="get_vaccinated">Get vaccinated</string>
+    <string name="choose_the_vaccination_cente">Choose the vaccination center\nyou prefer and let us get you\nthere safely</string>
+    <string name="set_up_a_payment_method">Set up a payment method</string>
+    <string name="use_your_payment_methods_to_make_npurchase_on_gograb">Use your payment methods to make\npurchase on aimobility.Learn more</string>
+    <string name="add_payment_method">Add payment method</string>
+
+    <string name="deleted_message">This message was deleted</string>
+    <string name="pay_with">Pay with</string>
+    <string name="paypal">Paypal</string>
+    <string name="credit_or_debit_card">Credit or debit card</string>
+    <string name="add_card_details">Add card details</string>
+    <string name="card_number">Card number</string>
+    <string name="expiration">Expiration</string>
+    <string name="yy_mm">MM/YY</string>
+    <string name="cvv">CVV</string>
+    <string name="zip_code">Zip Code</string>
+    <string name="_38000">38000</string>
+    <string name="_123">123</string>
+    <string name="_0000_0000_0000">0000 0000 0000 0000</string>
+    <string name="next">Next</string>
+    <string name="john_doe">John Doe</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="payments_and_payouts">Payments and payouts</string>
+    <string name="office_location">Office location</string>
+    <string name="venesse_road_nyc_newyork">Venesse road- NYC- NewYork</string>
+    <string name="grand_central_terminal">Grand central terminal</string>
+    <string name="_27_west_4th_street_new_york_ny_10012">27 west 4th street,New york,NY 10012</string>
+    <string name="booking_details">Booking Details</string>
+    <string name="go_mini">Go Mini</string>
+    <string name="get_support">Get support</string>
+    <string name="manage_ride">Manage Ride</string>
+    <string name="cancel_ride">Cancel ride</string>
+    <string name="cancel">Cancel</string>
+    <string name="you_sure_you_want_to_cancel">You sure you want to cancel?</string>
+    <string name="we_ll_find_your_captain_as_soon_as_possible">we\'ll find your captain as soon as possible.</string>
+    <string name="find_your_captain">Finding your Captain</string>
+    <string name="don_t_cancel">Don\'t cancel</string>
+    <string name="current_location_">Current Location</string>
+    <string name="where_to">Where to ?</string>
+    <string name="rewards_1_208_points">Rewards: 1,208 points</string>
+    <string name="your_rides">Your rides</string>
+    <string name="setting">Setting</string>
+    <string name="become_a_captain">Become a Captain</string>
+    <string name="tell_us_why_you_want_to_cancel">Tell us why you want to cancel</string>
+    <string name="i_don_t_need_a_ride_anymore">I don\'t need a ride anymore</string>
+    <string name="i_want_to_change_my_booking_details">I want to change my booking details</string>
+    <string name="it_took_too_long_to_find_a_captain">It took too long to find a captain</string>
+    <string name="other">Other</string>
+    <string name="submit">Submit</string>
+    <string name="type_your_message_here">Type your message here</string>
+    <string name="no">No</string>
+    <string name="add_reason">Add Reason</string>
+    <string name="your_captain_is_on_the_way">Your Captain is on the way</string>
+    <string name="wear_a_mask_during_your_ride">Wear a mask during your ride</string>
+    <string name="learn_more">Learn more</string>
+    <string name="white_suzuki_wagonar">White Suzuki Wagonar</string>
+    <string name="le_5467">LE-5467</string>
+    <string name="daily_covid_19_safety_checklist_completed">Daily COVID-19 safety checklist completed.</string>
+    <string name="call">Call</string>
+    <string name="chat">Chat</string>
+    <string name="trip_details">Trip Details</string>
+    <string name="safety">Safety</string>
+    <string name="share_details">Share details</string>
+    <string name="device" translatable="false">android</string>
+
+
+    <string name="ride">Ride</string>
+    <string name="rent">Rent</string>
+    <string name="now">Now</string>
+    <string name="later">Later</string>
+    <string name="where">Where to?</string>
+    <string name="terminal_arjosri">Terminal arjosri</string>
+    <string name="schedule_a_ride_for">Schedule a ride for</string>
+    <string name="schedule_a_delivery_for">Schedule a delivery for</string>
+    <string name="today_5_15_pm">Today,5:15 PM</string>
+    <string name="the_date_you_choose_is_fully_booked_pick_another_date">The date you choose is fully booked.pick another date!</string>
+    <string name="schedule">Schedule</string>
+    <string name="schedule_order">Schedule Order</string>
+    <string name="add_pick_up_notes_for_driver">Add pick-up Notes for Driver</string>
+    <string name="confirm_pick_up">Confirm pick-up</string>
+    <string name="suggested_rides">Suggested Rides</string>
+    <string name="view_all">View All</string>
+    <string name="cash">Cash</string>
+    <string name="grabcar_protect">GrabCar Protect</string>
+    <string name="_415_000">$415.000</string>
+    <string name="special_fleet_extra_protection">Special Fleet,extra protection</string>
+    <string name="plus">Plus</string>
+    <string name="economy">Economy</string>
+    <string name="book_grabcar_protect">Book Grabcar protect</string>
+    <string name="yesterday_2_39_pm">Yesterday,2:39 PM</string>
+    <string name="ride_fare">Ride fare</string>
+    <string name="_400"><font fgcolor="#B3B0B0">$</font>400</string>
+    <string name="trip_fare">Trip fare</string>
+    <string name="_237_70">237.70</string>
+    <string name="initial_waiting">Initial waiting</string>
+    <string name="_45_60">45.60</string>
+    <string name="_283_80">283.80</string>
+    <string name="amount_charged">Amount charged</string>
+    <string name="_214">$214</string>
+    <string name="cash_paid">Cash paid</string>
+    <string name="gograb_paid">aimobility Pay</string>
+    <string name="_300">$400</string>
+    <string name="_5_have_been_credited_to_your_wallet">have been credited to your Wallet</string>
+    <string name="thursday_02_39_pm">Thursday, 02:39 PM</string>
+    <string name="how_was_your_experience_with_john">How was your experience with</string>
+    <string name="you_ve_earned_103_points">You\'ve earned</string>
+    <string name="points"> points!</string>
+    <string name="more_points_mean">More points mean more rewards.Use your\npoints to donate,or get discounts.</string>
+    <string name="total_ride_fare">Total ride fare</string>
+    <string name="_295">$295</string>
+    <string name="_5">$5</string>
+    <string name="credited_back_to_wallet">Credited back to Wallet</string>
+    <string name="done">Done</string>
+
+
+    <string name="phone_cant_empty">Please enter phone number</string>
+    <string name="invalid_email">Invalid Email !</string>
+    <string name="invalid_first_name">First Name is required!</string>
+    <string name="invalid_last_name">Last Name is required!</string>
+    <string name="select_date">Select date</string>
+    <string name="are_you_sure">Are you sure you want to logout?</string>
+    <string name="browse">Browse</string>
+    <string name="orders">Orders</string>
+    <string name="order">Order # </string>
+    <string name="favourite">Favourite</string>
+    <string name="mc_donald_vs_fidi_160_broadway">Mc Donald\'vs®-FiDi(160 Broadway)</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="logout">Logout</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="must_include_at_least">Must include at least one symbol or number and have at least 8 characters</string>
+    <string name="change_your_password">Change your password</string>
+    <string name="update_password">Update password</string>
+    <string name="saved_locations">Saved Locations</string>
+    <string name="recent_locations">Recent Locations</string>
+    <string name="williams_brooklayn_newyork">William Brooklayn New York</string>
+
+    <string name="location_heading_denied_sub">Go to setting and follow these steps</string>
+    <string name="location_heading_denied_step_1">1. Tap into <font color='#000000'> permission</font></string>
+    <string name="location_heading_denied_step_2">2. Tap into <font color='#000000'> Location </font></string>
+    <string name="location_heading_denied_step_3">3. Select Allow</string>
+    <string name="location_heading_denied_heading">Allow aimobility to access your location for more accurate and effortless Ride , Restaurant Search, Food and Parcel Delivery</string>
+    <string name="genral_permison">2. Select Camera and Flies and media </string>
+    <string name="allow">Open Setting</string>
+
+    <string name="copy">Copy</string>
+    <string name="delete_this_msg">Delete this message</string>
+    <string name="delete_this_place">Delete this place</string>
+    <string name="error_occurred">An error occurred. We\'re deeply sorry.</string>
+    <string name="close_app">Close app</string>
+    <string name="send_report">Send report</string>
+    <string name="search_country_here">Search Country Here</string>
+    <string name="login_or_sign_up">Login or sign up</string>
+    <string name="country_region">Country/Region</string>
+    <string name="continue_with_email">Continue with Email</string>
+    <string name="continue_with_apple">Continue with Apple</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="continue_string">Continue</string>
+    <string name="go_back">Go back</string>
+    <string name="no_notification_at_the_moment">No Notification at the moment</string>
+    <string name="language">Language</string>
+    <string name="legal">Legal</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="get_help">Get Help</string>
+    <string name="report_a_problem">Report a problem</string>
+    <string name="captain_caused_the_ride_charges_to_increase">Captain caused the ride charges to increase</string>
+    <string name="please_share_further">Please share further details and our support team will get back to you as soon as possible.</string>
+    <string name="contact_us">Contact us</string>
+    <string name="attach_an_image">Attach an image</string>
+    <string name="send_message">Send message</string>
+    <string name="call_us">Call us</string>
+    <string name="email_us">Email us</string>
+    <string name="help">Help</string>
+    <string name="i_lost_an_item">I lost an item</string>
+    <string name="notifications">Notifications</string>
+    <string name="agree_and_continue">Agree and continue</string>
+    <string name="save"><u>Save</u></string>
+    <string name="edit_personal_info">Edit personal info</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="gender">Gender</string>
+    <string name="birth_date">Birth date</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone number</string>
+    <string name="please_also_enter_your_gograb_password">We\'ll send you an email to your new email address.</string>
+    <string name="need_a_new_password"><u>Need a new password?</u></string>
+    <string name="update_email">Update email</string>
+    <string name="card">Card</string>
+    <string name="wallet">Wallet</string>
+    <string name="get_ready_captain_on_the_way">Get Ready, Your Captain is on the way</string>
+    <string name="captain_accepted_your_ride_request">Get Ready, Your Captain has accepted your ride request</string>
+    <string name="your_destination_arrived">Your destination arrived, Thank you for using</string>
+    <string name="started_the_ride">Started the ride</string>
+    <string name="your_captain_is_arrived">Your Captain is Arrived</string>
+    <string name="pickup_at">Pickup at</string>
+    <string name="arrive_at">Arrive at</string>
+    <string name="confrim_destination">Confirm Destination</string>
+    <string name="confrim_pickUp">Confirm PickUp</string>
+    <string name="credit_remaining">credit remaining</string>
+    <string name="share_image_via">Share Via</string>
+    <string name="you_travelled">\You travelled \</string>
+    <string name="km_in">\ km in \</string>
+    <string name="saved_places">Saved Places</string>
+    <string name="set_location_on_map">Set location on map</string>
+    <string name="we_sent_a_code">We sent a code to </string>
+    <string name="enter_code_message">. Enter the code in that message.</string>
+
+    <string name="comment">It was a short family trip and it was total value for money. Great hospitality, indeed. Would love to book again soon, IA:-)</string>
+    <string name="includes_a_choice">Includes a choice of regular signature side, a biscuit and a drink.</string>
+    <string name="two_farm_fresh_eggs">Two farm fresh eggs, hickory smoked bacon,yo\'pick of the cheeses,and served</string>
+    <string name="privacy_notice">Privacy notice: This order will be delivered by the restaurant\'s own staff, so delivery tracking is limited. by placing this order, you agree to share your name,phone number,and address with the restaurant. The restaurant must use your information only for this delivery.\n\nIf you\'re not around when the delivery person arrives, they\'ll leave your order at the door. By placing your order,you agree to take full responsibility tv for it once it\'s delivered.</string>
+    <string name="special_instructions">Special Instructions</string>
+    <string name="add_a_note_extra_sauce_no_onions_etc">Add a note ( extra sauce, no onions, etc.)</string>
+    <string name="top_categories">Top categories</string>
+    <string name="restaurants_cuisines_dishes">Restaurants, cuisines, dishes</string>
+    <string name="favourites">Favourites</string>
+    <string name="filters">Filters</string>
+    <string name="clear_all">Clear all</string>
+    <string name="sort">Sort</string>
+    <string name="most_popular">Most Popular</string>
+    <string name="rating">Rating</string>
+    <string name="delivery_time">Delivery time</string>
+    <string name="price_range">Price range</string>
+    <string name="dietary">Dietary</string>
+    <string name="vegetarian">Vegetarian</string>
+    <string name="vegan">Vegan</string>
+    <string name="gluten_free">Gluten-Free</string>
+    <string name="halal">Halal</string>
+    <string name="apply">Apply</string>
+    <string name="deliver_now">Deliver now</string>
+    <string name="menu">Menu</string>
+    <string name="delivery_address">Delivery Address</string>
+    <string name="enter_a_new_address">Enter a new address</string>
+    <string name="nearby">Nearby</string>
+    <string name="switch_to_pickup">Switch to pickup</string>
+    <string name="meet_at_door">Meet at door</string>
+    <string name="add_delivery_note">Add delivery note</string>
+    <string name="when">When</string>
+    <string name="your_items">Your items</string>
+    <string name="see_menu">See menu</string>
+    <string name="add_items">+ Add items</string>
+    <string name="add_promo_code">Add promo code</string>
+    <string name="delivery_fee">Delivery Fee</string>
+    <string name="taxes">Tax</string>
+    <string name="tax">Tax</string>
+    <string name="total">Total</string>
+    <string name="delivery_by_restaurant_staff">Delivery by restaurant staff</string>
+    <string name="location">Location</string>
+    <string name="_0_delivery_fee_on_50_order">$0 Delivery Fee On $50 Order</string>
+    <string name="store_info">Store Info</string>
+    <string name="more_info">More Info</string>
+    <string name="saved_addresses">Saved addresses</string>
+
+    <string name="etName">Name<font color='#EF716B'> *</font></string>
+    <string name="etPhoneNumber">Phone number<font color='#EF716B'> *</font></string>
+    <string name="total_weight">Total Weight<font color='#EF716B'> *</font></string>
+    <string name="the_promo_code_can_t_be_used"><![CDATA[The promo code can\'t be used for this service. check T&C for details]]></string>
+    <string name="view_terms_conditions"><![CDATA[VIEW TERMS & CONDITIONS]]></string>
+
+    <string name="a_temporary_hold">A temporary hold of CA$29.26 was placed on your payment method (%1$s). This is not a charge and it will be removed. It should disappear from your bank statement shortly.</string>
+    <string name="results_for_pizza">80 Results for Pizza.</string>
+    <string name="we_sent_a_code_to_email_enter_the_code_in_that_message">We sent a code to email. Enter the code in that message.</string>
+    <string name="we_sent_a_code_to_0321_4751441_enter_the_code_in_that_message">We sent a code to 0321 4751441. Enter the code in that message.</string>
+    <string name="send_reset_link">Send Reset Link</string>
+    <string name="we_need_storage_camera_recording_permission_for_make_new_video">We need Camera and Storage permission</string>
+    <string name="permission_alert">Permission Alert</string>
+    <string name="permission">Permission</string>
+    <string name="version">Version</string>
+    <string name="activate_code">Activate Code</string>
+    <string name="code_has_been_sent">code has been sent to your email</string>
+    <string name="reviews">\ reviews\</string>
+    <string name="review">\ review\</string>
+    <string name="min">\ min - Delivery\</string>
+    <string name="min_time">\ min\</string>
+    <string name="min_order">Min order</string>
+    <string name="delivery_free">\ Delivery Free\</string>
+    <string name="not_available">Not available</string>
+    <string name="open_at">\Opens at \</string>
+    <string name="open_until">\Open until \</string>
+
+    <string name="this_store_is_closed">This store is closed right now, but you can schedule an order for later.</string>
+    <string name="choose_a_place">Choose a Place</string>
+    <string name="we_need_acurate_ride_permission">This app requires location to find an accurate ride, restaurant, parcel, and food delivery. Only when you are using the app. Your Location data will not be shared with any third parties.</string>
+    <string name="add">Add</string>
+    <string name="update">Update Order</string>
+    <string name="to_cart">\ to Cart\</string>
+    <string name="go_to_checkout">Go to checkout</string>
+    <string name="add_more_item">Add More Item</string>
+    <string name="sub_total">Subtotal</string>
+    <string name="remove_item">Remove Item</string>
+    <string name="to_upload_image_permission_string">To Upload Image Allow aimobility to access your camera and storage</string>
+    <string name="to_upload_image_permission_string_1">To Upload Image Allow aimobility to access your camera and storage</string>
+    <string name="view_bucket">View basket (%1$s)</string>
+    <string name="start_new_order_under">Start new order?</string>
+    <string name="start_new_order">Start new order</string>
+    <string name="place_order">\Place order \</string>
+    <string name="switch_to_delivery">Switch to Delivery</string>
+    <string name="switch_to_pick_up">Switch to PickUp</string>
+    <string name="result_of">\ results of\</string>
+
+    <string name="move_to_pin">Move the pin</string>
+    <string name="your_code">Your code</string>
+    <string name="additional_address_information">Additional address information*</string>
+    <string name="delivery_options">Delivery options</string>
+    <string name="address_label">Address Label</string>
+    <string name="add_a_label_e_g_school">Add a label (e.g school)</string>
+    <string name="add_instruction">Add Instruction</string>
+    <string name="building_name">Building name</string>
+    <string name="flat_suite_floor">Flat/Suite/Floor</string>
+    <string name="move_your_pin">Move the map to your delivery spot</string>
+    <string name="save_continue">Save and continue</string>
+    <string name="distance">Distance</string>
+    <string name="please_select_address">Please select address</string>
+    <string name="you_don_t_have_any_nrides_planned">You don\'t have any \nrides planned.</string>
+    <string name="let_s_do_something_about_that">Let\'s do something about that.</string>
+    <string name="book_a_gograb">BOOK A RIDE</string>
+    <string name="when_you_place_your_first_order_it_will_apear_hear">when you place your first order, it will appear here</string>
+    <string name="find_resturant">Find Resturant</string>
+    <string name="item">\ item\</string>
+    <string name="active">Active</string>
+    <string name="compeleted">Completed</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="pick_up">Pick up</string>
+    <string name="no_data_found_don_t_worry_still_find_other">No data Found. Don\'t worry still find other</string>
+    <string name="select_all_required_items">Select All Required Items</string>
+    <string name="your_basket_already_contains">\Your basket already contains an item from \</string>
+    <string name="would_you_like_to_clear">\.Would you like to clear the basket and add this item from \</string>
+    <string name="instead">\ instead?\</string>
+
+
+    <!-- Menu -->
+    <string name="menu__home">Home</string>
+    <string name="we_didn_t_find_a_match">We didn\'t find a match</string>
+    <string name="try_searching_for_smotheing_else_instead">Try searching for something else instead</string>
+    <string name="back_to">Back to\&#032;</string>
+    <string name="delivery_discount">Delivery Discount</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="discount">Discount</string>
+    <string name="download_pdf">Download PDF</string>
+    <string name="resend_email">Resend email</string>
+    <string name="please_select_time">Please select time 45 min after current time</string>
+    <string name="close">Close</string>
+    <string name="please_try_again">Please try again</string>
+    <string name="we_re_having_trouble_connecting_but_connect_to_wi_fi_or_mobile_network">We\'re having trouble connecting, but Connect to Wi-Fi or mobile network</string>
+    <string name="sorry_for_the_delay">Sorry for the delay</string>
+    <string name="something_went_wrong_loading_this_page">Something went wrong loading this page</string>
+    <string name="thank_you">Thank You!</string>
+    <string name="your_review_is_awaiting_moderation_and_nwill_appear_soon">Your review is awaiting moderation and\nwill appear soon.</string>
+    <string name="save_this_recipe">Back to home</string>
+    <string name="review_capital">Review</string>
+    <string name="what_did_you_think_of_this_recipe">What did you think of this resturant?</string>
+    <string name="type_your_comment">Type your comment...</string>
+    <string name="code_has_been_sent_to_your_number">code has been sent to your number</string>
+    <string name="track_now">Track Now</string>
+    <string name="order_processing">Order is in processing</string>
+    <string name="processing">Processing</string>
+    <string name="your_order_restaurent">Your Order has beed accepted by Restaurent</string>
+
+
+    <string name="your_order_has_been_delivered">Your order has been delivered</string>
+    <string name="on_the_way_to_dropoff_location">On the way to dropoff location</string>
+    <string name="your_order_has_been_picked_up">Your order has been picked up</string>
+    <string name="on_the_way_to_pickup_location">On the way to pickup location</string>
+    <string name="order_has_assigned">Your order has assigned to rider</string>
+    <string name="add_dropoff_location_delivery">Add Dropoff Location<font color='#EF716B'> * </font></string>
+    <string name="cancel_order">Cancel Order</string>
+
+    <string name="pickup_location">Pickup Location</string>
+    <string name="pickup_location_delivery">Add Pickup Location <font color='#EF716B'> * </font></string>
+    <string name="dropoff_location">Dropoff Location</string>
+    <string name="add_a_floor_or_unit_no">Add a floor or unit no.</string>
+    <string name="type_of_item">Type of item<font color='#EF716B'> * </font></string>
+    <string name="type_of_item_1">Type of item</string>
+    <string name="recipient">Recipient</string>
+    <string name="total_weight_1">Total weight</string>
+    <string name="indicate_the_item_weight">Indicate the item weight</string>
+    <string name="add_a_note_to_driver">Add a note to driver</string>
+    <string name="add_delivery_instructions">Add delivery instructions</string>
+    <string name="to_be_eligible_for_delivery_cover_the_payment_method_must_be_ovo">To be eligible for Delivery Cover, the payment method must be OVO.</string>
+    <string name="for_lightweight_small_and_medium_items">For lightweight, small and medium items</string>
+    <string name="instant">Instant</string>
+    <string name="immediate_picked_up_delivery_within_2_hours">Immediate picked up. Delivery within 2 hours</string>
+    <string name="add_a_promo">Add a promo</string>
+    <string name="payment_details">Payment details</string>
+    <string name="delivery_details">Delivery details</string>
+    <string name="change_address">Change address</string>
+    <string name="review_delivery">Review Delivery</string>
+    <string name="user_name">username</string>
+    <string name="track_order">Track Order</string>
+    <string name="log_in">Log in</string>
+    <string name="welcome_to_gograb">Welcome to aimobility</string>
+    <string name="already_found">Already found</string>
+    <string name="write_a_message">Write a message</string>
+    <string name="book_without_promo">BOOK WITHOUT PROMO</string>
+    <string name="select_another_resturant">Please select another resturant</string>
+    <string name="select_another_resturant_warning">This store closed while you were browsing what they offer or is not available right now.</string>
+    <string name="find_another_restaurant">Find another restaurant</string>
+    <string name="required_start">*Required</string>
+    <string name="address_details">Address details</string>
+    <string name="name_your_locaiton">Name your locaiton</string>
+    <string name="address">Address</string>
+    <string name="enter_4_digit_code">Enter 4-digit code</string>
+    <string name="try_again">Try again</string>
+    <string name="didn_t_get_it">Didn\'t get it?</string>
+    <string name="remove_this_payment_method">Remove this payment method?</string>
+    <string name="removing_this_card_means_you_won_t_be_able_to_use_this_payment_method_any_more">Removing this card means you won\'t be able to use this payment method any more</string>
+    <string name="keep_card_on_gograb">Keep card on aimobility</string>
+    <string name="remove">Remove</string>
+    <string name="sender">Sender</string>
+    <string name="edit">Edit</string>
+    <string name="finish_signing_up">Finish signing up</string>
+    <string name="password">Password</string>
+    <string name="your_orders">Your Orders</string>
+    <string name="add_address">Add Address</string>
+    <string name="enter_a_new_nphone_number">Enter a new\nphone number</string>
+    <string name="for_notifications_reminders_and_help_logging_in">For notifications, reminders, and help logging in</string>
+    <string name="promo_code">Promo Code</string>
+    <string name="enter_promo_code">ENTER PROMO CODE</string>
+    <string name="i_paid_captain_extra_but_the_amount_is_not_vis">I paid Captain extra but the amount is not vis...</string>
+    <string name="reset_your_password">Reset your password</string>
+    <string name="driver_name">Driver Name</string>
+    <string name="search_menu">Search menu</string>
+
+    <string name="select_language">Select Language</string>
+    <string name="english">English</string>
+    <string name="change_language">Change Language</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="for_notification_reminder_and_help_logging_in">For notification, reminder, and help to log in.</string>
+    <string name="we_ll_call_or_text_you_to_confirm_your_number_standard_message_and_data_rates_apply">We\'ll call or text you to confirm your number. Standard message and data rates apply.</string>
+    <string name="add_phone_number">Add phone number</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="send_package_intercity_and_intracity">Send Package Intercity and Intracity</string>
+    <string name="delivery_anything">Delivery anything from anywhere</string>
+    <string name="send_sameday_packages">Send Sameday Packages Easier Send Sameday packages within and outside the city with affordable FLAT shipping costs.</string>
+    <string name="search_category">search category</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="order_status">Order Status</string>
+    <string name="order_created_successfully_done">Order created successfully done.</string>
+    <string name="order_no">Order #</string>
+    <string name="messenger_send_button_text">send</string>
+    <string name="settings">Settings</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="add_photo_">Add Photo!</string>
+    <string name="enable_to_add_dropoff_location">Enable to add dropoff location.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

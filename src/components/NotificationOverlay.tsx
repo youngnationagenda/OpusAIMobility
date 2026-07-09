@@ -37,7 +37,7 @@ const NotificationOverlay: React.FC<NotificationOverlayProps> = ({ message, titl
   const labels = {
     sms: 'New SMS',
     email: 'New Email',
-    system: 'OmniRide',
+    system: 'OpusAIMobility',
     order: 'Vendor Update',
     rider: 'Rider Alert',
     admin: 'Admin Message',

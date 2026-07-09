@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/start_ride_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".ride.bookride.ConfirmPickUpFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/backIcon"
+            android:layout_width="@dimen/_46sdp"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_alignParentStart="true"
+            android:elevation="@dimen/_5sdp">
+
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="@dimen/_26sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_height="@dimen/_26sdp"
+                app:srcCompat="@drawable/ic_round_black_back" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/mapRlt"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_380sdp">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/m_map_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/infoWindowPickup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:elevation="@dimen/_10sdp"
+                android:visibility="gone">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="3dp"
+                    app:cardElevation="@dimen/_20sdp">
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/_90sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <TextView
+                            android:id="@+id/info_address_pickup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:includeFontPadding="false"
+                            android:maxWidth="130dp"
+                            android:maxLines="1"
+                            android:text="@string/messenger_send_button_text"
+                            android:textColor="@color/text_color_black"
+                            android:textSize="@dimen/_10sdp" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/infoWindowDropOff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:visibility="gone">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="3dp"
+                    app:cardElevation="5dp">
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/_90sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <TextView
+                            android:id="@+id/info_window_drop"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:ellipsize="end"
+                            android:includeFontPadding="false"
+                            android:maxWidth="130dp"
+                            android:maxLines="1"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/text_color_black"
+                            android:textSize="@dimen/_10sdp" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <include
+                android:id="@+id/bottomSheet"
+                layout="@layout/bottom_sheet_startride" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </RelativeLayout>
+</FrameLayout>

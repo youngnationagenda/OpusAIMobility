@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide RBAC Service  —  AWS Cognito custom claims + Lambda authorizer
+ * OpusAIMobility RBAC Service  —  AWS Cognito custom claims + Lambda authorizer
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Permission model:

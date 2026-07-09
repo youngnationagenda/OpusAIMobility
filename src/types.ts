@@ -296,6 +296,8 @@ export interface BookingState {
   comparisonRides?: RideOption[];
   calculatedDistanceKm?: number;
   calculatedDurationMinutes?: number;
+  /** TERRA-040: Active ride ID used to subscribe to live driver location via WebSocket */
+  rideId?: string | null;
 }
 export interface Notification { id: string; title: string; message: string; type: 'order' | 'rider' | 'admin' | 'promo' | 'system'; timestamp: number; read: boolean; }
 export interface PaymentHistoryItem { id: string; amount: number; currency: string; status: 'successful' | 'pending' | 'failed' | 'awaiting_approval'; method: string; gateway: PaymentGateway; timestamp: number; description: string; userType: string; direction: 'in' | 'out'; reference?: string; }

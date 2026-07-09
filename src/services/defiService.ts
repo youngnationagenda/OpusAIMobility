@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide DeFi Service  —  AWS Lambda
+ * OpusAIMobility DeFi Service  —  AWS Lambda
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Handles asset-backed loans (bike purchase) and insurance financing.

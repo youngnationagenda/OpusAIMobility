@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".food.ReviewsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <RelativeLayout
+                android:id="@+id/backBtn"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/horizontal_margin_toolbar"
+                    app:srcCompat="@drawable/ic_arrow_left" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/_17sdp"
+                    android:layout_height="@dimen/_17sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_search_dark" />
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_20sdp">
+
+            <ImageView
+                android:id="@+id/icStar"
+                android:layout_width="@dimen/_17sdp"
+                android:layout_height="@dimen/_17sdp"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_star_green" />
+
+            <TextView
+                android:id="@+id/tv_avg_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:layout_toEndOf="@+id/icStar"
+                android:fontFamily="@font/airbnbcerealbold"
+                android:includeFontPadding="false"
+                android:text="5.0 (8 reviews)"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_22sdp" />
+
+        </RelativeLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reviewRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_15sdp" />
+    </LinearLayout>
+
+</FrameLayout>

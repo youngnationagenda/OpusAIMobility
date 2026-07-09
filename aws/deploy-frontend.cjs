@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * OmniRide — Frontend Auto-Deploy Script
+ * OpusAIMobility — Frontend Auto-Deploy Script
  * ----------------------------------------
  * Does 3 things in one command:
  *   1. npm run build  (fresh Vite production build)
- *   2. aws s3 sync    (upload to omniride-assets-prod)
+ *   2. aws s3 sync    (upload to opusaimobility-assets-prod)
  *   3. CloudFront invalidation (clears edge cache instantly)
  *
  * Usage:
@@ -18,11 +18,11 @@ const { execSync } = require('child_process');
 const path = require('path');
 
 const DIST_DIR        = path.resolve(__dirname, '..', 'dist');
-const BUCKET          = 'omniride-assets-prod';
+const BUCKET          = 'opusaimobility-assets-prod';
 const CF_DIST_ID      = 'E1TIJJKJ2UEIO7';
-const SECRET_NAME     = 'omniride/gemini-api-key';
+const SECRET_NAME     = 'opusaimobility/gemini-api-key';
 const REGION          = 'us-east-1';
-const DOMAIN          = 'https://omniride.yna.co.ke';
+const DOMAIN          = 'https://opusaimobility.yna.co.ke';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function run(cmd, label) {
@@ -51,7 +51,7 @@ const geminiKey = geminiIdx !== -1 ? args[geminiIdx + 1] : null;
 // ─────────────────────────────────────────────────────────────────────────────
 console.log('');
 console.log('╔═══════════════════════════════════════════════════╗');
-console.log('║       OmniRide — Frontend Deploy Pipeline         ║');
+console.log('║       OpusAIMobility — Frontend Deploy Pipeline         ║');
 console.log('╠═══════════════════════════════════════════════════╣');
 console.log(`║  Bucket  : ${BUCKET}`);
 console.log(`║  CF Dist : ${CF_DIST_ID}`);

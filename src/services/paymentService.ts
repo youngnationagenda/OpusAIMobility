@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide Payment Service  —  AWS Lambda
+ * OpusAIMobility Payment Service  —  AWS Lambda
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * All payment processing flows through Lambda functions which:
@@ -20,7 +20,7 @@ import { LAMBDA_ROUTES }   from './awsConfig';
 
 const PER_KM_RATE = 0.37;
 
-const CACHE_TRANSACTIONS = 'omniride-transactions';
+const CACHE_TRANSACTIONS = 'opusaimobility-transactions';
 
 function readTxCache(): PaymentHistoryItem[] {
   try { return JSON.parse(localStorage.getItem(CACHE_TRANSACTIONS) ?? '[]'); }
@@ -33,7 +33,7 @@ function writeTxCache(txs: PaymentHistoryItem[]): void {
 export const paymentApi = {
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Transaction History  →  DynamoDB: omniride-transactions
+  // Transaction History  →  DynamoDB: opusaimobility-transactions
   // ───────────────────────────────────────────────────────────────────────────
   getTransactions: async (): Promise<PaymentHistoryItem[]> => {
     const { data, error } = await awsGet<PaymentHistoryItem[]>(

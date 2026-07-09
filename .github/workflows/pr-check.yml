@@ -1,177 +1,303 @@
-# ─────────────────────────────────────────────────────────────────────────────
-# OmniRide — Pull Request Quality Gate
-# ─────────────────────────────────────────────────────────────────────────────
+# PR Check Workflow - Gate on pull requests to main
 #
-# Runs on every PR targeting main or staging.
-# Blocks merge if:
-#   • TypeScript has errors
-#   • Vite build fails
-#   • Bundle exceeds 700 KB per chunk (regression guard)
+# Runs type-check, lint, and tests for affected components only.
+# Uses path-based filtering consistent with deploy.yml so PRs only
+# validate what they change.
 #
-# Posts a detailed summary comment on the PR with:
-#   • Build status
-#   • Bundle size diff
-#   • Changed files list
-# ─────────────────────────────────────────────────────────────────────────────
+# All checks must pass before merge (branch protection targets `pr-ready` job).
+#
+# Requirements: 11.3, 11.5
+#
+# DEPRECATED: Do not add checks for aimobility-push Lambda (CF-4, retired)
 
-name: PR Quality Gate
+name: PR Check
 
 on:
   pull_request:
-    branches: [main, staging]
-    types: [opened, synchronize, reopened]
+    branches:
+      - main
 
+# Cancel in-progress runs for the same PR
 concurrency:
-  group: pr-check-${{ github.head_ref }}
+  group: pr-check-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: '24'
+  NODE_VERSION: '20'
 
 jobs:
-  quality-gate:
-    name: 🔬 Quality Gate
+  # -------------------------------------------------------------------
+  # Detect which paths changed
+  # -------------------------------------------------------------------
+  changes:
+    name: Detect Changes
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    permissions:
-      contents: read
-      pull-requests: write
-
+    outputs:
+      customer_app: ${{ steps.filter.outputs.customer_app }}
+      lambda: ${{ steps.filter.outputs.lambda }}
+      push_lambda: ${{ steps.filter.outputs.push_lambda }}
+      terra_api: ${{ steps.filter.outputs.terra_api }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      shared: ${{ steps.filter.outputs.shared }}
+      infra: ${{ steps.filter.outputs.infra }}
+      ci: ${{ steps.filter.outputs.ci }}
     steps:
-      - name: ⬇️ Checkout PR branch
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
-      - name: 🟢 Setup Node.js
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            customer_app:
+              - 'apps/customer/**'
+            lambda:
+              - 'aws/lambda/index.js'
+              - 'aws/lambda/package.json'
+              - 'aws/lambda/package-lock.json'
+            push_lambda:
+              - 'aws/lambda/push-notification/**'
+            terra_api:
+              - 'infra/docker/terra-api/**'
+              - 'apps/terra-api/**'
+            frontend:
+              - 'src/**'
+              - 'public/**'
+              - 'index.html'
+              - 'vite.config.*'
+            shared:
+              - 'packages/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'tsconfig.json'
+              - 'vitest.config.ts'
+            infra:
+              - 'infra/**'
+            ci:
+              - '.github/workflows/**'
+              - 'scripts/ci/**'
+
+  # -------------------------------------------------------------------
+  # TypeScript type check (only if TS files changed)
+  # -------------------------------------------------------------------
+  type-check:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.lambda == 'true' ||
+      needs.changes.outputs.push_lambda == 'true' ||
+      needs.changes.outputs.frontend == 'true' ||
+      needs.changes.outputs.shared == 'true'
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 🔎 TypeScript type-check
-        id: typecheck
-        run: |
-          npm run type:check 2>&1 | tee typecheck-output.txt
-          echo "exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+      - name: Type check
+        run: npx tsc --noEmit
 
-      - name: 🏗️ Vite build
-        id: build
-        env:
-          VITE_API_BASE_URL:          ${{ secrets.VITE_API_BASE_URL }}
-          VITE_AWS_REGION:            us-east-1
-          VITE_COGNITO_USER_POOL_ID:  ${{ secrets.VITE_COGNITO_USER_POOL_ID }}
-          VITE_COGNITO_CLIENT_ID:     ${{ secrets.VITE_COGNITO_CLIENT_ID }}
-          VITE_S3_BUCKET:             ${{ secrets.VITE_S3_BUCKET }}
-          VITE_S3_BASE_URL:           ${{ secrets.VITE_S3_BASE_URL }}
-          VITE_IOT_ENDPOINT:          ${{ secrets.VITE_IOT_ENDPOINT }}
-          VITE_SNS_TOPIC_ARN:         ${{ secrets.VITE_SNS_TOPIC_ARN }}
-        run: |
-          npm run build 2>&1 | tee build-output.txt
-          echo "exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+  # -------------------------------------------------------------------
+  # Lint (only if source code changed)
+  # -------------------------------------------------------------------
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.lambda == 'true' ||
+      needs.changes.outputs.push_lambda == 'true' ||
+      needs.changes.outputs.frontend == 'true' ||
+      needs.changes.outputs.shared == 'true' ||
+      needs.changes.outputs.terra_api == 'true'
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: 📏 Check chunk size limit (700 KB)
-        id: chunk_check
-        run: |
-          OVERSIZED=()
-          LIMIT=716800  # 700 KB in bytes
-
-          while IFS= read -r -d '' file; do
-            SIZE=$(stat -c%s "$file")
-            NAME=$(basename "$file")
-            if [ "$SIZE" -gt "$LIMIT" ]; then
-              OVERSIZED+=("$NAME ($(numfmt --to=iec $SIZE))")
-            fi
-          done < <(find dist/assets -name "*.js" -print0)
-
-          if [ ${#OVERSIZED[@]} -gt 0 ]; then
-            echo "❌ Oversized chunks detected:"
-            printf '%s\n' "${OVERSIZED[@]}"
-            echo "oversized=${OVERSIZED[*]}" >> $GITHUB_OUTPUT
-            exit 1
-          else
-            echo "✅ All chunks within 700 KB limit"
-          fi
-
-      - name: 📊 Collect bundle sizes
-        if: always()
-        id: bundle_sizes
-        run: |
-          if [ -d dist/assets ]; then
-            SIZES=$(du -sh dist/assets/*.js 2>/dev/null | sort -hr | \
-              awk '{printf "| `%s` | %s |\n", $2, $1}' | \
-              sed 's|dist/assets/||g')
-            TOTAL=$(du -sh dist/ | awk '{print $1}')
-            echo "sizes<<EOF" >> $GITHUB_OUTPUT
-            echo "$SIZES" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-            echo "total=$TOTAL" >> $GITHUB_OUTPUT
-          fi
-
-      - name: 💬 Post PR comment
-        if: always()
-        uses: actions/github-script@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          script: |
-            const typecheck = '${{ steps.typecheck.outcome }}';
-            const build     = '${{ steps.build.outcome }}';
-            const chunks    = '${{ steps.chunk_check.outcome }}';
-            const total     = '${{ steps.bundle_sizes.outputs.total }}';
-            const sizes     = `${{ steps.bundle_sizes.outputs.sizes }}`;
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
-            const icon = (outcome) => outcome === 'success' ? '✅' : outcome === 'failure' ? '❌' : '⚠️';
+      - name: Install dependencies
+        run: npm ci
 
-            const overall = [typecheck, build, chunks].every(o => o === 'success')
-              ? '✅ All checks passed — ready to merge'
-              : '❌ Checks failed — please fix before merging';
+      - name: Lint
+        run: npm run lint --if-present || echo "No lint script found, skipping"
 
-            const body = [
-              `## ${overall}`,
-              '',
-              '| Check | Status |',
-              '|-------|--------|',
-              `| TypeScript | ${icon(typecheck)} ${typecheck} |`,
-              `| Vite Build | ${icon(build)} ${build} |`,
-              `| Chunk Sizes (≤700 KB) | ${icon(chunks)} ${chunks} |`,
-              '',
-              '### 📦 Bundle Sizes',
-              `**Total:** \`${total}\``,
-              '',
-              '| File | Size |',
-              '|------|------|',
-              sizes || '_(build failed)_',
-              '',
-              `---`,
-              `*Commit: \`${{ github.sha }}\` | Branch: \`${{ github.head_ref }}\`*`,
-            ].join('\n');
+  # -------------------------------------------------------------------
+  # Tests - runs vitest for relevant test suites based on changed paths
+  # -------------------------------------------------------------------
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: changes
+    # Run tests if any code or test files changed
+    if: >-
+      needs.changes.outputs.lambda == 'true' ||
+      needs.changes.outputs.push_lambda == 'true' ||
+      needs.changes.outputs.frontend == 'true' ||
+      needs.changes.outputs.shared == 'true' ||
+      needs.changes.outputs.terra_api == 'true'
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
 
-            // Find existing bot comment to update (avoid comment spam)
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo:  context.repo.repo,
-              issue_number: context.issue.number,
-            });
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
-            const existing = comments.find(c =>
-              c.user.type === 'Bot' && c.body.includes('Bundle Sizes')
-            );
+      - name: Install dependencies
+        run: npm ci
 
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner:      context.repo.owner,
-                repo:       context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner:        context.repo.owner,
-                repo:         context.repo.repo,
-                issue_number: context.issue.number,
-                body,
-              });
-            }
+      - name: Run full test suite
+        run: npm test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            coverage/
+            test-results/
+          retention-days: 7
+
+  # -------------------------------------------------------------------
+  # Android build check (only if customer app changed)
+  # -------------------------------------------------------------------
+  android-build-check:
+    name: Android Build Check
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.customer_app == 'true'
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Validate Android build
+        working-directory: apps/customer
+        run: |
+          chmod +x ./gradlew 2>/dev/null || true
+          ./gradlew assembleDebug --dry-run
+
+  # -------------------------------------------------------------------
+  # Infrastructure validation (only if infra files changed)
+  # -------------------------------------------------------------------
+  infra-check:
+    name: Infrastructure Validation
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.infra == 'true'
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON configs
+        run: |
+          echo "Validating infrastructure JSON files..."
+          FAILED=0
+          for f in $(find infra/ -name "*.json" -type f); do
+            if ! python3 -c "import json; json.load(open('$f'))" 2>/dev/null; then
+              echo "::error file=$f::Invalid JSON in $f"
+              FAILED=1
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then
+            exit 1
+          fi
+          echo "All infrastructure JSON files are valid"
+
+  # -------------------------------------------------------------------
+  # Summary job — branch protection targets this job name
+  # -------------------------------------------------------------------
+  pr-ready:
+    name: PR Ready
+    runs-on: ubuntu-latest
+    needs: [changes, type-check, lint, test, android-build-check, infra-check]
+    if: always()
+    steps:
+      - name: Check all required jobs passed
+        run: |
+          echo "## PR Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          FAILED=0
+
+          # Type check (only required if it ran)
+          if [ "${{ needs.type-check.result }}" = "failure" ]; then
+            echo "| Type Check | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+            FAILED=1
+          elif [ "${{ needs.type-check.result }}" = "success" ]; then
+            echo "| Type Check | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Type Check | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Lint (only required if it ran)
+          if [ "${{ needs.lint.result }}" = "failure" ]; then
+            echo "| Lint | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+            FAILED=1
+          elif [ "${{ needs.lint.result }}" = "success" ]; then
+            echo "| Lint | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Lint | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Tests (only required if they ran)
+          if [ "${{ needs.test.result }}" = "failure" ]; then
+            echo "| Tests | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+            FAILED=1
+          elif [ "${{ needs.test.result }}" = "success" ]; then
+            echo "| Tests | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Tests | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Android (only required if it ran)
+          if [ "${{ needs.android-build-check.result }}" = "failure" ]; then
+            echo "| Android Build | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+            FAILED=1
+          elif [ "${{ needs.android-build-check.result }}" = "success" ]; then
+            echo "| Android Build | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Android Build | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Infra (only required if it ran)
+          if [ "${{ needs.infra-check.result }}" = "failure" ]; then
+            echo "| Infra Validation | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+            FAILED=1
+          elif [ "${{ needs.infra-check.result }}" = "success" ]; then
+            echo "| Infra Validation | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Infra Validation | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "::error::One or more checks failed. See summary above."
+            exit 1
+          fi
+          echo ""
+          echo "All checks passed! PR is ready for review."

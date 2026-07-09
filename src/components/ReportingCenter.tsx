@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   BarChart3, 
   Download, 
@@ -18,10 +18,12 @@ import {
   Zap,
   DollarSign,
   Maximize2,
-  Settings2
+  Settings2,
+  RefreshCw,
+  Database
 } from 'lucide-react';
 import { DashboardType, ReportWidget, AdminInternalUser } from '../types';
-import { reportingApi } from '../services/reportingService';
+import { reportingApi, DashboardMetrics, FinancialRecord } from '../services/reportingService';
 
 interface ReportingCenterProps {
   adminRole: string;
@@ -32,6 +34,11 @@ const ReportingCenter: React.FC<ReportingCenterProps> = ({ adminRole }) => {
   const [isSpooling, setIsSpooling] = useState(false);
   const [showCustomizer, setShowCustomizer] = useState(false);
 
+  // TERRA-060: Live metrics from DynamoDB
+  const [metrics, setMetrics]         = useState<DashboardMetrics | null>(null);
+  const [financials, setFinancials]   = useState<FinancialRecord[]>([]);
+  const [isLoadingMetrics, setIsLoadingMetrics] = useState(true);
+
   // Custom Dashboard Widgets
   const [widgets, setWidgets] = useState<ReportWidget[]>([
     { id: '1', title: 'Live Fleet Utilization', visible: true, type: 'chart' },
@@ -40,37 +47,135 @@ const ReportingCenter: React.FC<ReportingCenterProps> = ({ adminRole }) => {
     { id: '4', title: 'Top Performing Vendors', visible: true, type: 'table' }
   ]);
 
+  // TERRA-060: Load live metrics on mount + refresh every 60s
+  useEffect(() => {
+    const load = async () => {
+      setIsLoadingMetrics(true);
+      const [m, f] = await Promise.all([
+        reportingApi.getLiveDashboardMetrics(),
+        reportingApi.spoolFinancialData('30d'),
+      ]);
+      setMetrics(m);
+      setFinancials(f);
+      setIsLoadingMetrics(false);
+    };
+    load();
+    const interval = setInterval(load, 60_000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleExport = async () => {
     setIsSpooling(true);
     const data = await reportingApi.spoolFinancialData('current');
-    reportingApi.generateCSV(data as unknown as Record<string, unknown>[], 'OmniRide_Financial_Report');
+    reportingApi.generateCSV(data as unknown as Record<string, unknown>[], 'OpusAIMobility_Financial_Report');
     setIsSpooling(false);
   };
 
+  const handleRefresh = async () => {
+    setIsLoadingMetrics(true);
+    const [m, f] = await Promise.all([
+      reportingApi.getLiveDashboardMetrics(),
+      reportingApi.spoolFinancialData('30d'),
+    ]);
+    setMetrics(m);
+    setFinancials(f);
+    setIsLoadingMetrics(false);
+  };
+
+  // TERRA-060: Render operational dashboard with real DynamoDB data
   const renderOperational = () => (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <MetricCard label="System Success Rate" value="99.94%" trend="+0.02%" />
-        <MetricCard label="Avg. Response Time" value="12.4s" trend="-2.1s" invert />
-        <MetricCard label="Active Sessions" value="4,210" trend="+142" />
+      {/* Live / Cached indicator */}
+      <div className="flex items-center gap-2 px-1">
+        <div className={`w-2 h-2 rounded-full ${metrics?.isLive ? 'bg-emerald-500 animate-pulse' : 'bg-yellow-500'}`} />
+        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+          {metrics?.isLive ? 'Live DynamoDB Data' : 'Cached Data'}
+          {metrics?.lastRefreshed ? ` · Refreshed ${new Date(metrics.lastRefreshed).toLocaleTimeString()}` : ''}
+        </span>
+        <button onClick={handleRefresh} disabled={isLoadingMetrics} className="ml-auto p-1.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+          <RefreshCw className={`w-3.5 h-3.5 text-gray-400 ${isLoadingMetrics ? 'animate-spin' : ''}`} />
+        </button>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {isLoadingMetrics ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm h-28 animate-pulse bg-gray-50" />
+          ))
+        ) : (
+          <>
+            <MetricCard
+              label="Total Revenue (All Time)"
+              value={`${(metrics?.totalRevenue ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
+              trend={`${(metrics?.revenueChange ?? 0) >= 0 ? '+' : ''}${(metrics?.revenueChange ?? 0).toFixed(1)}%`}
+            />
+            <MetricCard
+              label="Total Trips"
+              value={(metrics?.totalTrips ?? 0).toLocaleString()}
+              trend={`${(metrics?.tripsChange ?? 0) >= 0 ? '+' : ''}${(metrics?.tripsChange ?? 0).toFixed(1)}%`}
+            />
+            <MetricCard
+              label="Transaction Success Rate"
+              value={`${(metrics?.successRate ?? 100).toFixed(2)}%`}
+              trend={metrics?.successRate && metrics.successRate >= 95 ? '+Healthy' : '-Degraded'}
+            />
+          </>
+        )}
+      </div>
+
+      {/* Secondary metrics row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <SmallMetric label="Total Orders"   value={isLoadingMetrics ? '—' : (metrics?.totalOrders ?? 0).toLocaleString()} icon={<Activity className="w-4 h-4 text-blue-500" />} />
+        <SmallMetric label="Registered Users" value={isLoadingMetrics ? '—' : (metrics?.totalUsers ?? 0).toLocaleString()} icon={<Database className="w-4 h-4 text-indigo-500" />} />
+        <SmallMetric label="Avg Order Value" value={isLoadingMetrics ? '—' : `${(metrics?.avgOrderValue ?? 0).toFixed(2)}`} icon={<DollarSign className="w-4 h-4 text-emerald-500" />} />
+        <SmallMetric label="Data Source" value={metrics?.isLive ? 'DynamoDB' : 'Cache'} icon={<Zap className={`w-4 h-4 ${metrics?.isLive ? 'text-emerald-500' : 'text-yellow-500'}`} />} />
+      </div>
+
+      {/* TERRA-060: Real revenue chart from DynamoDB via terraai-reporting Lambda */}
       <div className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h3 className="text-xl font-black">Live Operational Throughput</h3>
-            <p className="text-xs font-bold text-gray-400 uppercase">Packet processing per region</p>
+            <h3 className="text-xl font-black">Daily Revenue — DynamoDB Live</h3>
+            <p className="text-xs font-bold text-gray-400 uppercase">
+              {financials.length > 0
+                ? `${financials[0].Date} → ${financials[financials.length - 1].Date} · ${financials.length} days`
+                : 'Loading from omniride-transactions...'}
+            </p>
           </div>
           <button className="p-3 bg-gray-50 rounded-2xl hover:bg-gray-100 transition"><Maximize2 className="w-5 h-5 text-gray-400" /></button>
         </div>
-        <div className="h-64 flex items-end gap-2 px-2">
-           {[30, 45, 80, 55, 90, 40, 65, 85, 30, 70].map((v, i) => (
-             <div key={i} className="flex-1 bg-blue-500 rounded-t-xl group relative cursor-pointer hover:bg-blue-600 transition-all" style={{ height: `${v}%` }}>
-                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                  {v}k/s
+        {isLoadingMetrics ? (
+          <div className="h-64 bg-gray-50 rounded-3xl animate-pulse flex items-center justify-center">
+            <Loader2 className="w-6 h-6 text-gray-300 animate-spin" />
+          </div>
+        ) : (
+          <div className="h-64 flex items-end gap-2 px-2">
+            {(financials.length > 0 ? financials : Array.from({ length: 7 }, (_, i) => ({ Date: '', Gross: 10 + i * 5, Net: 0, Fees: 0, Carbon_Credits: 0 }))).map((rec, i) => {
+              const maxGross = Math.max(...financials.map(r => r.Gross), 1);
+              const pct = Math.round((rec.Gross / maxGross) * 100);
+              return (
+                <div key={i} className="flex-1 group relative cursor-pointer">
+                  {/* Net bar (inner) */}
+                  <div className="absolute bottom-0 w-full bg-emerald-400 rounded-t-lg opacity-70 transition-all"
+                    style={{ height: `${Math.round((rec.Net / maxGross) * 100)}%` }} />
+                  {/* Gross bar (outer) */}
+                  <div className="relative w-full bg-blue-500 rounded-t-xl hover:bg-blue-600 transition-all" style={{ height: `${pct}%` }}>
+                    <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-black text-white text-[9px] font-black px-2 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 shadow-xl">
+                      <p>${rec.Gross.toLocaleString()} gross</p>
+                      <p className="text-emerald-400">${rec.Net.toLocaleString()} net</p>
+                      <p className="text-gray-400">{rec.Date}</p>
+                    </div>
+                  </div>
+                  <p className="text-[7px] text-center font-black text-gray-400 mt-1 truncate">{rec.Date?.slice(5) || ''}</p>
                 </div>
-             </div>
-           ))}
+              );
+            })}
+          </div>
+        )}
+        {/* Legend */}
+        <div className="flex gap-6 mt-4 px-2">
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-blue-500" /><span className="text-[10px] font-black text-gray-500 uppercase">Gross Revenue</span></div>
+          <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-emerald-400" /><span className="text-[10px] font-black text-gray-500 uppercase">Net Revenue</span></div>
         </div>
       </div>
     </div>
@@ -260,6 +365,17 @@ const MetricCard = ({ label, value, trend, invert = false }: any) => (
            {trend}
         </div>
      </div>
+  </div>
+);
+
+// TERRA-060: Small metric tile for secondary stats row
+const SmallMetric = ({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) => (
+  <div className="bg-white p-4 rounded-[24px] border border-gray-100 shadow-sm flex items-center gap-3">
+    <div className="p-2 bg-gray-50 rounded-xl">{icon}</div>
+    <div>
+      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{label}</p>
+      <h4 className="text-base font-black text-gray-900">{value}</h4>
+    </div>
   </div>
 );
 

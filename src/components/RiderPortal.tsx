@@ -14,6 +14,7 @@ import {
 import { RiderProfile, Notification, DeliveryOrder, User as UserProfile, RideHistoryItem, ErrandOrder, OrderStatus } from '../types';
 import { omniApi } from '../services/api';
 import { getAlternativeRoute } from '../services/geminiService';
+import { syncService } from '../services/syncService'; // TERRA-070
 
 interface RiderPortalProps {
   onClose: () => void;
@@ -134,7 +135,7 @@ const RiderPortal: React.FC<RiderPortalProps> = ({ onClose, riderProfile, onUpda
   useEffect(() => {
     if (riderProfile) {
       const updatedProfile = { ...riderProfile, online: isOnline };
-      const actorStr = localStorage.getItem('omniride_user');
+      const actorStr = localStorage.getItem('opusaimobility_user');
       if (actorStr) {
         const actor = JSON.parse(actorStr);
         omniApi.syncUser({ ...actor, riderProfile: updatedProfile });
@@ -143,62 +144,66 @@ const RiderPortal: React.FC<RiderPortalProps> = ({ onClose, riderProfile, onUpda
     }
   }, [isOnline]);
 
-  // MISSION RECOVERY
+  // TERRA-070: MISSION RECOVERY — DynamoDB-first via syncService
   useEffect(() => {
     if (!riderProfile?.id) return;
-
-    const errands = JSON.parse(localStorage.getItem('omniride-errands') || '[]');
-    const activeErrand = errands.find((e: ErrandOrder) => e.riderId === riderProfile.id && (e.status === 'active' || e.status === 'pending'));
-    if (activeErrand) {
-      const customer = omniApi.getPublicUser(activeErrand.customerId);
-      setActiveJob({ ...activeErrand, type: 'errand', clientName: customer?.name || 'User' });
-      setCurrentView('active_trip');
-      return;
-    }
-
-    const orders = JSON.parse(localStorage.getItem('omniride-orders') || '[]');
-    const activeOrder = orders.find((o: DeliveryOrder) => (o.riderId === riderProfile.id || o.allocatedRiderId === riderProfile.id) && o.status === 'picked_up');
-    if (activeOrder) {
-      setActiveJob({ ...activeOrder, type: 'delivery', clientName: activeOrder.sender.name });
-      setCurrentView('active_trip');
-    }
+    (async () => {
+      const [errands, orders] = await Promise.all([
+        syncService.getErrands(riderProfile.id),
+        syncService.getOrders(riderProfile.id),
+      ]);
+      const activeErrand = errands.find((e) => e.riderId === riderProfile.id && (e.status === 'active' || e.status === 'pending'));
+      if (activeErrand) {
+        const customer = omniApi.getPublicUser(activeErrand.customerId);
+        setActiveJob({ ...activeErrand, type: 'errand', clientName: customer?.name || 'User' });
+        setCurrentView('active_trip');
+        return;
+      }
+      const activeOrder = (orders as DeliveryOrder[]).find((o) => (o.riderId === riderProfile.id || o.allocatedRiderId === riderProfile.id) && o.status === 'picked_up');
+      if (activeOrder) {
+        setActiveJob({ ...activeOrder, type: 'delivery', clientName: (activeOrder as DeliveryOrder).sender.name });
+        setCurrentView('active_trip');
+      }
+    })();
   }, [riderProfile?.id]);
 
-  // Polling for missions
+  // TERRA-070: Polling for missions — DynamoDB-first via syncService
   useEffect(() => {
     if (!isOnline || activeJob || pendingJob) return;
-    
-    const poll = setInterval(() => {
-      const orders = JSON.parse(localStorage.getItem('omniride-orders') || '[]');
-      const errands = JSON.parse(localStorage.getItem('omniride-errands') || '[]');
-      const trips = JSON.parse(localStorage.getItem('omniride-trips') || '[]');
 
-      const dedicatedTask = orders.find((o: DeliveryOrder) => 
+    const poll = setInterval(async () => {
+      const [orders, errands, trips] = await Promise.all([
+        syncService.getOrders(),
+        syncService.getErrands(),
+        syncService.getTrips(),
+      ]);
+
+      const dedicatedTask = (orders as DeliveryOrder[]).find((o) =>
         o.allocatedRiderId === riderProfile?.id && o.status === 'pending'
       );
       if (dedicatedTask) {
-        setPendingJob({ ...dedicatedTask, type: 'dedicated', clientName: dedicatedTask.sender.name });
+        setPendingJob({ ...dedicatedTask, type: 'dedicated', clientName: (dedicatedTask as DeliveryOrder).sender.name });
         return;
       }
 
-      const matchErrand = errands.find((e: ErrandOrder) => e.status === 'pending' && !e.riderId);
+      const matchErrand = (errands as ErrandOrder[]).find((e) => e.status === 'pending' && !e.riderId);
       if (matchErrand) {
         const customer = omniApi.getPublicUser(matchErrand.customerId);
         setPendingJob({ ...matchErrand, type: 'errand', clientName: customer?.name || 'User' });
         return;
       }
 
-      const matchTrip = trips.find((t: RideHistoryItem) => t.status === 'pending' || t.status === 'searching');
+      const matchTrip = (trips as RideHistoryItem[]).find((t) => t.status === 'pending' || t.status === 'searching');
       if (matchTrip) {
-        setPendingJob({ ...matchTrip, type: 'ride', clientName: matchTrip.passengerName });
+        setPendingJob({ ...matchTrip, type: 'ride', clientName: (matchTrip as any).passengerName });
         return;
       }
 
-      const matchDelivery = orders.find((o: DeliveryOrder) => o.status === 'pending' && !o.allocatedRiderId);
+      const matchDelivery = (orders as DeliveryOrder[]).find((o) => o.status === 'pending' && !(o as any).allocatedRiderId);
       if (matchDelivery) {
-        setPendingJob({ ...matchDelivery, type: 'delivery', clientName: matchDelivery.sender.name });
+        setPendingJob({ ...matchDelivery, type: 'delivery', clientName: (matchDelivery as DeliveryOrder).sender.name });
       }
-    }, 4000);
+    }, 6000); // slightly longer interval — DynamoDB calls
 
     return () => clearInterval(poll);
   }, [isOnline, activeJob, pendingJob, riderProfile?.id]);
@@ -232,23 +237,23 @@ const RiderPortal: React.FC<RiderPortalProps> = ({ onClose, riderProfile, onUpda
 
   const handleCompleteMission = () => {
     if (!activeJob) return;
-    const actor: any = JSON.parse(localStorage.getItem('omniride_user') || 'null') ?? {};
+    const actor: any = JSON.parse(localStorage.getItem('opusaimobility_user') || 'null') ?? {};
 
     if (activeJob.type === 'errand') {
-      const errands = JSON.parse(localStorage.getItem('omniride-errands') || '[]');
+      const errands = JSON.parse(localStorage.getItem('opusaimobility-errands') || '[]');
       const idx = errands.findIndex((e: any) => e.id === activeJob.id);
       if (idx > -1) {
         errands[idx].status = 'completed';
-        localStorage.setItem('omniride-errands', JSON.stringify(errands));
+        localStorage.setItem('opusaimobility-errands', JSON.stringify(errands));
       }
       // Also update in DynamoDB via Lambda
       omniApi.updateOrderStatus(activeJob.id, 'completed', actor);
     } else if (activeJob.type === 'ride') {
-      const trips = JSON.parse(localStorage.getItem('omniride-trips') || '[]');
+      const trips = JSON.parse(localStorage.getItem('opusaimobility-trips') || '[]');
       const idx = trips.findIndex((t: any) => t.id === activeJob.id);
       if (idx > -1) {
         trips[idx].status = 'completed';
-        localStorage.setItem('omniride-trips', JSON.stringify(trips));
+        localStorage.setItem('opusaimobility-trips', JSON.stringify(trips));
       }
       omniApi.updateOrderStatus(activeJob.id, 'completed', actor);
     } else {

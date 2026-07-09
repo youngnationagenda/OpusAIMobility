@@ -15,7 +15,7 @@
         "lambda:GetAlias",
         "lambda:ListVersionsByFunction"
       ],
-      "Resource": "arn:aws:lambda:us-east-1:683541453923:function:omniride-api"
+      "Resource": "arn:aws:lambda:us-east-1:683541453923:function:opusaimobility-api"
     },
     {
       "Sid": "S3FrontendDeploy",
@@ -29,8 +29,8 @@
         "s3:PutObjectAcl"
       ],
       "Resource": [
-        "arn:aws:s3:::omniride-assets-prod",
-        "arn:aws:s3:::omniride-assets-prod/*"
+        "arn:aws:s3:::opusaimobility-assets-prod",
+        "arn:aws:s3:::opusaimobility-assets-prod/*"
       ]
     },
     {
@@ -66,7 +66,7 @@
         "secretsmanager:GetSecretValue",
         "secretsmanager:DescribeSecret"
       ],
-      "Resource": "arn:aws:secretsmanager:us-east-1:683541453923:secret:omniride/*"
+      "Resource": "arn:aws:secretsmanager:us-east-1:683541453923:secret:opusaimobility/*"
     },
     {
       "Sid": "LambdaPackagingViaS3",
@@ -75,7 +75,7 @@
         "s3:PutObject",
         "s3:GetObject"
       ],
-      "Resource": "arn:aws:s3:::omniride-assets-prod/lambda-deploys/*"
+      "Resource": "arn:aws:s3:::opusaimobility-assets-prod/lambda-deploys/*"
     }
   ]
 }

@@ -42,9 +42,9 @@ const RiderJobTasks: React.FC<RiderJobTasksProps> = ({ profile, onClose, pushNot
 
   useEffect(() => {
     const fetchData = () => {
-      const orders: any[] = JSON.parse(localStorage.getItem('omniride-orders') || '[]');
-      const errands: ErrandOrder[] = JSON.parse(localStorage.getItem('omniride-errands') || '[]');
-      const trips: RideHistoryItem[] = JSON.parse(localStorage.getItem('omniride-trips') || '[]');
+      const orders: any[] = JSON.parse(localStorage.getItem('opusaimobility-orders') || '[]');
+      const errands: ErrandOrder[] = JSON.parse(localStorage.getItem('opusaimobility-errands') || '[]');
+      const trips: RideHistoryItem[] = JSON.parse(localStorage.getItem('opusaimobility-trips') || '[]');
       
       const activeRides = trips.filter(t => 
         (t as any).riderId === profile.id && 

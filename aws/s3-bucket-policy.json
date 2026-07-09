@@ -8,7 +8,7 @@
         "Service": "cloudfront.amazonaws.com"
       },
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::omniride-assets-prod/*",
+      "Resource": "arn:aws:s3:::opusaimobility-assets-prod/*",
       "Condition": {
         "StringEquals": {
           "AWS:SourceArn": "arn:aws:cloudfront::683541453923:distribution/E1TIJJKJ2UEIO7"

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_bicket_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".ride.payment.PayWithBottomSheetFragment">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_resturant_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/airbnbcerealmedium"
+                android:gravity="center"
+                android:maxWidth="@dimen/_250sdp"
+                android:maxLines="2"
+                android:text="@string/sorry_for_the_delay"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_16sdp" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/lite_gray_line" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/we_re_having_trouble_connecting_but_connect_to_wi_fi_or_mobile_network"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_12sdp" />
+
+
+            <RelativeLayout
+                android:id="@+id/try_again"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginHorizontal="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_15sdp"
+                android:background="@drawable/app_color_bg_btn">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:includeFontPadding="false"
+                    android:text="@string/please_try_again"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/btn_textSize" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>

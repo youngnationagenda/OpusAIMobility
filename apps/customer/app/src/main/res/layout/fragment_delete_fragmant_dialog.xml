@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".ride.payment.PayWithBottomSheetFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="@dimen/_38sdp"
+            android:layout_height="@dimen/_5sdp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/gray_round_view" />
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_37sdp"
+            android:layout_below="@+id/view"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_15sdp">
+
+            <RelativeLayout
+                android:id="@+id/backBtn"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/_6sdp">
+
+                <ImageView
+                    android:layout_width="@dimen/_14sdp"
+                    android:layout_height="@dimen/_14sdp"
+                    android:layout_centerInParent="true"
+                    app:srcCompat="@drawable/ic_cross" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:fontFamily="@font/airbnbcerealbold"
+                android:gravity="center_vertical"
+                android:text="@string/remove_this_payment_method"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_23sdp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:fontFamily="@font/airbnbcerealbook"
+                android:text="@string/removing_this_card_means_you_won_t_be_able_to_use_this_payment_method_any_more"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_14sdp" />
+
+            <RelativeLayout
+                android:id="@+id/keep_card"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:layout_marginBottom="@dimen/_15sdp"
+                android:background="@drawable/green_button_bg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:stateListAnimator="@null"
+                    android:text="@string/keep_card_on_gograb"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/btn_textSize" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/delete_payment_btn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:layout_marginBottom="@dimen/_15sdp"
+                android:background="@drawable/red_button_bg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:stateListAnimator="@null"
+                    android:text="@string/remove"
+                    android:textAllCaps="false"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/btn_textSize" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

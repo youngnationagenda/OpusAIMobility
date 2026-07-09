@@ -16,6 +16,8 @@ import { iotApi } from '../services/iotService';
 import { awsPost } from '../services/awsClient';
 import { LAMBDA_ROUTES } from '../services/awsConfig';
 import { calculateTaskLogistics, TaskLogistics } from '../services/geminiService';
+import { syncService } from '../services/syncService'; // TERRA-070
+import { useEnergyTelemetry } from '../services/wsService'; // TERRA-011
 
 interface EnergyPortalProps {
   profile: RiderProfile;
@@ -41,6 +43,18 @@ const EnergyPortal: React.FC<EnergyPortalProps> = ({ profile, onClose, onUpdateR
 
   // Handshake Simulation
   const [handshakeStatus, setHandshakeStatus] = useState<'none' | 'requesting' | 'established'>('none');
+
+  // TERRA-011: Live IoT energy telemetry via WebSocket
+  const { frame: energyFrame, isConnected: wsConnected } = useEnergyTelemetry(
+    profile.vehicleRegNo || profile.id,
+    profile.id,
+  );
+
+  // Derive live values — fall back to BMS profile data when WS not yet connected
+  const liveBatteryPct    = energyFrame?.batteryPct   ?? profile.batteryStatus;
+  const liveChargeRateKw  = energyFrame?.chargeRateKw ?? 0;
+  const liveRangeKm       = energyFrame?.rangeKm      ?? (predictedStats?.rangeKm ?? 0);
+  const liveChargeStatus  = energyFrame?.chargingStatus ?? 'discharging';
 
   const bms = profile.telemetry;
   const isDedicated = !!profile.assignedBusinessId;
@@ -120,11 +134,14 @@ const EnergyPortal: React.FC<EnergyPortalProps> = ({ profile, onClose, onUpdateR
   useEffect(() => {
     const fetchMissionData = async () => {
       setIsLoadingLogistics(true);
-      const orders: any[] = JSON.parse(localStorage.getItem('omniride-orders') || '[]');
-      const errands: ErrandOrder[] = JSON.parse(localStorage.getItem('omniride-errands') || '[]');
+      // TERRA-070: DynamoDB-first via syncService
+      const [orders, errands] = await Promise.all([
+        syncService.getOrders(profile.id),
+        syncService.getErrands(profile.id),
+      ]);
       
-      const activeBiz = orders.filter(o => (o.riderId === profile.id || o.allocatedRiderId === profile.id) && o.status !== 'delivered');
-      const activeErrands = errands.filter(e => e.riderId === profile.id && e.status === 'active');
+      const activeBiz = (orders as any[]).filter(o => (o.riderId === profile.id || o.allocatedRiderId === profile.id) && o.status !== 'delivered');
+      const activeErrands = (errands as ErrandOrder[]).filter(e => e.riderId === profile.id && e.status === 'active');
 
       const allActiveTasks = [...activeBiz, ...activeErrands];
 
@@ -229,8 +246,41 @@ const EnergyPortal: React.FC<EnergyPortalProps> = ({ profile, onClose, onUpdateR
             </p>
           </div>
         </div>
-        <div className="bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase border border-emerald-500/20">
-           {isDedicated ? 'Dedicated' : 'Standard'}
+        <div className="flex items-center gap-2">
+          {/* TERRA-011: WebSocket connection badge */}
+          <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[9px] font-black uppercase border ${wsConnected ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${wsConnected ? 'bg-cyan-400 animate-pulse' : 'bg-red-400'}`} />
+            {wsConnected ? 'LIVE' : 'Disconnected'}
+          </div>
+          <div className="bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase border border-emerald-500/20">
+             {isDedicated ? 'Dedicated' : 'Standard'}
+          </div>
+        </div>
+      </div>
+
+      {/* TERRA-011: Live IoT Energy Data Strip */}
+      <div className="px-4 pb-3 pt-1 bg-slate-900/80 border-b border-white/5 shrink-0">
+        <div className="grid grid-cols-4 gap-2">
+          <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 text-center">
+            <p className="text-[7px] font-black text-gray-500 uppercase tracking-widest">Battery</p>
+            <p className={`text-sm font-black ${liveBatteryPct < 20 ? 'text-red-400' : liveBatteryPct < 50 ? 'text-amber-400' : 'text-emerald-400'}`}>
+              {liveBatteryPct.toFixed(0)}%
+            </p>
+          </div>
+          <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 text-center">
+            <p className="text-[7px] font-black text-gray-500 uppercase tracking-widest">Charge Rate</p>
+            <p className="text-sm font-black text-blue-400">{liveChargeRateKw.toFixed(1)} kW</p>
+          </div>
+          <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 text-center">
+            <p className="text-[7px] font-black text-gray-500 uppercase tracking-widest">Est. Range</p>
+            <p className="text-sm font-black text-cyan-400">{liveRangeKm.toFixed(0)} km</p>
+          </div>
+          <div className="bg-black/40 px-3 py-2 rounded-xl border border-white/5 text-center">
+            <p className="text-[7px] font-black text-gray-500 uppercase tracking-widest">Status</p>
+            <p className={`text-[10px] font-black uppercase ${liveChargeStatus === 'charging' || liveChargeStatus === 'full' ? 'text-emerald-400' : 'text-gray-400'}`}>
+              {liveChargeStatus}
+            </p>
+          </div>
         </div>
       </div>
 

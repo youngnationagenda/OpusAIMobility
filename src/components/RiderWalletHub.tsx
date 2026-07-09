@@ -78,7 +78,7 @@ const RiderWalletHub: React.FC<RiderWalletHubProps> = ({ profile, onUpdateRider,
 
   // Aggregate Expenditure Data for the "Payment Out" Portal
   const expenditureStats = useMemo(() => {
-    const allTxs: PaymentHistoryItem[] = JSON.parse(localStorage.getItem('omniride-transactions') || '[]');
+    const allTxs: PaymentHistoryItem[] = JSON.parse(localStorage.getItem('opusaimobility-transactions') || '[]');
     const riderTxs = allTxs.filter(t => t.userType === 'rider' && t.direction === 'out');
     
     return {
@@ -160,7 +160,7 @@ const RiderWalletHub: React.FC<RiderWalletHubProps> = ({ profile, onUpdateRider,
     ];
 
     // 2. Add to global ledger (for Money Out categories)
-    const globalTxs: PaymentHistoryItem[] = JSON.parse(localStorage.getItem('omniride-transactions') || '[]');
+    const globalTxs: PaymentHistoryItem[] = JSON.parse(localStorage.getItem('opusaimobility-transactions') || '[]');
     globalTxs.push({
       id: txId,
       amount: amt,
@@ -173,7 +173,7 @@ const RiderWalletHub: React.FC<RiderWalletHubProps> = ({ profile, onUpdateRider,
       userType: 'rider',
       direction: isLoad ? 'in' : 'out'
     });
-    localStorage.setItem('omniride-transactions', JSON.stringify(globalTxs));
+    localStorage.setItem('opusaimobility-transactions', JSON.stringify(globalTxs));
 
     onUpdateRider(updatedProfile);
     setIsCalculating(false);
@@ -210,7 +210,7 @@ const RiderWalletHub: React.FC<RiderWalletHubProps> = ({ profile, onUpdateRider,
     };
 
     // 2. Add to global Payment History (Crucial for "Money Out" list)
-    const globalTxs: PaymentHistoryItem[] = JSON.parse(localStorage.getItem('omniride-transactions') || '[]');
+    const globalTxs: PaymentHistoryItem[] = JSON.parse(localStorage.getItem('opusaimobility-transactions') || '[]');
     globalTxs.push({
       id: txId,
       amount: finalAmount,
@@ -223,12 +223,12 @@ const RiderWalletHub: React.FC<RiderWalletHubProps> = ({ profile, onUpdateRider,
       userType: 'rider',
       direction: 'out'
     });
-    localStorage.setItem('omniride-transactions', JSON.stringify(globalTxs));
+    localStorage.setItem('opusaimobility-transactions', JSON.stringify(globalTxs));
 
     // 3. Update Platform Revenue (System maintenance)
     const account = omniApi.getCollectionAccount();
     account.totalCollected += (finalAmount * 0.1); // Small maintenance share
-    localStorage.setItem('omniride-collection', JSON.stringify(account));
+    localStorage.setItem('opusaimobility-collection', JSON.stringify(account));
     
     onUpdateRider(updatedProfile);
     setIsCalculating(false);
@@ -962,7 +962,7 @@ const RiderWalletHub: React.FC<RiderWalletHubProps> = ({ profile, onUpdateRider,
 
          <div className="bg-blue-50 p-6 md:p-8 rounded-[32px] md:rounded-[40px] border border-blue-100 space-y-2">
             <div className="flex items-center gap-2"><TrendingUp className="w-4 h-4 text-blue-600" /><h4 className="font-black text-blue-900 text-xs md:text-sm">Protocol Active</h4></div>
-            <p className="text-[10px] md:text-xs text-blue-700 font-medium leading-relaxed">OmniRide Finance Status tracks lifetime earnings and manages electric asset ownership via automated nodes.</p>
+            <p className="text-[10px] md:text-xs text-blue-700 font-medium leading-relaxed">OpusAIMobility Finance Status tracks lifetime earnings and manages electric asset ownership via automated nodes.</p>
          </div>
       </div>
     );

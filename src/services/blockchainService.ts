@@ -1,10 +1,10 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide Blockchain Service  —  AWS Lambda + DynamoDB
+ * OpusAIMobility Blockchain Service  —  AWS Lambda + DynamoDB
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Simulates a Celo-compatible blockchain ledger.
- * All events are persisted to DynamoDB: omniride-blockchain via Lambda.
+ * All events are persisted to DynamoDB: opusaimobility-blockchain via Lambda.
  *
  * Lambda validates:
  *  • Wallet address format
@@ -17,7 +17,7 @@ import { WalletTransaction, BlockchainEvent } from '../types';
 import { awsPost, awsGet }  from './awsClient';
 import { LAMBDA_ROUTES }    from './awsConfig';
 
-const CACHE_KEY = 'omniride-blockchain';
+const CACHE_KEY = 'opusaimobility-blockchain';
 
 function readCache(): BlockchainEvent[] {
   try { return JSON.parse(localStorage.getItem(CACHE_KEY) ?? '[]'); }

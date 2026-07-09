@@ -46,8 +46,8 @@ const DeliveryDashboard: React.FC<DeliveryDashboardProps> = ({ user, onPlaceOrde
   const [riderSearch, setRiderSearch] = useState('');
 
   useEffect(() => {
-    // Use AWS-mirrored cache key ('omniride-users' populated by omniApi._warmCaches)
-    const users: User[] = JSON.parse(localStorage.getItem('omniride-users') || '[]');
+    // Use AWS-mirrored cache key ('opusaimobility-users' populated by omniApi._warmCaches)
+    const users: User[] = JSON.parse(localStorage.getItem('opusaimobility-users') || '[]');
     setOnlineRiders(users.filter(u => u.role === 'rider' && u.riderProfile?.online));
   }, []);
 

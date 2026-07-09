@@ -73,18 +73,18 @@ const BusinessPortal: React.FC<BusinessPortalProps> = ({ user, onUpdateUser, onT
   }, [activeTab, user.id, showAddStation]);
 
   const recentSwaps = useMemo(() => {
-    const txs: PaymentHistoryItem[] = JSON.parse(localStorage.getItem('omniride-transactions') || '[]');
+    const txs: PaymentHistoryItem[] = JSON.parse(localStorage.getItem('opusaimobility-transactions') || '[]');
     return txs.filter(t => t.id.endsWith('-OWN') && t.description?.toLowerCase().includes('revenue node share'))
               .sort((a, b) => b.timestamp - a.timestamp);
   }, [activeTab]);
 
   const businessOrders = useMemo(() => {
-    const all: DeliveryOrder[] = JSON.parse(localStorage.getItem('omniride-orders') || '[]');
+    const all: DeliveryOrder[] = JSON.parse(localStorage.getItem('opusaimobility-orders') || '[]');
     return all.filter(o => o.customerId === user.id).sort((a, b) => b.timestamp - a.timestamp);
   }, [activeTab, user.id]);
 
   const activeCorporateTrips = useMemo(() => {
-    const all: RideHistoryItem[] = JSON.parse(localStorage.getItem('omniride-trips') || '[]');
+    const all: RideHistoryItem[] = JSON.parse(localStorage.getItem('opusaimobility-trips') || '[]');
     return all.filter(t => t.customerId === user.id && t.status !== 'completed');
   }, [activeTab, user.id]);
 

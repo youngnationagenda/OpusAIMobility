@@ -1,0 +1,50 @@
+// ── :pdf module ──────────────────────────────────────────────────────────────
+// Isolated so iText7's heavy BouncyCastle transitive deps never enter :app's
+// debug classpath.  :app depends on this module only in the release variant.
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdk 34
+    namespace "com.terraai.aimobility.pdf"
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 34
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        abortOnError false
+    }
+}
+
+configurations.all {
+    // Pin BouncyCastle to one version so it doesn't conflict with AWS SDK
+    resolutionStrategy.force 'org.bouncycastle:bcprov-jdk15on:1.70'
+    resolutionStrategy.force 'org.bouncycastle:bcpkix-jdk15on:1.70'
+}
+
+dependencies {
+    // iText7 — kept here, isolated from :app debug builds
+    implementation('com.itextpdf:itext7-core:7.2.3') {
+        exclude group: 'org.bouncycastle'
+    }
+
+    // AndroidX needed for any PDF helper utilities
+    implementation 'androidx.annotation:annotation:1.3.0'
+}

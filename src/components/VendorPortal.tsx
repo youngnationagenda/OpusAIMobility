@@ -47,7 +47,7 @@ const VendorPortal: React.FC<VendorPortalProps> = ({ onClose, vendorProfile, onU
 
   const [liveOrders, setLiveOrders] = useState<Order[]>(() => {
     // Use the AWS-mirrored cache key
-    const saved = localStorage.getItem('omniride-orders');
+    const saved = localStorage.getItem('opusaimobility-orders');
     const all = saved ? JSON.parse(saved) : [];
     return all.filter((o: Order) => o.restaurantId === vendorProfile?.id);
   });
@@ -164,7 +164,7 @@ const VendorPortal: React.FC<VendorPortalProps> = ({ onClose, vendorProfile, onU
   );
 
   const updateOrderStatusLocally = (orderId: string, status: OrderStatus) => {
-    const actor: UserProfile = JSON.parse(localStorage.getItem('omniride_user')!);
+    const actor: UserProfile = JSON.parse(localStorage.getItem('opusaimobility_user')!);
     omniApi.updateOrderStatus(orderId, status, actor).then(() => {
        setLiveOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o));
     });

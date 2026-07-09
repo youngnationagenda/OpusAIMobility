@@ -1,10 +1,10 @@
 {
-  "Comment": "Add omniride.yna.co.ke CNAME to CloudFront",
+  "Comment": "Add opusaimobility.yna.co.ke CNAME to CloudFront",
   "Changes": [
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "omniride.yna.co.ke",
+        "Name": "opusaimobility.yna.co.ke",
         "Type": "A",
         "AliasTarget": {
           "HostedZoneId": "Z2FDTNDATAQYW2",

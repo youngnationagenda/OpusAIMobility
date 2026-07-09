@@ -1,6 +1,6 @@
 /**
  * ─────────────────────────────────────────────────────────────────────────────
- * OmniRide AWS HTTP Client
+ * OpusAIMobility AWS HTTP Client
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Single authenticated fetch wrapper for all API Gateway → Lambda calls.
@@ -33,9 +33,9 @@ export interface AWSResponse<T = any> {
 }
 
 // Token storage keys
-const TOKEN_KEY   = 'omniride_access_token';
-const REFRESH_KEY = 'omniride_refresh_token';
-const USER_KEY    = 'omniride_user';
+const TOKEN_KEY   = 'opusaimobility_access_token';
+const REFRESH_KEY = 'opusaimobility_refresh_token';
+const USER_KEY    = 'opusaimobility_user';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Token helpers
@@ -184,14 +184,14 @@ export async function awsFetch<T = any>(
     if (cacheKey) {
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
-        console.warn(`[OmniRide] Network unavailable — serving cached data for "${cacheKey}"`);
+        console.warn(`[OpusAIMobility] Network unavailable — serving cached data for "${cacheKey}"`);
         try {
           return { data: JSON.parse(cached) as T, error: null, fromCache: true };
         } catch { /* invalid cache */ }
       }
     }
 
-    console.error(`[OmniRide] awsFetch error on ${path}:`, networkError);
+    console.error(`[OpusAIMobility] awsFetch error on ${path}:`, networkError);
     return {
       data: null,
       error: {

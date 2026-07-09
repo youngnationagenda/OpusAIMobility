@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".ride.ReportProblemFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <RelativeLayout
+                android:id="@+id/backBtn"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/horizontal_margin_toolbar"
+                    app:srcCompat="@drawable/ic_arrow_left" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:fontFamily="@font/airbnbcerealbold"
+            android:gravity="center_vertical"
+            android:text="@string/report_a_problem"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/text_size_heading" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:background="@color/lite_gray" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:id="@+id/recyclerView"/>
+
+    </LinearLayout>
+
+</FrameLayout>
