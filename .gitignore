@@ -1,3 +1,70 @@
-node_modules
+# ─────────────────────────────────────────────────────────────────
+# OpusAIMobility — .gitignore
+# ─────────────────────────────────────────────────────────────────
 
+# ── Dependencies ──────────────────────────────────────────────────
+node_modules/
+**/node_modules/
+
+# ── Environment & Secrets (NEVER commit these) ────────────────────
+.env
+.env.*
+.env.local
+.env.production
+*.env
+
+# ── Service Account Keys & Credentials ────────────────────────────
+*-service-account.json
+opusaimobility-*.json
+*-d90412e*.json
+*.p12
+*.pem
+*.key
+*.jks
+keystore.b64
+keystore-meta.json
+
+# ── API Keys & Tokens ─────────────────────────────────────────────
+.gcp-token
+*.token
+*_token.json
+
+# ── Sensitive text files that may contain secrets ─────────────────
+Untitled.txt
+tmp_section.txt
+out.json
+
+# ── AWS ───────────────────────────────────────────────────────────
+*.zip
+aws/lambda/*.zip
+aws/*.zip
+
+# ── Build outputs ─────────────────────────────────────────────────
+dist/
+build/
+*.apk
+
+# ── IDE & OS ──────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+# ── Claude/Kiro internals ─────────────────────────────────────────
 TerraAI/.claude/
+
+# ── Terraform / IaC state ─────────────────────────────────────────
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# ── Logs ──────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+
+# ── Package locks (keep only root) ────────────────────────────────
+# package-lock.json is tracked at root; ignore nested ones from Lambda deploys
+aws/lambda/*/package-lock.json
+server/package-lock.json

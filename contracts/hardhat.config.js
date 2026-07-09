@@ -1,27 +1,29 @@
 /**
  * Hardhat configuration — TERRA-030
- * Deploy CarbonToken.sol to Celo Alfajores Testnet
+ * Deploy CarbonToken.sol to Celo Sepolia Testnet
  *
  * Networks:
- *   alfajores  — Celo testnet (chain 44787)  ← deploy here first
- *   celo       — Celo mainnet (chain 42220)  ← production
- *   hardhat    — local testing
+ *   celo-sepolia — Celo Sepolia testnet (chain 44787)  <- deploy here first
+ *   celo         — Celo mainnet (chain 42220)          <- production
+ *   hardhat      — local testing
+ *
+ * Deployer wallet: 0x57651B018Fa4aC931Ec585da641078988Ef1213B
  *
  * Usage:
  *   npx hardhat compile
  *   npx hardhat test
- *   npx hardhat run scripts/deploy.js --network alfajores
- *   npx hardhat verify --network alfajores <CONTRACT_ADDRESS> <ADMIN_ADDRESS>
+ *   npx hardhat run scripts/deploy.js --network celo-sepolia
+ *   npx hardhat verify --network celo-sepolia <CONTRACT_ADDRESS> <ADMIN_ADDRESS>
  */
 
 require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config({ path: '.env.deploy' });
 
 const DEPLOYER_PK   = process.env.DEPLOYER_PRIVATE_KEY || '0x' + '0'.repeat(64);
-// Public Alfajores RPC endpoints (in order of preference)
-const CELO_RPC_ALFAJORES = process.env.CELO_RPC_ALFAJORES
-  || 'https://alfajores-forno.celo-testnet.org';
-const CELO_RPC_MAINNET   = 'https://forno.celo.org';
+// Celo Sepolia RPC (replaces deprecated Alfajores)
+const CELO_RPC_SEPOLIA = process.env.CELO_RPC_SEPOLIA
+  || 'https://forno.celo-sepolia.celo-testnet.org';
+const CELO_RPC_MAINNET = 'https://forno.celo.org';
 
 module.exports = {
   solidity: {
@@ -35,9 +37,9 @@ module.exports = {
     hardhat: {
       chainId: 31337,
     },
-    alfajores: {
-      url:      CELO_RPC_ALFAJORES,
-      chainId:  44787,
+    'celo-sepolia': {
+      url:      CELO_RPC_SEPOLIA,
+      chainId:  11142220,
       accounts: [DEPLOYER_PK],
       gasPrice: 5_000_000_000, // 5 gwei
     },
@@ -50,16 +52,16 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      alfajores: process.env.CELOSCAN_API_KEY || 'PLACEHOLDER',
-      celo:      process.env.CELOSCAN_API_KEY || 'PLACEHOLDER',
+      'celo-sepolia': process.env.CELOSCAN_API_KEY || 'PLACEHOLDER',
+      celo:           process.env.CELOSCAN_API_KEY || 'PLACEHOLDER',
     },
     customChains: [
       {
-        network: 'alfajores',
-        chainId: 44787,
+        network: 'celo-sepolia',
+        chainId: 11142220,
         urls: {
-          apiURL:     'https://api-alfajores.celoscan.io/api',
-          browserURL: 'https://alfajores.celoscan.io',
+          apiURL:     'https://api-sepolia.celoscan.io/api',
+          browserURL: 'https://sepolia.celoscan.io',
         },
       },
       {
