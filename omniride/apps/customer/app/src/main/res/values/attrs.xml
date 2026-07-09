@@ -101,31 +101,8 @@
         <attr name="picker_showOnlyFutureDate" format="boolean" />
     </declare-styleable>
 
-    <!-- ── pinview (chaos.view) stubs ─────────────────────────────────────── -->
-    <declare-styleable name="Pinview">
-        <attr name="pinLength" format="integer" />
-        <attr name="pinWidth" format="dimension" />
-        <attr name="pinHeight" format="dimension" />
-        <attr name="pinBackground" format="reference" />
-        <attr name="pinTextColor" format="color" />
-        <attr name="pinTextSize" format="dimension" />
-        <attr name="pinHintText" format="string" />
-        <attr name="pinHideText" format="boolean" />
-        <attr name="pinInputType" format="integer" />
-        <attr name="pinCursorVisible" format="boolean" />
-        <attr name="forceKeyboard" format="boolean" />
-        <attr name="splitWidth" format="dimension" />
-        <!-- Additional attrs used by views -->
-        <attr name="viewType" format="enum">
-            <enum name="rectangle" value="0" />
-            <enum name="line" value="1" />
-        </attr>
-        <attr name="lineColor" format="color" />
-        <attr name="lineWidth" format="dimension" />
-        <attr name="cursorColor" format="color" />
-        <attr name="itemCount" format="integer" />
-        <attr name="animationEnable" format="boolean" />
-    </declare-styleable>
+    <!-- ── pinview (chaos.view) — attrs provided by library dependency ──────── -->
+    <!-- Removed: library 'com.github.ChaosLeong:PinView:2.1.0' provides its own attrs -->
 
     <!-- ── CountryCodePicker (hbb20) stubs ───────────────────────────────── -->
     <declare-styleable name="CountryCodePicker">
@@ -177,52 +154,11 @@
         <attr name="trimLines" format="integer" />
     </declare-styleable>
 
-    <!-- ── MaterialRangeBar (appyvet) stubs ───────────────────────────────── -->
-    <declare-styleable name="RangeBar">
-        <attr name="rangeBar_rangeBarColor" format="color" />
-        <attr name="rangeBar_rangeBarPaddingBottom" format="dimension" />
-        <attr name="rangeBar_connectingLineColor" format="color" />
-        <attr name="rangeBar_connectingLineWeight" format="dimension" />
-        <attr name="rangeBar_thumbColor" format="color" />
-        <attr name="rangeBar_thumbColorPressed" format="color" />
-        <attr name="rangeBar_thumbRadius" format="dimension" />
-        <attr name="rangeBar_thumbRadiusDP" format="dimension" />
-        <attr name="rangeBar_thumbBoundaryColor" format="color" />
-        <attr name="rangeBar_thumbBoundarySize" format="dimension" />
-        <attr name="rangeBar_tickColor" format="color" />
-        <attr name="rangeBar_tickHeight" format="dimension" />
-        <attr name="rangeBar_tickCount" format="integer" />
-        <attr name="rangeBar_tickDefaultValue" format="float" />
-        <attr name="rangeBar_tickStart" format="float" />
-        <attr name="rangeBar_tickEnd" format="float" />
-        <attr name="rangeBar_tickInterval" format="float" />
-        <attr name="rangeBar_isRangeBar" format="boolean" />
-        <attr name="rangeBar_tickLabelColor" format="color" />
-        <attr name="rangeBar_tickLabelSelectedColor" format="color" />
-        <attr name="rangeBar_leftIndex" format="integer" />
-        <attr name="rangeBar_rightIndex" format="integer" />
-        <attr name="rangeBar_drawTicks" format="boolean" />
-        <attr name="rangeBar_selectorBoundaryIndicatorEnabled" format="boolean" />
-        <attr name="rangeBar_arrowSelectorEnabled" format="boolean" />
-        <attr name="rangeBar_selector" format="reference" />
-        <attr name="rangeBar_selectorCircleColorIndicatorEnabled" format="boolean" />
-        <attr name="rangeBar_selectorCircleColor" format="color" />
-        <attr name="rangeBar_activeTickColor" format="color" />
-        <attr name="rangeBar_activeConnectingLineColor" format="color" />
-        <attr name="rangeBar_activeRangeBarColor" format="color" />
-        <attr name="rangeBar_temporaryPins" format="boolean" />
-    </declare-styleable>
+    <!-- ── MaterialRangeBar (appyvet) — attrs provided by library dependency ─ -->
+    <!-- Removed: library 'com.appyvet:materialrangebar:1.4.8' provides its own attrs -->
 
-    <!-- ── MaterialRatingBar (zhanghai) stubs ────────────────────────────── -->
-    <declare-styleable name="MaterialRatingBar">
-        <attr name="mrb_rating" format="float" />
-        <attr name="mrb_numStars" format="integer" />
-        <attr name="mrb_stepSize" format="float" />
-        <attr name="mrb_isIndicator" format="boolean" />
-        <attr name="mrb_progressDrawable" format="reference" />
-        <attr name="mrb_secondaryProgressDrawable" format="reference" />
-        <attr name="mrb_backgroundDrawable" format="reference" />
-    </declare-styleable>
+    <!-- ── MaterialRatingBar (zhanghai) — attrs provided by library dependency ─ -->
+    <!-- Removed: library 'me.zhanghai.android.materialratingbar:library:1.4.0' provides its own attrs -->
 
     <!-- ── link_builder (klinkerapps) stubs ──────────────────────────────── -->
     <!-- (link_builder has no custom view attrs) -->

@@ -7,7 +7,7 @@
  * Invoke: aws lambda invoke --function-name opusaimobility-celo-deploy ...
  *
  * Deployer wallet: 0x57651B018Fa4aC931Ec585da641078988Ef1213B
- * Network: Celo Sepolia Testnet (Chain ID: 44787)
+ * Network: Celo Sepolia Testnet (Chain ID: 11142220)
  * Faucet: https://faucet.celo.org/sepolia
  */
 
@@ -20,15 +20,15 @@ const REGION           = process.env.AWS_REGION       || 'us-east-1';
 const SECRET_CELO      = 'terraai/celo-contract';
 const SECRET_DEPLOYER  = 'opusaimobility/celo-deployer';
 const LAMBDA_FUNCTION  = 'omniride-api';
-// Celo Alfajores Testnet RPC (override via env var if needed)
-const CELO_RPC = process.env.CELO_RPC || process.env.CELO_RPC_URL || 'https://alfajores-forno.celo-testnet.org';
+// Celo Sepolia Testnet RPC (override via env var if needed)
+const CELO_RPC = process.env.CELO_RPC || process.env.CELO_RPC_URL || 'https://forno.celo-sepolia.celo-testnet.org';
 
-// Celo Alfajores Testnet ecosystem contracts
+// Celo Sepolia Testnet ecosystem contracts (chain ID 11142220)
 const CELO_SEPOLIA = {
-  chainId: 44787,
-  rpcUrl: 'https://alfajores-forno.celo-testnet.org',
-  blockExplorer: 'https://alfajores.celoscan.io',
-  deployer: '0x5b4bf10FE7b795D006BC904f7C058943f09851AF',
+  chainId: 11142220,
+  rpcUrl: 'https://forno.celo-sepolia.celo-testnet.org',
+  blockExplorer: 'https://sepolia.celoscan.io',
+  deployer: '0x57651B018Fa4aC931Ec585da641078988Ef1213B',
   uniswap: {
     factoryV3: '0xE0af690969AFff1A07b23555a6B7C716395Af80D',
     wrappedNativeToken: '0x2cE73DC897A3E10b3FF3F86470847c36ddB735cf',
@@ -75,9 +75,9 @@ export const handler = async (event) => {
       return { statusCode: 400, body: 'CELO_DEPLOYER_PK not set. Fund wallet and set key.' };
     }
 
-    // Connect to Celo Alfajores Testnet (chain ID 44787)
-    const chainId = parseInt(process.env.CELO_CHAIN_ID || '44787');
-    const networkName = 'alfajores';
+    // Connect to Celo Sepolia Testnet (chain ID 11142220)
+    const chainId = parseInt(process.env.CELO_CHAIN_ID || '11142220');
+    const networkName = 'celo-sepolia';
     const provider = new ethers.JsonRpcProvider(CELO_RPC, { chainId, name: networkName });
     const wallet   = new ethers.Wallet(deployerPk, provider);
 
@@ -106,7 +106,7 @@ export const handler = async (event) => {
       } else {
         return {
           statusCode: 400,
-          body: `Insufficient CELO: ${balCELO}. Fund ${wallet.address} at https://faucet.celo.org/alfajores`,
+          body: `Insufficient CELO: ${balCELO}. Fund ${wallet.address} at https://faucet.celo.org/sepolia`,
         };
       }
     }
@@ -133,12 +133,12 @@ export const handler = async (event) => {
       SecretString: JSON.stringify({
         ContractAddress: address,
         AdminAddress:    wallet.address,
-        Network:         'alfajores',
-        ChainId:         44787,
+        Network:         'celo-sepolia',
+        ChainId:         11142220,
         CeloRpcUrl:      CELO_RPC,
         DeployedAt:      new Date().toISOString(),
         TxHash:          txHash,
-        CeloscanUrl:     `https://alfajores.celoscan.io/address/${address}`,
+        CeloscanUrl:     `https://sepolia.celoscan.io/address/${address}`,
         Ecosystem:       CELO_SEPOLIA,
       }),
     }));
@@ -151,8 +151,8 @@ export const handler = async (event) => {
         Variables: {
           ...cfg.Environment?.Variables,
           CELO_CONTRACT_ADDRESS:  address,
-          CELO_NETWORK:           'alfajores',
-          CELO_CHAIN_ID:          '44787',
+          CELO_NETWORK:           'celo-sepolia',
+          CELO_CHAIN_ID:          '11142220',
           CELO_RPC_URL:           CELO_RPC,
           CELO_SWAP_ROUTER:       CELO_SEPOLIA.uniswap.swapRouter,
           CELO_USDC_ADDRESS:      CELO_SEPOLIA.tokens.USDC,
@@ -170,8 +170,8 @@ export const handler = async (event) => {
         contractAddress: address,
         txHash,
         deployer:        wallet.address,
-        celoscanUrl:     `https://alfajores.celoscan.io/address/${address}`,
-        message:         'TerraCarbon deployed to Celo Sepolia Testnet ✅',
+        celoscanUrl:     `https://sepolia.celoscan.io/address/${address}`,
+        message:         'TerraCarbon deployed to Celo Sepolia Testnet',
       }),
     };
 
