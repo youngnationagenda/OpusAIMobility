@@ -410,8 +410,7 @@ if(path==='/devices/token'&&method==='DELETE')return await removeDeviceToken(bod
 if(path==='/health'&&method==='GET')return ok({status:'ok',timestamp:Date.now(),service:'opusaimobility-api'});
 return err('Not found: '+method+' '+path,404);
 }catch(e){console.error(e);return err(e.message||'Internal error',500);}
-};/ /   v 1 . 7 . 0  
- / /   v 1 . 7 . 0  
- / /   v 1 . 7 . 0  
- / /   v 1 . 7 . 0  
- 
+};// v1.7.0
+// v1.7.0
+// v1.7.0
+// v1.7.0
