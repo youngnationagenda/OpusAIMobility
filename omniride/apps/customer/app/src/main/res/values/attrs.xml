@@ -101,19 +101,7 @@
         <attr name="picker_showOnlyFutureDate" format="boolean" />
     </declare-styleable>
 
-    <!-- ── PinView (com.chaos.view.PinView) — local stub ───────────────────── -->
-    <declare-styleable name="PinView">
-        <attr name="viewType" format="enum">
-            <enum name="rectangle" value="0" />
-            <enum name="line" value="1" />
-        </attr>
-        <attr name="itemCount" format="integer" />
-        <attr name="itemSpacing" format="dimension" />
-        <attr name="lineColor" format="color|reference" />
-        <attr name="lineWidth" format="dimension" />
-        <attr name="cursorColor" format="color" />
-        <attr name="hideLineWhenFilled" format="boolean" />
-    </declare-styleable>
+    <!-- ── PinView — attrs provided by io.github.chaosleong:pinview:1.4.4 ──── -->
 
     <!-- ── CountryCodePicker (hbb20) stubs ───────────────────────────────── -->
     <declare-styleable name="CountryCodePicker">
@@ -165,36 +153,9 @@
         <attr name="trimLines" format="integer" />
     </declare-styleable>
 
-    <!-- ── MaterialRangeBar (com.appyvet.materialrangebar) — local stub ─────── -->
-    <!-- Uses mrb_ prefix (not rangeBar_) matching layout XML references -->
-    <declare-styleable name="MaterialRangeBar">
-        <attr name="mrb_rangeBar" format="boolean" />
-        <attr name="mrb_rangeBarColor" format="color" />
-        <attr name="mrb_connectingLineColor" format="color" />
-        <attr name="mrb_connectingLineWeight" format="dimension" />
-        <attr name="mrb_pinColor" format="color" />
-        <attr name="mrb_pinTextColor" format="color" />
-        <attr name="mrb_selectorColor" format="color" />
-        <attr name="mrb_selectorSize" format="dimension" />
-        <attr name="mrb_tickHeight" format="dimension" />
-        <attr name="mrb_tickStart" format="float" />
-        <attr name="mrb_tickEnd" format="float" />
-        <attr name="mrb_tickInterval" format="float" />
-        <attr name="mrb_pinRadius" format="dimension" />
-        <attr name="mrb_pinMinFont" format="dimension" />
-        <attr name="mrb_pinMaxFont" format="dimension" />
-    </declare-styleable>
-
-    <!-- ── PageIndicator (com.chahinem.pageindicator) — local stub ──────────── -->
-    <declare-styleable name="PageIndicator">
-        <attr name="piSelectedColor" format="color" />
-        <attr name="piUnselectedColor" format="color" />
-        <attr name="piSize" format="dimension" />
-        <attr name="piSpacing" format="dimension" />
-    </declare-styleable>
-
-    <!-- ── MaterialRatingBar (zhanghai) — attrs provided by Maven Central lib ─ -->
-    <!-- Library 'me.zhanghai.android.materialratingbar:library:1.4.0' provides these -->
+    <!-- ── MaterialRangeBar removed — replaced by Material RangeSlider ────────── -->
+    <!-- ── PageIndicator removed — replaced by me.relex:circleindicator:2.1.6 ── -->
+    <!-- ── MaterialRatingBar — attrs provided by me.zhanghai.android.materialratingbar:1.4.0 ─ -->
 
     <!-- ── link_builder (klinkerapps) stubs ──────────────────────────────── -->
     <!-- (link_builder has no custom view attrs) -->

@@ -11,5 +11,10 @@
         <item>ar</item>
     </string-array>
 
+    <!-- Default values for the price RangeSlider (0 to 1000) -->
+    <array name="range_slider_defaults">
+        <item>0</item>
+        <item>1000</item>
+    </array>
 
 </resources>
