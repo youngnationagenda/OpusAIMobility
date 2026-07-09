@@ -1,0 +1,11 @@
+{
+  "name": "terraai-defi-settlement",
+  "version": "1.0.0",
+  "description": "Daily DeFi loan auto-deduction via EventBridge cron — TERRA-050",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0",
+    "@aws-sdk/client-sns": "^3.0.0"
+  }
+}

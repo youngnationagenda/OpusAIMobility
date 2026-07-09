@@ -1,0 +1,54 @@
+{
+  "UserAgent": "aws-amplify-cli/2.0",
+  "Version": "1.0",
+  "auth": {
+    "plugins": {
+      "awsCognitoAuthPlugin": {
+        "UserAgent": "aws-amplify-cli/2.0",
+        "Version": "1.0",
+        "IdentityManager": {
+          "Default": {}
+        },
+        "CredentialsProvider": {
+          "CognitoIdentity": {
+            "Default": {
+              "PoolId": "us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38",
+              "Region": "us-east-1"
+            }
+          }
+        },
+        "CognitoUserPool": {
+          "Default": {
+            "PoolId": "us-east-1_HA6twtr4a",
+            "AppClientId": "5nd3067cl29ka0b3a2k8me2ijh",
+            "Region": "us-east-1"
+          }
+        },
+        "Auth": {
+          "Default": {
+            "authenticationFlowType": "USER_SRP_AUTH",
+            "socialProviders": [],
+            "usernameAttributes": ["email", "phone_number"],
+            "signupAttributes": ["email", "given_name", "family_name"],
+            "passwordProtectionSettings": {
+              "passwordPolicyMinLength": 8,
+              "passwordPolicyCharacters": []
+            },
+            "mfaConfiguration": "OFF",
+            "mfaTypes": [],
+            "verificationMechanisms": ["email"]
+          }
+        }
+      }
+    }
+  },
+  "storage": {
+    "plugins": {
+      "awsS3StoragePlugin": {
+        "bucket": "aimobility-uploads-683541453923",
+        "region": "us-east-1",
+        "defaultAccessLevel": "guest"
+      }
+    }
+  }
+}

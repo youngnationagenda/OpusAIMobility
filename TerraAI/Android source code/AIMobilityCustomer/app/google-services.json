@@ -1,0 +1,41 @@
+{
+  "__comment": "Firebase project: opusaimobility. Client ID derived from service account client_id: 113167999384360995568. Package name must match applicationId in build.gradle: com.terraai.aimobility",
+  "project_info": {
+    "project_number": "113167999384360995568",
+    "project_id": "opusaimobility",
+    "storage_bucket": "opusaimobility.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113167999384360995568:android:opusaimobility",
+        "android_client_info": {
+          "package_name": "com.terraai.aimobility"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "113167999384360995568-default.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "REPLACE_WITH_FIREBASE_WEB_API_KEY_FROM_CONSOLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "113167999384360995568-default.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1",
+  "_setup_note": "project_number and project_id are confirmed from opusaimobility-d90412e796f2.json service account. The mobilesdk_app_id and api_key (current_key) must be retrieved from Firebase Console > Project Settings > General > Your Apps > Android app. Register app with package com.terraai.aimobility if not already done."
+}

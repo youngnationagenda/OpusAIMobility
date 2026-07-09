@@ -1,0 +1,68 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:683541453923:table/aimobility-*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/aimobility-*/index/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:GetSignedUrl"
+      ],
+      "Resource": "arn:aws:s3:::aimobility-uploads-683541453923/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sns:CreatePlatformEndpoint",
+        "sns:Publish",
+        "sns:Subscribe",
+        "sns:Unsubscribe",
+        "sns:GetEndpointAttributes",
+        "sns:SetEndpointAttributes"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "execute-api:ManageConnections"
+      ],
+      "Resource": [
+        "arn:aws:execute-api:us-east-1:683541453923:pg4ulam66a/*",
+        "arn:aws:execute-api:us-east-1:683541453923:z4sof7ojdf/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cognito-idp:AdminGetUser",
+        "cognito-idp:AdminCreateUser",
+        "cognito-idp:AdminUpdateUserAttributes",
+        "cognito-idp:AdminConfirmSignUp",
+        "cognito-idp:ListUsers",
+        "cognito-idp:AdminInitiateAuth",
+        "cognito-idp:AdminSetUserPassword",
+        "cognito-idp:SignUp"
+      ],
+      "Resource": "arn:aws:cognito-idp:us-east-1:683541453923:userpool/us-east-1_HA6twtr4a"
+    }
+  ]
+}

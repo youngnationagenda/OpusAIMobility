@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:id="@+id/browser_container"
+    android:focusable="true"
+    tools:context=".food.BrowseFragment">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_37sdp"
+                android:background="@drawable/search_bg"
+                android:orientation="vertical">
+
+
+                <ImageView
+                    android:id="@+id/search_icon"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    app:srcCompat="@drawable/ic_search_dark" />
+
+
+                <EditText
+                    android:id="@+id/search_product_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_toEndOf="@+id/search_icon"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="@font/airbnbcereallight"
+                    android:gravity="center_vertical"
+                    android:hint="@string/search_category"
+                    android:imeOptions="actionSearch"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:textColor="@color/text_color_black"
+                    android:textColorHint="@color/dark_gray"
+                    android:textSize="@dimen/_13sdp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/search_bar">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/horizontal_margin"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:text="@string/top_categories"
+                    android:textColor="@color/text_color_black"
+                    android:textSize="@dimen/_15sdp" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/topCategoriesRcView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_6sdp"
+                    android:layout_marginStart="@dimen/_6sdp" />
+
+            </LinearLayout>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <include
+            android:id="@+id/shimmer_frame_layout"
+            layout="@layout/shimmer_layout_browser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/search_bar" />
+
+
+        <include
+            android:id="@+id/cart_frame_layout"
+            layout="@layout/view_cart_layout"/>
+
+        <include
+            android:id="@+id/no_internet_layout"
+            layout="@layout/layout_no_internet" />
+
+    </RelativeLayout>
+
+
+</FrameLayout>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/paymentMethod_Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".ride.payment.PaymentFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <RelativeLayout
+                android:id="@+id/backBtn"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/horizontal_margin_toolbar"
+                    app:srcCompat="@drawable/ic_arrow_left" />
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/editCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:gravity="end"
+                android:text="@string/edit"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_14sdp"
+                android:visibility="gone" />
+
+
+            <TextView
+                android:id="@+id/editDone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:gravity="end"
+                android:text="@string/done"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/_14sdp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/shimmer_layout_frame"
+            layout="@layout/shimmer_layout_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/addPaymentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:layout_marginStart="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/airbnbcerealbold"
+                android:text="@string/set_up_a_payment_method"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_size_heading" />
+
+
+            <TextView
+                android:id="@+id/setUpPaymentText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/use_your_payment_methods_to_make_npurchase_on_gograb"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_Size11" />
+
+
+            <TextView
+                android:id="@+id/addPaymentMethodBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:background="@drawable/green_button_bg"
+                android:elevation="0dp"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:stateListAnimator="@null"
+                android:text="@string/add_payment_method"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/btn_textSize" />
+
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/paymentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swiperefreshlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/add_payment_btn">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/horizontal_margin"
+                        android:layout_marginEnd="@dimen/horizontal_margin"
+                        android:fontFamily="@font/airbnbcerealbold"
+                        android:gravity="center_vertical"
+                        android:text="Payment methods"
+                        android:textColor="@color/text_color_black"
+                        android:textSize="@dimen/text_size_heading" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/paymentMethodsRc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/title"
+                        android:layout_marginStart="@dimen/horizontal_margin"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginEnd="@dimen/horizontal_margin" />
+                </RelativeLayout>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/add_payment_btn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:layout_marginBottom="@dimen/_15sdp"
+                android:background="@drawable/green_button_bg">
+
+                <TextView
+                    android:id="@+id/confirm_btn_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:stateListAnimator="@null"
+                    android:text="@string/add_payment_method"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/btn_textSize" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</FrameLayout>

@@ -1,0 +1,22 @@
+{
+  "FunctionName": "aimobility-push",
+  "Runtime": "nodejs18.x",
+  "Role": "arn:aws:iam::683541453923:role/aimobility-push-lambda-role",
+  "Handler": "index.handler",
+  "Description": "aimobility Push Notification Service - SNS + Pinpoint",
+  "Timeout": 30,
+  "MemorySize": 256,
+  "Environment": {
+    "Variables": {
+      "SNS_TOPIC_PUSH": "arn:aws:sns:us-east-1:683541453923:aimobility-push-notifications",
+      "SNS_TOPIC_RIDE": "arn:aws:sns:us-east-1:683541453923:aimobility-ride-events",
+      "SNS_TOPIC_ORDER": "arn:aws:sns:us-east-1:683541453923:aimobility-order-events",
+      "PINPOINT_APP_ID": "f1db6e3aea754decb0f3988dab0b4c7a",
+      "SNS_PLATFORM_APP_ARN": "PENDING_FCM_KEY"
+    }
+  },
+  "Tags": {
+    "Project": "aimobility",
+    "Environment": "prod"
+  }
+}

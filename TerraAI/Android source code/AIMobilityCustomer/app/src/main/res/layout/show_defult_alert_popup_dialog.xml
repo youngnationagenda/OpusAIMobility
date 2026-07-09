@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/less_round_edge_ractengle_white"
+        android:elevation="@dimen/_3sdp"
+        android:orientation="vertical"
+        android:padding="@dimen/_15sdp">
+
+        <TextView
+            android:id="@+id/defult_alert_txt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:text=""
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/text_Size12" />
+
+
+        <TextView
+            android:id="@+id/defult_alert_txt_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:text=""
+            android:textColor="@color/text_color_grey"
+            android:textSize="@dimen/text_Size10" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:gravity="center_vertical|end"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/defult_alert_btn_cancel_no"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_37sdp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="@string/no"
+                android:textAllCaps="false"
+                android:padding="10dp"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_Size10"
+                android:visibility="visible" />
+
+
+            <TextView
+                android:id="@+id/defult_alert_btn_cancel_yes"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_37sdp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:padding="10dp"
+                android:text="@string/logout"
+                android:textAllCaps="false"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_Size10" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

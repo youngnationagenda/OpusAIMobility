@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_45sdp"
+        android:paddingStart="@dimen/_15sdp"
+        android:background="@drawable/custom_ripple"
+        android:paddingEnd="@dimen/_15sdp">
+
+        <TextView
+            android:id="@+id/tv_country_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_toStartOf="@+id/iv_tick"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:text=""
+            android:textAlignment="viewStart"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/_11sdp"
+            android:textStyle="normal"
+            tools:ignore="RtlCompat" />
+
+        <ImageView
+            android:id="@+id/iv_tick"
+            android:layout_width="@dimen/_17sdp"
+            android:layout_height="@dimen/_17sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_check" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:background="@drawable/lite_gray_line" />
+
+
+</LinearLayout>

@@ -1,0 +1,6 @@
+{
+  "Enabled": true,
+  "FromAddress": "noreply@terraaimobility.com",
+  "Identity": "arn:aws:ses:us-east-1:683541453923:identity/noreply@terraaimobility.com",
+  "RoleArn": "arn:aws:iam::683541453923:role/aimobility-pinpoint-role"
+}

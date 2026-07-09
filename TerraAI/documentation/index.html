@@ -1,0 +1,28 @@
+if($singleRow['Lead']['priority'] == "1")
+{
+echo '<i class="fas fa-thermometer-empty tempIcon" style="color:#784bff;" title="Moderate"></i>';
+}
+else
+if($singleRow['Lead']['priority'] == "2")
+{
+echo '<i class="fas fa-thermometer-empty tempIcon" style="color:#ffb1b1;" title="Hot"></i>';
+}
+else
+if($singleRow['Lead']['priority'] == "3")
+{
+echo '<i class="fas fa-thermometer-empty tempIcon" style="color:#ff4141;" title="Very Hot"></i>';
+}
+else
+if($singleRow['Lead']['priority'] == "4")
+{
+echo '<i class="fas fa-thermometer-empty tempIcon" style="color:#1283f9;" title="Cold"></i>';
+}
+else
+if($singleRow['Lead']['priority'] == "5")
+{
+echo '<i class="fas fa-thermometer-empty tempIcon" style="color:#51a6ff;" title="Very Cold"></i>';
+}
+else
+{
+echo '<i class="fas fa-thermometer-empty tempIcon" title="zero status"></i>';
+}

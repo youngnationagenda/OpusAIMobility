@@ -1,0 +1,66 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "IoTPublish",
+      "Effect": "Allow",
+      "Action": ["iot:Publish", "iot:Connect"],
+      "Resource": [
+        "arn:aws:iot:us-east-1:683541453923:topic/opusaimobility/notifications/*",
+        "arn:aws:iot:us-east-1:683541453923:client/*"
+      ]
+    },
+    {
+      "Sid": "Pinpoint",
+      "Effect": "Allow",
+      "Action": [
+        "mobiletargeting:PutEvents",
+        "mobiletargeting:GetEndpoint",
+        "mobiletargeting:UpdateEndpoint"
+      ],
+      "Resource": "arn:aws:mobiletargeting:us-east-1:683541453923:apps/20d7e36cc4094a04b63b7fd1e5596fcf/*"
+    },
+    {
+      "Sid": "SecretsManagerFCM",
+      "Effect": "Allow",
+      "Action": ["secretsmanager:GetSecretValue"],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:683541453923:secret:opusaimobility/firebase-service-account-*",
+        "arn:aws:secretsmanager:us-east-1:683541453923:secret:terraai/fcm-server-key-*"
+      ]
+    },
+    {
+      "Sid": "DynamoDBPushEndpoints",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:UpdateItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-push-endpoints",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-push-endpoints/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/omniride-connections",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/omniride-connections/index/*"
+      ]
+    },
+    {
+      "Sid": "WebSocket",
+      "Effect": "Allow",
+      "Action": ["execute-api:ManageConnections"],
+      "Resource": "arn:aws:execute-api:us-east-1:683541453923:z4sof7ojdf/prod/POST/@connections/*"
+    },
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:us-east-1:683541453923:*"
+    }
+  ]
+}

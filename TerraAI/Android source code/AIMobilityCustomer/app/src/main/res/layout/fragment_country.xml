@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height">
+
+            <RelativeLayout
+                android:id="@+id/backBtn"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true">
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/horizontal_margin"
+                    app:srcCompat="@drawable/ic_cross" />
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/tv_resturant_name_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/country_region"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/toolbarTextSize" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:background="@drawable/lite_gray_line" />
+
+        <RelativeLayout
+            android:id="@+id/searchLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_below="@+id/toolbar"
+            android:paddingStart="@dimen/horizontal_margin"
+            android:paddingEnd="@dimen/horizontal_margin"
+            tools:ignore="RtlCompat">
+
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/toolbar_height"
+                android:layout_centerInParent="true"
+                android:background="@android:color/transparent"
+                android:drawableStart="@drawable/ic_search"
+                android:gravity="center_vertical"
+                android:hint="@string/search_country_here"
+                android:inputType="textVisiblePassword|textNoSuggestions"
+                android:textColor="@color/text_color_black"
+                android:textColorHint="@color/text_color_grey"
+                android:textSize="@dimen/text_Size12"
+                tools:ignore="RtlCompat" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/searchLayout"
+            android:background="@color/light_gray_txt" />
+
+        <include
+            android:id="@+id/shimmer_frame_layout"
+            android:layout_below="@+id/searchLayout"
+            layout="@layout/shimmer_layout_country"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/searchLayout"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</FrameLayout>

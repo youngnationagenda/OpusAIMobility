@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/mainLayout"
+    android:orientation="vertical"
+    android:background="@drawable/custom_ripple"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvWeight"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_gravity="center"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="Less than 1kg"/>
+
+    <View
+        android:id="@+id/viewItem"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/light_grey" />
+
+</LinearLayout>

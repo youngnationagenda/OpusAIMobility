@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_rounded_corner"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/_20sdp"
+            android:paddingStart="@dimen/_32sdp"
+            android:paddingEnd="@dimen/_12sdp">
+
+            <TextView
+                android:id="@+id/date_text_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/airbnbcereallight"
+                android:text="@string/schedule_a_ride_for"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_Size11" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/today_5_15_pm"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_Size12" />
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/black" />
+
+
+        <com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker
+            android:id="@+id/singleDateTimePicker"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_250sdp"
+            android:layout_marginHorizontal="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            app:picker_curved="false"
+            app:picker_cyclic="false"
+            app:picker_dayCount="30"
+            app:picker_displayHours="true"
+            app:picker_displayMinutes="true"
+            app:picker_itemSpacing="5dp"
+            app:picker_mustBeOnFuture="true"
+            app:picker_selectedTextColor="@color/black"
+            app:picker_selectorColor="@color/gray"
+            app:picker_stepSizeMinutes="15"
+            app:picker_textColor="@color/gray"
+            app:picker_textSize="@dimen/_12sdp"
+            app:picker_visibleItemCount="5" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@color/gray" />
+
+
+        <LinearLayout
+            android:id="@+id/warning_alert_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:paddingVertical="@dimen/_10sdp"
+            android:paddingStart="@dimen/_12sdp"
+            android:paddingEnd="@dimen/_12sdp"
+            android:visibility="gone">
+
+
+            <ImageView
+                android:layout_width="@dimen/_14sdp"
+                android:layout_height="@dimen/_14sdp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_warning_alert" />
+
+            <TextView
+                android:id="@+id/warning_alert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:text="@string/the_date_you_choose_is_fully_booked_pick_another_date"
+                android:textColor="@color/red"
+                android:textSize="@dimen/text_Size9" />
+
+
+        </LinearLayout>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonSelectDate"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/green_button_bg"
+            android:elevation="0dp"
+            android:stateListAnimator="@null"
+            android:text="@string/schedule"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

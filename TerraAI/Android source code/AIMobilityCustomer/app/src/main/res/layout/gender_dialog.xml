@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:theme="@style/AppTheme_dialouge">
+
+    <TextView
+        android:id="@+id/header_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/horizontal_margin"
+        android:includeFontPadding="false"
+        android:text="@string/gender"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/_16sdp"
+        android:textStyle="bold" />
+
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/male_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@drawable/custom_ripple"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
+            android:drawableRight="?android:attr/listChoiceIndicatorSingle"
+            android:drawableTint="@color/dark_gray"
+            android:paddingStart="@dimen/horizontal_margin"
+            android:paddingTop="@dimen/_10sdp"
+            android:paddingEnd="@dimen/horizontal_margin"
+            android:paddingBottom="@dimen/_10sdp"
+            android:text="@string/male"
+            android:textAlignment="textStart"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/_11sdp" />
+
+        <RadioButton
+            android:id="@+id/female_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@drawable/custom_ripple"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
+            android:drawableTint="@color/dark_gray"
+            android:paddingStart="@dimen/horizontal_margin"
+            android:paddingTop="@dimen/_10sdp"
+            android:paddingEnd="@dimen/horizontal_margin"
+            android:paddingBottom="@dimen/_10sdp"
+            android:text="@string/female"
+            android:textAlignment="textStart"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/_11sdp" />
+
+
+        <RadioButton
+            android:id="@+id/other_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@drawable/custom_ripple"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
+            android:drawableTint="@color/dark_gray"
+            android:paddingStart="@dimen/horizontal_margin"
+            android:paddingTop="@dimen/_10sdp"
+            android:paddingEnd="@dimen/horizontal_margin"
+            android:paddingBottom="@dimen/_10sdp"
+            android:text="@string/other"
+            android:textAlignment="textStart"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/_11sdp" />
+
+    </RadioGroup>
+
+</LinearLayout>

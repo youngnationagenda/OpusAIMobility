@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/white_round_card"
+        android:elevation="@dimen/_3sdp"
+        android:orientation="vertical"
+        android:padding="@dimen/_15sdp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/airbnbcerealmedium"
+            android:text="@string/add_reason"
+            android:textColor="@color/text_color_black"
+            android:textSize="@dimen/text_Size12" />
+
+
+        <EditText
+            android:id="@+id/etAddReson"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@null"
+            android:hint="@string/type_your_message_here"
+            android:inputType="textNoSuggestions"
+            android:textColor="@color/text_color_black"
+            android:textColorHint="@color/text_color"
+            android:textSize="@dimen/text_Size11" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@color/gray" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:gravity="center_vertical|end"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/notSubmitReasonText"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_37sdp"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/airbnbcerealmedium"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:padding="10dp"
+                android:text="@string/no"
+                android:textAllCaps="false"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_Size12"
+                android:visibility="visible" />
+
+
+            <TextView
+                android:id="@+id/submitReasonText"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_37sdp"
+                android:fontFamily="@font/airbnbcerealmedium"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:padding="10dp"
+                android:text="@string/submit"
+                android:textAllCaps="false"
+                android:textColor="@color/text_color_black"
+                android:textSize="@dimen/text_Size12" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

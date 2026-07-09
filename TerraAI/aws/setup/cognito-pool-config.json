@@ -1,0 +1,69 @@
+{
+  "PoolName": "aimobility-users",
+  "Policies": {
+    "PasswordPolicy": {
+      "MinimumLength": 8,
+      "RequireUppercase": false,
+      "RequireLowercase": false,
+      "RequireNumbers": false,
+      "RequireSymbols": false
+    }
+  },
+  "AutoVerifiedAttributes": ["email"],
+  "UsernameAttributes": ["email", "phone_number"],
+  "Schema": [
+    {
+      "Name": "given_name",
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Required": true
+    },
+    {
+      "Name": "family_name",
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Required": true
+    },
+    {
+      "Name": "phone_number",
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Required": false
+    },
+    {
+      "Name": "custom:role",
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Required": false,
+      "StringAttributeConstraints": { "MinLength": "1", "MaxLength": "50" }
+    },
+    {
+      "Name": "custom:wallet",
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Required": false,
+      "StringAttributeConstraints": { "MinLength": "1", "MaxLength": "20" }
+    },
+    {
+      "Name": "custom:country_id",
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Required": false,
+      "StringAttributeConstraints": { "MinLength": "1", "MaxLength": "10" }
+    }
+  ],
+  "MfaConfiguration": "OFF",
+  "EmailConfiguration": {
+    "EmailSendingAccount": "COGNITO_DEFAULT"
+  },
+  "AccountRecoverySetting": {
+    "RecoveryMechanisms": [
+      { "Priority": 1, "Name": "verified_email" },
+      { "Priority": 2, "Name": "verified_phone_number" }
+    ]
+  },
+  "UserPoolTags": {
+    "Project": "aimobility",
+    "Environment": "prod"
+  }
+}

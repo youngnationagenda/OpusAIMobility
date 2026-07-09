@@ -1,0 +1,22 @@
+{
+  "name": "terraai-contracts",
+  "version": "1.0.0",
+  "description": "TerraCarbon ERC-20 smart contracts — TERRA-030",
+  "scripts": {
+    "compile":  "npx hardhat compile",
+    "test":     "npx hardhat test",
+    "deploy:alfajores": "npx hardhat run scripts/deploy.js --network alfajores",
+    "deploy:celo":      "npx hardhat run scripts/deploy.js --network celo",
+    "verify:alfajores": "npx hardhat verify --network alfajores"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.20.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.0.0",
+    "@aws-sdk/client-lambda": "^3.0.0",
+    "@openzeppelin/contracts": "^4.9.3",
+    "dotenv": "^16.0.0"
+  }
+}
