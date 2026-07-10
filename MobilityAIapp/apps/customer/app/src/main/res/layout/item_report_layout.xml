@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_55sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/d_bottom_border"
+    android:paddingStart="@dimen/horizontal_margin"
+    android:paddingEnd="@dimen/horizontal_margin">
+
+    <TextView
+        android:id="@+id/title_txt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@+id/imageView1"
+        android:gravity="center_vertical"
+        android:text="@string/captain_caused_the_ride_charges_to_increase"
+        android:textColor="@color/text_color_black"
+        android:textSize="@dimen/_12sdp" />
+
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="@dimen/_14sdp"
+            android:layout_height="@dimen/_14sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_arrow_right" />
+
+    </RelativeLayout>

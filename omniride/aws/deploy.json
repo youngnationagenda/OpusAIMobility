@@ -1,1 +1,0 @@
-{"steps":["cognito","iam","dynamodb","secrets","s3","sns","lambda","apigateway","permissions","iot","env"]}

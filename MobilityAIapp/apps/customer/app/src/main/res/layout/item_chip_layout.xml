@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/CustomChipChoice"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:focusable="true"
+    android:gravity="center"
+    android:maxHeight="@dimen/_14sdp"
+    android:stateListAnimator="@null"
+    android:text="@string/economy"
+    android:textSize="@dimen/_12sdp"
+    app:chipCornerRadius="@dimen/_6sdp"
+    app:chipMinHeight="@dimen/_20sdp"
+    app:ensureMinTouchTargetSize="false"
+    app:rippleColor="@null">
+
+</com.google.android.material.chip.Chip>

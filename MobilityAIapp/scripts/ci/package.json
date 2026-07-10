@@ -1,0 +1,17 @@
+{
+  "name": "@opusaimobility/ci",
+  "version": "1.0.0",
+  "description": "CI/CD scripts for OpusAIMobility platform",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "upload-apk": "tsx upload-apk.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "~5.8.2"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "S3 bucket configuration for TerraAI file uploads with versioning and lifecycle policy",
+  "Resources": {
+    "UploadBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "opusaimobility-terra-uploads",
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "TransitionToInfrequentAccess",
+              "Status": "Enabled",
+              "Transitions": [
+                {
+                  "TransitionInDays": 90,
+                  "StorageClass": "STANDARD_IA"
+                }
+              ]
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "CorsConfiguration": {
+          "CorsRules": [
+            {
+              "AllowedHeaders": ["*"],
+              "AllowedMethods": ["GET", "PUT", "POST"],
+              "AllowedOrigins": ["*"],
+              "MaxAge": 3600
+            }
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "OpusAIMobility"
+          },
+          {
+            "Key": "Component",
+            "Value": "TerraAI-Uploads"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "BucketName": {
+      "Description": "Name of the S3 upload bucket",
+      "Value": { "Ref": "UploadBucket" }
+    },
+    "BucketArn": {
+      "Description": "ARN of the S3 upload bucket",
+      "Value": { "Fn::GetAtt": ["UploadBucket", "Arn"] }
+    }
+  }
+}

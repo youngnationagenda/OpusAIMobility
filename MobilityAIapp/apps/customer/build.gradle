@@ -1,0 +1,41 @@
+// Top-level build file — OpusAIMobility Customer (AWS backend, no Firebase)
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.4'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+
+        // JitPack with optional auth token (set authToken in gradle.properties via CI secret)
+        maven {
+            url "https://jitpack.io"
+            if (project.hasProperty('authToken')) {
+                credentials { username authToken }
+            }
+        }
+
+        // AWS Amplify
+        maven { url "https://aws-amplify.github.io/amplify-android/releases" }
+
+        // AWS Android SDK v2
+        maven {
+            url "https://s3.amazonaws.com/aws-android-sdk-release"
+            content { includeGroup "com.amazonaws" }
+        }
+
+        maven { url "https://maven.google.com" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

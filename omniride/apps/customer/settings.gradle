@@ -1,4 +1,0 @@
-include ':app'
-include ':pdf'
-include ':libraries:pinview'
-rootProject.name = "OpusAIMobilityCustomer"

@@ -1,0 +1,1 @@
+{"statusCode":200,"headers":{"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","Access-Control-Allow-Headers":"Content-Type,Authorization"},"body":"{\"status\":\"ok\",\"timestamp\":1783623731413,\"service\":\"opusaimobility-api\"}"}
