@@ -2,9 +2,8 @@
 <resources>
     <string-array name="app_language">
         <item>English</item>
-        <item>عربی</item>
+        <item>Arabic</item>
     </string-array>
-<!--    apply same number of language with same number of laguage code-->
 
     <string-array name="app_language_code">
         <item>en</item>

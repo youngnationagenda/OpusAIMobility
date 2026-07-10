@@ -336,7 +336,7 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
                                             bannerModel.setUrl(imageObj.optString("url"));
                                             bannerModelArrayList.add(bannerModel);
                                         }
-                                        binding.pageIndicator.attachTo(binding.bannerRecyclerView);
+                                        binding.pageIndicator.attachToRecyclerView(binding.bannerRecyclerView);
                                         bannerAdapter.notifyDataSetChanged();
                                     }
                                 } catch (Exception e) {
@@ -376,7 +376,7 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
         binding.bannerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         binding.bannerRecyclerView.setAdapter(bannerAdapter);
         bannerAdapter.notifyDataSetChanged();
-        binding.pageIndicator.attachTo(binding.bannerRecyclerView);
+        binding.pageIndicator.attachToRecyclerView(binding.bannerRecyclerView);
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(binding.bannerRecyclerView);
 
@@ -817,6 +817,4 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
     public void getChangedList(ResturantModel recipeDataModel) {
         Functions.updatList(nearbyList, recipeDataModel);
         getFavouriteData();
-        nearbyAdapter.notifyDataSetChanged();
-    }
-}
+        nearbyAdapter
