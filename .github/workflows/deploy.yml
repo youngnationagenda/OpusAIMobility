@@ -80,7 +80,7 @@ jobs:
         with:
           filters: |
             customer_app:
-              - 'apps/customer/**'
+              - 'omniride/apps/customer/**'
             lambda:
               - 'aws/lambda/index.js'
               - 'aws/lambda/package.json'
@@ -183,6 +183,7 @@ jobs:
 
   # -------------------------------------------------------------------
   # Build Customer APK (debug) and upload to S3
+  # Uses gradle/actions@v6 for optimized caching and build
   # -------------------------------------------------------------------
   deploy-customer-apk:
     name: Build & Upload Customer APK (Debug)
@@ -193,22 +194,24 @@ jobs:
       needs.changes.outputs.shared == 'true'
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout sources
+        uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: 17
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
 
-      - name: Build Customer APK (debug)
-        working-directory: apps/customer
-        run: |
-          chmod +x ./gradlew 2>/dev/null || true
-          ./gradlew assembleDebug
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v6
+
+      - name: Build with Gradle (debug)
+        working-directory: omniride/apps/customer
+        run: ./gradlew assembleDebug --no-daemon --warning-mode all
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -222,21 +225,25 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: omniride/package-lock.json
 
       - name: Install dependencies
+        working-directory: omniride
         run: npm ci
 
       - name: Upload APK to S3
         env:
-          APK_PATH: apps/customer/build/outputs/apk/debug/customer-debug.apk
+          APK_PATH: omniride/apps/customer/app/build/outputs/apk/debug/app-debug.apk
           APP_NAME: opusaimobility-customer
           BUILD_NUMBER: ${{ github.run_number }}
           S3_APK_BUCKET: ${{ secrets.S3_APK_BUCKET }}
           AWS_REGION: ${{ env.AWS_REGION }}
+        working-directory: omniride
         run: npx tsx scripts/ci/upload-apk.ts
 
   # -------------------------------------------------------------------
   # Build signed release APK for Play Store
+  # Uses gradle/actions@v6 for optimized caching and build
   # Requires GitHub Secrets: KEYSTORE_FILE (base64), KEYSTORE_PASSWORD,
   #   KEY_ALIAS, KEY_PASSWORD
   # Only runs on tags (v*) or manual workflow_dispatch
@@ -250,7 +257,8 @@ jobs:
       (needs.changes.outputs.customer_app == 'true' || needs.changes.outputs.shared == 'true' || startsWith(github.ref, 'refs/tags/v'))
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout sources
+        uses: actions/checkout@v4
 
       - name: Validate release secrets
         run: |
@@ -266,29 +274,28 @@ jobs:
           fi
           echo "All release secrets present"
 
-      - name: Set up JDK
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: 17
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Decode keystore
         run: |
-          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > apps/customer/app/release.keystore
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > omniride/apps/customer/app/release.keystore
 
-      - name: Build signed release APK
-        working-directory: apps/customer
+      - name: Build signed release APK with Gradle
+        working-directory: omniride/apps/customer
         env:
           KEYSTORE_PATH: app/release.keystore
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          chmod +x ./gradlew 2>/dev/null || true
-          ./gradlew assembleRelease \
+          ./gradlew assembleRelease --no-daemon \
             -Pandroid.injected.signing.store.file=$KEYSTORE_PATH \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
@@ -296,7 +303,7 @@ jobs:
 
       - name: Verify APK is signed
         run: |
-          APK_PATH=$(find apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
+          APK_PATH=$(find omniride/apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
           echo "APK: $APK_PATH"
           $ANDROID_HOME/build-tools/*/apksigner verify --verbose "$APK_PATH" | grep -E "Verified|v[12] scheme"
 
@@ -309,7 +316,7 @@ jobs:
 
       - name: Upload release APK to S3
         run: |
-          APK_PATH=$(find apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
+          APK_PATH=$(find omniride/apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
           VERSION_TAG=${GITHUB_REF#refs/tags/}
           aws s3 cp "$APK_PATH" \
             "s3://${{ secrets.S3_APK_BUCKET }}/apks/customer/release/opusaimobility-customer-${VERSION_TAG}.apk"
@@ -319,7 +326,7 @@ jobs:
 
       - name: Clean up keystore
         if: always()
-        run: rm -f apps/customer/app/release.keystore
+        run: rm -f omniride/apps/customer/app/release.keystore
 
   # -------------------------------------------------------------------
   # Deploy OpusAIMobility Lambda function
