@@ -468,4 +468,3 @@ public class PinView extends AppCompatEditText {
         setText("");
     }
 }
-         
