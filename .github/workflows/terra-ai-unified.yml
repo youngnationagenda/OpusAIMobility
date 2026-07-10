@@ -7,8 +7,7 @@
     wc -l omniride/apps/customer/app/src/main/res/values/attrs.xml
 
     echo "===== HEX OF LAST 64 BYTES ====="
-    tail -c 64 omniride/apps/customer/app/src/main/res/values/attrs.xml | xxd
-    
+    tail -c 64 omniride/apps/customer/app/src/main/res/values/attrs.xml | xxd  
 name: "Deploy — OpusAIMobility Unified CI/CD"
 # TICKET: TERRA-093 — Unified monorepo pipeline
 # All source is inside omniride/ (NOT opusaimobility/)
