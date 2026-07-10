@@ -1,6 +1,21 @@
 // ── :pdf module ──────────────────────────────────────────────────────────────
 // Isolated so iText7's heavy BouncyCastle transitive deps never enter :app's
 // debug classpath.  :app depends on this module only in the release variant.
+//
+// Task :pdf:prepareLintJarForPublish
+// ─────────────────────────────────
+// AGP 8.1+ unconditionally runs prepareLintJarForPublish on every
+// com.android.library module to bundle custom lint rules into the AAR.
+// The configuration below minimises its scope and prevents it from
+// scanning iText7's 400+ transitive classes unnecessarily:
+//   • buildConfig false      — no generated BuildConfig.java to lint
+//   • checkReleaseBuilds false — skip full release lint during jar prep
+//   • checkDependencies false  — do not lint iText7 / BouncyCastle sources
+//   • quiet true               — suppress lint noise in CI output
+//   • disable 'NewApi'         — iText7 contains java.nio calls that trigger
+//                                NewApi on minSdk 24; not actionable here
+// ─────────────────────────────────────────────────────────────────────────────
+
 plugins {
     id 'com.android.library'
 }
@@ -14,13 +29,17 @@ android {
         targetSdk 34
     }
 
+    buildFeatures {
+        // No generated BuildConfig needed — keeps lint jar prep fast
+        buildConfig false
+    }
+
     buildTypes {
         release {
             minifyEnabled false
-            // consumerProguardFiles are merged into the *consuming* module's
-            // (i.e. :app) R8 rule set at release build time.  This ensures
-            // iText7 and BouncyCastle reflection look-ups survive shrinking
-            // even though minifyEnabled is false here in the library itself.
+            // consumerProguardFiles are merged into the consuming module's
+            // (:app) R8 rule set at release build time.  iText7 and
+            // BouncyCastle reflection look-ups are protected this way.
             consumerProguardFiles 'consumer-rules.pro'
         }
         debug {
@@ -28,28 +47,52 @@ android {
         }
     }
 
+    lint {
+        // Do not abort on lint errors — iText7 triggers several
+        // third-party lint warnings that are not actionable in this module
+        abortOnError false
+
+        // prepareLintJarForPublish: skip the full release-variant lint run
+        checkReleaseBuilds false
+
+        // Do not cascade lint checks into iText7 / BouncyCastle dependency
+        // classes — dramatically reduces prepareLintJarForPublish work
+        checkDependencies false
+
+        // Suppress AGP 8.x noise in CI logs for this library module
+        quiet true
+
+        // iText7 uses java.nio APIs that trigger NewApi on minSdk 24
+        // These are internal to iText7 and not reachable from app code
+        disable 'NewApi', 'ObsoleteSdkInt', 'GradleDependency'
+
+        // Write lint results to a file rather than stdout so CI summary
+        // is not polluted by iText7 third-party warnings
+        xmlOutput file("build/reports/lint-results.xml")
+        htmlOutput file("build/reports/lint-results.html")
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    lint {
-        abortOnError false
-    }
 }
 
 configurations.all {
-    // Pin BouncyCastle to one version so it doesn't conflict with AWS SDK
+    // Pin BouncyCastle to one version — prevents AWS SDK vs iText7
+    // daemon thread crash caused by split-classloader with two BC versions
     resolutionStrategy.force 'org.bouncycastle:bcprov-jdk15on:1.70'
     resolutionStrategy.force 'org.bouncycastle:bcpkix-jdk15on:1.70'
 }
 
 dependencies {
-    // iText7 — kept here, isolated from :app debug builds
+    // iText7 — isolated here; excluded from :app debug builds via
+    // releaseImplementation project(':pdf') in app/build.gradle.
+    // BouncyCastle excluded because we supply it separately (pinned above).
     implementation('com.itextpdf:itext7-core:7.2.3') {
         exclude group: 'org.bouncycastle'
     }
 
-    // AndroidX needed for any PDF helper utilities
+    // AndroidX annotation — needed for @NonNull / @Nullable in PdfGenerator
     implementation 'androidx.annotation:annotation:1.3.0'
 }

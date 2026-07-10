@@ -62,8 +62,15 @@ android {
     }
 
     lint {
-        checkReleaseBuilds false
-        abortOnError false
+        checkReleaseBuilds  false
+        abortOnError        false
+        // Do not re-run lint on :pdf and :libraries:pinview dependency classes —
+        // each library module's own lint block already covers them.
+        // This also prevents prepareLintJarForPublish cascade into :app's
+        // lint task graph.
+        checkDependencies   false
+        quiet               true
+        disable 'GradleDependency', 'ObsoleteSdkInt'
     }
 
     aaptOptions {

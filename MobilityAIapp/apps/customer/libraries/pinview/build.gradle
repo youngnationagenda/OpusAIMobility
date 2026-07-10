@@ -1,3 +1,7 @@
+// ── :libraries:pinview module ─────────────────────────────────────────────────
+// Local PinView replacement — same com.chaos.view API as the original JitPack
+// library but zero external dependencies.  Zero custom lint rules.
+
 plugins {
     id 'com.android.library'
 }
@@ -12,7 +16,16 @@ android {
     }
 
     buildFeatures {
+        // No generated BuildConfig needed for a pure-View library
         buildConfig false
+    }
+
+    lint {
+        abortOnError        false
+        checkReleaseBuilds  false
+        checkDependencies   false
+        quiet               true
+        disable 'ObsoleteSdkInt', 'GradleDependency'
     }
 
     compileOptions {
