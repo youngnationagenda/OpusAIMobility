@@ -349,4 +349,13 @@
 
         <include
             android:id="@+id/cart_view"
-            layout="@l
+            layout="@layout/view_cart_layout" />
+
+     <include
+            android:id="@+id/no_internet_layout"
+            layout="@layout/layout_no_internet" />
+
+
+    </RelativeLayout>
+
+</FrameLayout>

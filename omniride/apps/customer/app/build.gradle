@@ -181,4 +181,16 @@ dependencies {
     // ── UI — JitPack ──────────────────────────────────────────────────────────
     implementation 'com.github.TellH:RecyclerTreeView:1.2.0'
 
-    // ── Custom Views ────
+    // ── Custom Views ──────────────────────────────────────────────────────────
+    // PinView — local library module, zero external deps, same com.chaos.view API
+    implementation project(':libraries:pinview')
+    // MaterialRatingBar — Maven Central
+    implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
+    // CircleIndicator2 replaces abandoned chahinem/pageindicator (Maven Central)
+    implementation 'me.relex:circleindicator:2.1.6'
+    // RangeSlider from Material Components replaces abandoned appyvet/MaterialRangeBar
+    // (com.google.android.material:material already declared above — no extra dep needed)
+
+    // ── Charts — TERRA-081 Telemetry Screen ───────────────────────────────────
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+}

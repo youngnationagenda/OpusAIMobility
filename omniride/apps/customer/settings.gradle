@@ -1,4 +1,4 @@
 include ':app'
 include ':pdf'
 include ':libraries:pinview'
-rootProject.nam
+rootProject.name = "OpusAIMobilityCustomer"
