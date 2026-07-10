@@ -1,0 +1,72 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# CodeQL configuration for OpusAIMobility monorepo
+#
+# Tells CodeQL which paths to include/exclude so it doesn't waste time
+# scanning build artefacts, vendored deps, or generated files.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+name: "OpusAIMobility CodeQL Config"
+
+# ── Query suites ──────────────────────────────────────────────────────────────
+# security-extended covers everything in the default security suite plus:
+#   - More injection sinks (Android intent, SQL, LDAP, XPath)
+#   - Weak cryptography (MD5, SHA1, DES, ECB mode)
+#   - Cleartext storage of sensitive data
+#   - Android-specific: exported components, missing certificate validation
+#   - JavaScript: prototype pollution, RegExp injection, NoSQL injection
+queries:
+  - uses: security-extended
+
+# ── Path exclusions ───────────────────────────────────────────────────────────
+# Exclude generated, vendored, and build-output paths from all languages.
+paths-ignore:
+  # Build outputs
+  - "**/build/**"
+  - "**/dist/**"
+  - "**/.gradle/**"
+  - "**/generated/**"
+
+  # Node dependencies (all workspaces)
+  - "**/node_modules/**"
+
+  # Android generated resources and assets
+  - "MobilityAIapp/apps/customer/app/src/main/res/**"
+  - "MobilityAIapp/apps/customer/app/src/main/assets/**"
+
+  # ZIP/binary lambda deployment artefacts
+  - "MobilityAIapp/aws/lambda/*.zip"
+  - "aws/lambda/*.zip"
+  - "aws/*.zip"
+
+  # One-off fix/migration scripts (not production code)
+  - "fix_java_errors*.py"
+  - "sync_to_git.py"
+
+  # Test fixtures and snapshot data
+  - "MobilityAIapp/tests/**"
+
+# ── Path inclusions ───────────────────────────────────────────────────────────
+# Explicitly include all production source roots so nothing is missed.
+paths:
+  # Android Java source
+  - "MobilityAIapp/apps/customer/app/src/main/java"
+  - "MobilityAIapp/apps/customer/libraries"
+  - "MobilityAIapp/apps/customer/pdf"
+
+  # Lambda (Node.js / TypeScript)
+  - "MobilityAIapp/aws/lambda/index.js"
+  - "MobilityAIapp/aws/lambda/push-notification"
+  - "MobilityAIapp/aws/lambda/terraaimobility-api"
+  - "MobilityAIapp/aws/lambda/user-migration"
+
+  # React / TypeScript frontend
+  - "MobilityAIapp/src"
+
+  # Express proxy server
+  - "MobilityAIapp/server/server.js"
+
+  # CI scripts
+  - "MobilityAIapp/scripts/ci"
+
+  # GitHub Actions workflows
+  - ".github/workflows"
