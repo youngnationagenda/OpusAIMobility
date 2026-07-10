@@ -1,0 +1,414 @@
+> Task :app:processDebugManifestForPackage FROM-CACHE
+
+> Task :app:processDebugResources FROM-CACHE
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/aws/AWSPushService.java:252: error: 'try' without 'catch', 'finally' or resource declarations
+
+                    try { // response - Java 8 compat
+
+                    ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeTwo.java:488: error: ';' expected
+
+                    android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                      ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/PlaceOrdersFragment.java:308: error: ';' expected
+
+                        android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                          ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/PlaceOrdersFragment.java:748: error: ';' expected
+
+                android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                  ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java:384: error: ';' expected
+
+                android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                  ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java:432: error: ';' expected
+
+                    android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                      ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java:543: error: ';' expected
+
+        android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                          ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeFragment.java:772: error: ';' expected
+
+                android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                  ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeFragment.java:819: error: reached end of file while parsing
+
+        getFavouriteData();
+
+                           ^
+
+9 errors
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+
+Execution failed for task ':app:compileDebugJavaWithJavac'.
+
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+
+> Run with --stacktrace option to get the stack trace.
+
+> Run with --info or --debug option to get more log output.
+
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 17s
+
+> Task :app:compileDebugJavaWithJavac FAILED
+
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_2-1783683587121.json
+
+63 actionable tasks: 24 executed, 39 from cache
+
+Error: Process completed with exit code 1. and > Task :app:processReleaseResources FROM-CACHE
+
+
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/aws/AWSPushService.java:252: error: 'try' without 'catch', 'finally' or resource declarations
+
+> Task :app:compileReleaseJavaWithJavac FAILED
+
+                    try { // response - Java 8 compat
+
+                    ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeTwo.java:488: error: ';' expected
+
+                    android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                      ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/PlaceOrdersFragment.java:308: error: ';' expected
+
+                        android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                          ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/PlaceOrdersFragment.java:748: error: ';' expected
+
+                android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                  ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java:384: error: ';' expected
+
+                android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                  ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java:432: error: ';' expected
+
+                    android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                      ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java:543: error: ';' expected
+
+        android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                          ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeFragment.java:772: error: ';' expected
+
+                android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
+
+                                                                                                                                                  ^
+
+Error: /home/runner/work/OpusAIMobility/OpusAIMobility/MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeFragment.java:819: error: reached end of file while parsing
+
+        getFavouriteData();
+
+                           ^
+
+9 errors
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+
+Execution failed for task ':app:compileReleaseJavaWithJavac'.
+
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+
+> Run with --stacktrace option to get the stack trace.
+
+> Run with --info or --debug option to get more log output.
+
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 16s
+
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1783683590006.json
+
+79 actionable tasks: 34 executed, 45 from cache
+
+Error: Process completed with exit code 1.   Annotations
+
+10 errors
+
+Build release APK
+
+Process completed with exit code 1.
+
+Build release APK: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeFragment.java#L819
+
+reached end of file while parsing
+
+Build release APK: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeFragment.java#L772
+
+';' expected
+
+Build release APK: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java#L543
+
+';' expected
+
+Build release APK: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java#L432
+
+';' expected
+
+Build release APK: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java#L384
+
+';' expected
+
+Build release APK: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/PlaceOrdersFragment.java#L748
+
+';' expected
+
+Build release APK: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/PlaceOrdersFragment.java#L308
+
+';' expected
+
+Build release APK: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeTwo.java#L488
+
+';' expected
+
+Build release APK: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/aws/AWSPushService.java#L252
+
+'try' without 'catch', 'finally' or resource declarations
+
+Annotations
+
+10 errors
+
+Build with Gradle
+
+Process completed with exit code 1.
+
+Build with Gradle: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeFragment.java#L819
+
+reached end of file while parsing
+
+Build with Gradle: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeFragment.java#L772
+
+';' expected
+
+Build with Gradle: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java#L543
+
+';' expected
+
+Build with Gradle: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java#L432
+
+';' expected
+
+Build with Gradle: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/AddToCartFragment.java#L384
+
+';' expected
+
+Build with Gradle: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/PlaceOrdersFragment.java#L748
+
+';' expected
+
+Build with Gradle: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/PlaceOrdersFragment.java#L308
+
+';' expected
+
+Build with Gradle: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/food/FoodHomeTwo.java#L488
+
+';' expected
+
+Build with Gradle: MobilityAIapp/apps/customer/app/src/main/java/com/terraai/aimobility/aws/AWSPushService.java#L252
+
+'try' without 'catch', 'finally' or resource declarations
+
+
+"I think we've finally found the real problem.
+
+**This is no longer a Gradle issue. It's no longer an XML issue. It's now a Java source code issue.** The compiler has progressed past the resource merge stage and is now failing while compiling your Java files. The errors are consistent with one or more automated edits that left the code in an incomplete state. The uploaded log confirms this. 
+
+The key clues are:
+
+* `FoodHomeFragment.java:819` → **reached end of file while parsing**
+* `AWSPushService.java:252` → **try without catch/finally**
+* Multiple files reporting **';' expected** immediately after a `PreferenceManager.getDefaultSharedPreferences(...)` call.
+
+These errors are usually **not independent**. They often happen when an automated refactor or search-and-replace:
+
+* removed a closing `);`
+* removed a `}`
+* inserted code but didn't finish it
+* started a `try {` block without its `catch` or `finally`
+
+For example, this is exactly the kind of code that produces your error:
+
+```java
+SharedPreferences prefs =
+    PreferenceManager.getDefaultSharedPreferences(
+        AiMobilityApp.getAppContext())
+
+prefs.edit().putString(...);
+```
+
+Notice the missing semicolon after the closing `)`.
+
+It must be:
+
+```java
+SharedPreferences prefs =
+    PreferenceManager.getDefaultSharedPreferences(
+        AiMobilityApp.getAppContext());
+
+prefs.edit().putString(...);
+```
+
+The `FoodHomeFragment.java` error is even more telling.
+
+```
+reached end of file while parsing
+```
+
+This almost always means one of these:
+
+* missing `}`
+* missing `)`
+* missing `*/`
+* missing `catch`
+* missing `finally`
+
+The compiler reaches the end of the file still expecting something.
+
+The `AWSPushService.java` error confirms the same pattern:
+
+```
+try {
+```
+
+exists, but there is no matching
+
+```java
+catch (...) {
+```
+
+or
+
+```java
+finally {
+```
+
+or the braces have become unbalanced.
+
+## My suspicion
+
+Looking at the pattern, I suspect there was an automated migration that replaced something like:
+
+```java
+PreferenceManager.getDefaultSharedPreferences(...)
+```
+
+or modified AWS code across several files, and the tool truncated or partially rewrote the statements.
+
+Notice how the failures are clustered:
+
+* AWSPushService
+* FoodHomeFragment
+* FoodHomeTwo
+* AddToCartFragment
+* PlaceOrdersFragment
+
+That's not random. It suggests a batch edit affected multiple files.
+
+## I would stop trying to fix these one by one
+
+Instead, let's repair them systematically.
+
+### Step 1
+
+Open:
+
+```
+FoodHomeFragment.java
+```
+
+Go to line **819**.
+
+That is probably where the parser finally gives up. The *actual* missing brace may be 100–300 lines earlier.
+
+### Step 2
+
+Look around line **772**.
+
+You'll probably see something like:
+
+```java
+PreferenceManager.getDefaultSharedPreferences(...)
+```
+
+without:
+
+```java
+;
+```
+
+or without the rest of the statement.
+
+### Step 3
+
+Repeat for:
+
+* FoodHomeTwo.java line 488
+* PlaceOrdersFragment.java lines 308 and 748
+* AddToCartFragment.java lines 384, 432 and 543
+* AWSPushService.java line 252
+
+## This is fixable
+
+The good news is that these are **syntax errors**, not architectural problems. Once the missing semicolons, braces, and `catch`/`finally` blocks are restored, Gradle should be able to continue.
+
+### I recommend a faster approach
+
+Rather than guessing from compiler errors, upload these five Java files (or the project if it's easier):
+
+* `AWSPushService.java`
+* `FoodHomeFragment.java`
+* `FoodHomeTwo.java`
+* `PlaceOrdersFragment.java`
+* `AddToCartFragment.java`
+
+I'll trace the brace structure, identify the exact broken edits, and provide corrected code. That will be much faster than fixing each compiler error one at a time.
