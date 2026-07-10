@@ -43,6 +43,10 @@ public class FiltersFragment extends BottomSheetDialogFragment implements View.O
         binding.tvFinalRange.setText(currencySymbol + maxPrice);
 
         // RangeSlider replaces the abandoned appyvet MaterialRangeBar
+        // Configure range programmatically (Material 1.4 doesn't support XML attrs)
+        binding.rangeBar.setValueFrom(0f);
+        binding.rangeBar.setValueTo(1000f);
+        binding.rangeBar.setValues(0f, 1000f);
         binding.rangeBar.addOnChangeListener((slider, value, fromUser) -> {
             List<Float> values = slider.getValues();
             minPrice = String.valueOf(values.get(0).intValue());

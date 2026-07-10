@@ -2,16 +2,14 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "AllowCloudFrontOAC",
+      "Sid": "AllowCloudFrontOAC-E18GJ5VKHBIJAI",
       "Effect": "Allow",
-      "Principal": {
-        "Service": "cloudfront.amazonaws.com"
-      },
+      "Principal": { "Service": "cloudfront.amazonaws.com" },
       "Action": "s3:GetObject",
       "Resource": "arn:aws:s3:::opusaimobility-assets-prod/*",
       "Condition": {
         "StringEquals": {
-          "AWS:SourceArn": "arn:aws:cloudfront::683541453923:distribution/E1TIJJKJ2UEIO7"
+          "AWS:SourceArn": "arn:aws:cloudfront::683541453923:distribution/E18GJ5VKHBIJAI"
         }
       }
     }
