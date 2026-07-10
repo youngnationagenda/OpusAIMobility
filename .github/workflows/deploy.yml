@@ -313,4 +313,7 @@ jobs:
       - name: Invalidate CloudFront
         run: |
           aws cloudfront create-invalidation \
- 
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+          echo "### Frontend Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "CloudFront invalidation triggered" >> $GITHUB_STEP_SUMMARY
