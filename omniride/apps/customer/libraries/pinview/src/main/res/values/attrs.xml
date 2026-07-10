@@ -1,28 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="PinView">
-        <!-- Number of PIN boxes (default 4) -->
         <attr name="itemCount" format="integer" />
-        <!-- Gap between boxes -->
         <attr name="itemSpacing" format="dimension" />
-        <!-- Width of each box -->
         <attr name="itemWidth" format="dimension" />
-        <!-- Height of each box -->
         <attr name="itemHeight" format="dimension" />
-        <!-- Line/border color — supports ColorStateList -->
         <attr name="lineColor" format="color|reference" />
-        <!-- Stroke width of the line/border -->
         <attr name="lineWidth" format="dimension" />
-        <!-- Cursor color -->
         <attr name="cursorColor" format="color" />
-        <!-- "line" = underline only, "rectangle" = full rounded border -->
         <attr name="viewType" format="enum">
             <enum name="rectangle" value="0" />
-            <enum name="line"      value="1" />
+            <enum name="line" value="1" />
         </attr>
-        <!-- Hide the underline when the cell is filled -->
         <attr name="hideLineWhenFilled" format="boolean" />
-        <!-- Enable cursor blink animation -->
         <attr name="animationEnable" format="boolean" />
     </declare-styleable>
 </resources>

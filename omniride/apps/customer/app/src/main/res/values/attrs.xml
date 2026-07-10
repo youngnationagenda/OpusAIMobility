@@ -23,7 +23,7 @@
         <attr name="progressColor" format="color"/>
     </declare-styleable>
 
-    <!-- ── Fresco SimpleDraweeView stubs ─────────────────────────────────── -->
+    <!-- Fresco SimpleDraweeView stubs -->
     <declare-styleable name="GenericDraweeHierarchy">
         <attr name="actualImageScaleType" format="enum">
             <enum name="center" value="4"/>
@@ -76,7 +76,7 @@
         <attr name="viewAspectRatio" format="float" />
     </declare-styleable>
 
-    <!-- ── singledateandtimepicker stubs ──────────────────────────────────── -->
+    <!-- SingleDateAndTimePicker stubs -->
     <declare-styleable name="SingleDateAndTimePicker">
         <attr name="picker_curved" format="boolean" />
         <attr name="picker_cyclic" format="boolean" />
@@ -101,9 +101,9 @@
         <attr name="picker_showOnlyFutureDate" format="boolean" />
     </declare-styleable>
 
-    <!-- ── PinView — attrs declared in :libraries:pinview module ───────────── -->
+    <!-- PinView attrs declared in :libraries:pinview module -->
 
-    <!-- ── CountryCodePicker (hbb20) stubs ───────────────────────────────── -->
+    <!-- CountryCodePicker (hbb20) stubs -->
     <declare-styleable name="CountryCodePicker">
         <attr name="ccp_defaultCode" format="integer" />
         <attr name="ccp_showFlag" format="boolean" />
@@ -136,10 +136,7 @@
         <attr name="ccp_excludedCountries" format="string" />
     </declare-styleable>
 
-    <!-- ── overscroll-decor stubs ─────────────────────────────────────────── -->
-    <!-- (overscroll-decor has no custom attrs, only Java API) -->
-
-    <!-- ── ReadMoreTextView (borjabravo) stubs ────────────────────────────── -->
+    <!-- ReadMoreTextView (borjabravo) stubs -->
     <declare-styleable name="ReadMoreTextView">
         <attr name="trimExpandedText" format="string" />
         <attr name="trimCollapsedText" format="string" />
@@ -152,15 +149,5 @@
         </attr>
         <attr name="trimLines" format="integer" />
     </declare-styleable>
-
-    <!-- ── MaterialRangeBar removed — replaced by Material RangeSlider ────────── -->
-    <!-- ── PageIndicator removed — replaced by me.relex:circleindicator:2.1.6 ── -->
-    <!-- ── MaterialRatingBar — attrs provided by me.zhanghai.android.materialratingbar:1.4.0 ─ -->
-
-    <!-- ── link_builder (klinkerapps) stubs ──────────────────────────────── -->
-    <!-- (link_builder has no custom view attrs) -->
-
-    <!-- ── io.card stubs ──────────────────────────────────────────────────── -->
-    <!-- (io.card has no custom view attrs) -->
 
 </resources>
