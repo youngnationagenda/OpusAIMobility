@@ -178,7 +178,6 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Upload release APK to S3
-        if: ${{ secrets.S3_APK_BUCKET != '' }}
         continue-on-error: true
         run: |
           APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
