@@ -306,7 +306,7 @@ public class PlaceOrdersFragment extends RootFragment implements View.OnClickLis
                         // [AWS-MIGRATED] PaperDB write → SharedPreferences
                         // Original: Paper.book().write("nearModel" + MyPreferences.getSharedPreference(requireActivity()).getString(MyPreferences.USER_ID, ""), nearbyModel);
                         android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-                            // .edit().putString("nearModel" + MyPreferences.getSharedPreference(requireActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("nearModel" + MyPreferences.getSharedPreference(requireActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
+                            .edit().putString("nearModel" + MyPreferences.getSharedPreference(requireActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("nearModel" + MyPreferences.getSharedPreference(requireActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
                         checkLocation();
                         mDefaultLocation = nearbyModel.latLng;
                         binding.mapOverlay.setVisibility(View.VISIBLE);
@@ -746,7 +746,7 @@ public class PlaceOrdersFragment extends RootFragment implements View.OnClickLis
                 // [AWS-MIGRATED] PaperDB write → SharedPreferences
                 // Original: Paper.book().write("nearModel" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), nearbyModel);
                 android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-                    // .edit().putString("nearModel" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("nearModel" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
+                    .edit().putString("nearModel" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("nearModel" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
                 binding.mapOverlay.setVisibility(View.VISIBLE);
                 showlatlngboundzoom(mDefaultLocation, restutantLatLng);
                 sendScreenPosition(false);

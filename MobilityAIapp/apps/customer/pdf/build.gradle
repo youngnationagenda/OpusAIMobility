@@ -17,6 +17,11 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            // consumerProguardFiles are merged into the *consuming* module's
+            // (i.e. :app) R8 rule set at release build time.  This ensures
+            // iText7 and BouncyCastle reflection look-ups survive shrinking
+            // even though minifyEnabled is false here in the library itself.
+            consumerProguardFiles 'consumer-rules.pro'
         }
         debug {
             minifyEnabled false

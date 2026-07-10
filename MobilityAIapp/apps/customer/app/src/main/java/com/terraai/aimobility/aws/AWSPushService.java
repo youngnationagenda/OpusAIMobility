@@ -249,7 +249,7 @@ public class AWSPushService {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response)
                         throws IOException {
-                    try {
+                    try (response) {
                         String raw = response.body() != null ? response.body().string() : "";
                         Log.d(TAG, "doRegister: HTTP " + response.code() + " — " + raw);
 

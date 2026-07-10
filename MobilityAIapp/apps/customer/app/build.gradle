@@ -39,7 +39,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            // ── R8 full-mode shrinking + obfuscation ──────────────────────────
+            // Enables dead-code elimination, resource shrinking, and identifier
+            // obfuscation.  Rules in proguard-rules.pro guard every library that
+            // uses reflection, JNI, or serialisation at runtime.
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             // Use release signing only when keystore env vars are present.
             // Falls back to debug signing so local + PR builds still work.
@@ -52,6 +57,7 @@ android {
         }
         debug {
             minifyEnabled false
+            shrinkResources false
         }
     }
 

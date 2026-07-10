@@ -539,7 +539,7 @@ public class ChatA extends AppCompatLocaleActivity {
             messageUserMap.put("sender_id", senderid);
 
             sendTypingIndication = null; // [AWS] removed
-                    // .getReference().child("typing_indicator"); // [AWS] Firebase removed
+                    .getReference().child("typing_indicator");
             sendTypingIndication.child(senderid + "-" + receiverid).setValue(messageUserMap)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
