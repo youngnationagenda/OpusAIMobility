@@ -165,7 +165,7 @@ public class PinView extends AppCompatEditText {
 
         // OTP autofill hint (Android 8+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            setAutofillHints(AUTOFILL_HINT_SMS_OTP);
+            setAutofillHints("smsOTPCode");
             setImportantForAutofill(IMPORTANT_FOR_AUTOFILL_YES);
         }
 
@@ -468,3 +468,4 @@ public class PinView extends AppCompatEditText {
         setText("");
     }
 }
+         
