@@ -382,7 +382,7 @@ public class AddToCartFragment extends RootFragment implements View.OnClickListe
                 // [AWS-MIGRATED] PaperDB write → SharedPreferences
                 // Original: Paper.book().write("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), carList);
                 android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-                    .edit().putString("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
+                    // .edit().putString("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
                 mainActivity.checkFragment();
                 if (fragmentCallBack != null) {
                     fragmentCallBack.onItemClick(new Bundle());
@@ -430,7 +430,7 @@ public class AddToCartFragment extends RootFragment implements View.OnClickListe
                     // [AWS-MIGRATED] PaperDB write → SharedPreferences
                     // Original: Paper.book().write("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), list);
                     android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-                        .edit().putString("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
+                        // .edit().putString("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
 
                     mainActivity.updateist(carList);
 
@@ -541,7 +541,7 @@ public class AddToCartFragment extends RootFragment implements View.OnClickListe
         // [AWS-MIGRATED] PaperDB write → SharedPreferences
         // Original: Paper.book().write("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), list);
         android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-            .edit().putString("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
+            // .edit().putString("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
         mainActivity.checkFragment();
         if (fragmentCallBack != null) {
             fragmentCallBack.onItemClick(new Bundle());

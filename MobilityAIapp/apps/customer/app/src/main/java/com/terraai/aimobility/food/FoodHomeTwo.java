@@ -486,7 +486,7 @@ public class FoodHomeTwo extends RootFragment implements View.OnClickListener, O
                     // [AWS-MIGRATED] PaperDB write → SharedPreferences
                     // Original: Paper.book().write("nearModel"+ MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), nearbyModel);
                     android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-                        .edit().putString("nearModel"+ MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("nearModel"+ MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
+                        // .edit().putString("nearModel"+ MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID.replace("/","_"), new com.google.gson.Gson().toJson("nearModel"+ MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID)).apply(); // TODO: replace key+value correctly
                 }
             }
         });

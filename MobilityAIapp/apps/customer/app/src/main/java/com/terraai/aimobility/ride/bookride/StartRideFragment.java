@@ -399,7 +399,7 @@ public class StartRideFragment extends RootFragment implements OnMapReadyCallbac
         // [AWS-MIGRATED] DatabaseReference ref = /* AWS-MIGRATED: was FirebaseDatabase — use AWSManager.getInstance(context).post() for real-time updates */ → use AWSManager REST API
         Object ref = null; // [AWS] placeholder — use AWSManager
         geoFire = /* AWS-MIGRATED: GeoFire removed — driver location via Lambda API /getNearbyDrivers */
-        geoQuery = /* [AWS] GeoFire call removed */;
+        geoQuery = null; // [AWS] GeoFire call removed
 
         geoQueryEventListener = new GeoQueryEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
