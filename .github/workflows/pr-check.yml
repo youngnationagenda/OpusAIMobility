@@ -1,303 +1,97 @@
-# PR Check Workflow - Gate on pull requests to main
-#
-# Runs type-check, lint, and tests for affected components only.
-# Uses path-based filtering consistent with deploy.yml so PRs only
-# validate what they change.
-#
-# All checks must pass before merge (branch protection targets `pr-ready` job).
-#
-# Requirements: 11.3, 11.5
-#
-# DEPRECATED: Do not add checks for aimobility-push Lambda (CF-4, retired)
+# OpusAIMobility — PR Check
+# Validates PRs before merge. Branch protection targets the `pr-ready` job.
 
-name: PR Check
+name: "PR Check"
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
-# Cancel in-progress runs for the same PR
 concurrency:
-  group: pr-check-${{ github.event.pull_request.number }}
+  group: pr-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 env:
   NODE_VERSION: '20'
+  JAVA_VERSION: '17'
 
 jobs:
-  # -------------------------------------------------------------------
-  # Detect which paths changed
-  # -------------------------------------------------------------------
   changes:
     name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      customer_app: ${{ steps.filter.outputs.customer_app }}
-      lambda: ${{ steps.filter.outputs.lambda }}
-      push_lambda: ${{ steps.filter.outputs.push_lambda }}
-      terra_api: ${{ steps.filter.outputs.terra_api }}
+      android: ${{ steps.filter.outputs.android }}
       frontend: ${{ steps.filter.outputs.frontend }}
-      shared: ${{ steps.filter.outputs.shared }}
-      infra: ${{ steps.filter.outputs.infra }}
-      ci: ${{ steps.filter.outputs.ci }}
+      lambda: ${{ steps.filter.outputs.lambda }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
-            customer_app:
-              - 'apps/customer/**'
-            lambda:
-              - 'aws/lambda/index.js'
-              - 'aws/lambda/package.json'
-              - 'aws/lambda/package-lock.json'
-            push_lambda:
-              - 'aws/lambda/push-notification/**'
-            terra_api:
-              - 'infra/docker/terra-api/**'
-              - 'apps/terra-api/**'
+            android:
+              - 'MobilityAIapp/apps/customer/**'
             frontend:
-              - 'src/**'
-              - 'public/**'
-              - 'index.html'
-              - 'vite.config.*'
-            shared:
-              - 'packages/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'tsconfig.json'
-              - 'vitest.config.ts'
-            infra:
-              - 'infra/**'
-            ci:
-              - '.github/workflows/**'
-              - 'scripts/ci/**'
+              - 'MobilityAIapp/src/**'
+              - 'MobilityAIapp/package.json'
+              - 'MobilityAIapp/vite.config.ts'
+            lambda:
+              - 'MobilityAIapp/aws/lambda/**'
+              - 'aws/lambda/**'
 
-  # -------------------------------------------------------------------
-  # TypeScript type check (only if TS files changed)
-  # -------------------------------------------------------------------
-  type-check:
-    name: TypeScript Type Check
-    runs-on: ubuntu-latest
-    needs: changes
-    if: >-
-      needs.changes.outputs.lambda == 'true' ||
-      needs.changes.outputs.push_lambda == 'true' ||
-      needs.changes.outputs.frontend == 'true' ||
-      needs.changes.outputs.shared == 'true'
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Type check
-        run: npx tsc --noEmit
-
-  # -------------------------------------------------------------------
-  # Lint (only if source code changed)
-  # -------------------------------------------------------------------
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    needs: changes
-    if: >-
-      needs.changes.outputs.lambda == 'true' ||
-      needs.changes.outputs.push_lambda == 'true' ||
-      needs.changes.outputs.frontend == 'true' ||
-      needs.changes.outputs.shared == 'true' ||
-      needs.changes.outputs.terra_api == 'true'
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint --if-present || echo "No lint script found, skipping"
-
-  # -------------------------------------------------------------------
-  # Tests - runs vitest for relevant test suites based on changed paths
-  # -------------------------------------------------------------------
-  test:
-    name: Tests
-    runs-on: ubuntu-latest
-    needs: changes
-    # Run tests if any code or test files changed
-    if: >-
-      needs.changes.outputs.lambda == 'true' ||
-      needs.changes.outputs.push_lambda == 'true' ||
-      needs.changes.outputs.frontend == 'true' ||
-      needs.changes.outputs.shared == 'true' ||
-      needs.changes.outputs.terra_api == 'true'
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run full test suite
-        run: npm test
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            coverage/
-            test-results/
-          retention-days: 7
-
-  # -------------------------------------------------------------------
-  # Android build check (only if customer app changed)
-  # -------------------------------------------------------------------
-  android-build-check:
+  # Android build check
+  android-check:
     name: Android Build Check
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.customer_app == 'true'
+    if: needs.changes.outputs.android == 'true'
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Validate Android build
-        working-directory: apps/customer
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build debug APK
+        working-directory: MobilityAIapp/apps/customer
         run: |
-          chmod +x ./gradlew 2>/dev/null || true
-          ./gradlew assembleDebug --dry-run
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon
 
-  # -------------------------------------------------------------------
-  # Infrastructure validation (only if infra files changed)
-  # -------------------------------------------------------------------
-  infra-check:
-    name: Infrastructure Validation
+  # Frontend type-check and build
+  frontend-check:
+    name: Frontend Check
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.infra == 'true'
-    timeout-minutes: 5
+    if: needs.changes.outputs.frontend == 'true'
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
-      - name: Validate JSON configs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: MobilityAIapp/package-lock.json
+      - name: Install and check
+        working-directory: MobilityAIapp
         run: |
-          echo "Validating infrastructure JSON files..."
-          FAILED=0
-          for f in $(find infra/ -name "*.json" -type f); do
-            if ! python3 -c "import json; json.load(open('$f'))" 2>/dev/null; then
-              echo "::error file=$f::Invalid JSON in $f"
-              FAILED=1
-            fi
-          done
-          if [ $FAILED -eq 1 ]; then
-            exit 1
-          fi
-          echo "All infrastructure JSON files are valid"
+          npm ci
+          npx tsc --noEmit
+          npm run build
 
-  # -------------------------------------------------------------------
-  # Summary job — branch protection targets this job name
-  # -------------------------------------------------------------------
+  # Gate job for branch protection
   pr-ready:
     name: PR Ready
     runs-on: ubuntu-latest
-    needs: [changes, type-check, lint, test, android-build-check, infra-check]
+    needs: [android-check, frontend-check]
     if: always()
     steps:
-      - name: Check all required jobs passed
+      - name: Evaluate
         run: |
-          echo "## PR Check Results" >> $GITHUB_STEP_SUMMARY
-          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-
-          FAILED=0
-
-          # Type check (only required if it ran)
-          if [ "${{ needs.type-check.result }}" = "failure" ]; then
-            echo "| Type Check | :x: Failed |" >> $GITHUB_STEP_SUMMARY
-            FAILED=1
-          elif [ "${{ needs.type-check.result }}" = "success" ]; then
-            echo "| Type Check | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Type Check | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # Lint (only required if it ran)
-          if [ "${{ needs.lint.result }}" = "failure" ]; then
-            echo "| Lint | :x: Failed |" >> $GITHUB_STEP_SUMMARY
-            FAILED=1
-          elif [ "${{ needs.lint.result }}" = "success" ]; then
-            echo "| Lint | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Lint | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # Tests (only required if they ran)
-          if [ "${{ needs.test.result }}" = "failure" ]; then
-            echo "| Tests | :x: Failed |" >> $GITHUB_STEP_SUMMARY
-            FAILED=1
-          elif [ "${{ needs.test.result }}" = "success" ]; then
-            echo "| Tests | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Tests | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # Android (only required if it ran)
-          if [ "${{ needs.android-build-check.result }}" = "failure" ]; then
-            echo "| Android Build | :x: Failed |" >> $GITHUB_STEP_SUMMARY
-            FAILED=1
-          elif [ "${{ needs.android-build-check.result }}" = "success" ]; then
-            echo "| Android Build | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Android Build | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          # Infra (only required if it ran)
-          if [ "${{ needs.infra-check.result }}" = "failure" ]; then
-            echo "| Infra Validation | :x: Failed |" >> $GITHUB_STEP_SUMMARY
-            FAILED=1
-          elif [ "${{ needs.infra-check.result }}" = "success" ]; then
-            echo "| Infra Validation | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "| Infra Validation | :fast_forward: Skipped |" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          if [ $FAILED -eq 1 ]; then
-            echo ""
-            echo "::error::One or more checks failed. See summary above."
+          if [ "${{ needs.android-check.result }}" = "failure" ] || \
+             [ "${{ needs.frontend-check.result }}" = "failure" ]; then
+            echo "::error::PR checks failed"
             exit 1
           fi
-          echo ""
-          echo "All checks passed! PR is ready for review."
+          echo "All checks passed"

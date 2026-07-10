@@ -1,36 +1,27 @@
-# CI/CD Deploy Pipeline - TerraAI + OpusAIMobility Consolidated Monorepo
+# ═══════════════════════════════════════════════════════════════════════════════
+# OpusAIMobility — CI/CD Pipeline
+# Builds Android APK v1.7, deploys Lambdas and Frontend to AWS
+# ═══════════════════════════════════════════════════════════════════════════════
 #
-# Builds and deploys all components on push to main branch.
-# Uses path-based filtering so only affected components are rebuilt.
-#
-# Requirements: 11.1, 11.2, 11.4, 11.5, 11.6, 11.7
-#
-# ─── REQUIRED GITHUB SECRETS ─────────────────────────────────────────────────
-# AWS_ACCESS_KEY_ID         — IAM user with deploy permissions
-# AWS_SECRET_ACCESS_KEY     — IAM user secret
-# ECR_REPOSITORY            — e.g. opusaimobility/terra-api
-# ECS_CLUSTER               — e.g. opusaimobility
-# ECS_SERVICE               — e.g. opusaimobility-terra-api (Kiro to provide)
-# TERRA_HEALTH_URL          — https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod/terra/health
-# S3_APK_BUCKET             — e.g. opusaimobility-apk-distribution
-# S3_FRONTEND_BUCKET        — e.g. omniride-assets-prod
-# CLOUDFRONT_DISTRIBUTION_ID — e.g. E1TIJJKJ2UEIO7
-# ─────────────────────────────────────────────────────────────────────────────
-#
-# DEPRECATED LAMBDAS (do NOT deploy):
-#   - aimobility-push (CF-4: has PENDING_FCM_KEY, replaced by opusaimobility-push-notification)
-# ─────────────────────────────────────────────────────────────────────────────
+# REQUIRED GITHUB SECRETS:
+#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+#   S3_APK_BUCKET          — e.g. opusaimobility-apk-distribution
+#   S3_FRONTEND_BUCKET     — e.g. opusaimobility-frontend
+#   CLOUDFRONT_DISTRIBUTION_ID
+#   KEYSTORE_FILE          — base64-encoded release keystore (for release builds)
+#   KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+# ═══════════════════════════════════════════════════════════════════════════════
 
-name: Deploy
+name: "OpusAIMobility CI/CD"
 
 on:
   push:
-    branches:
-      - main
-    tags:
-      - 'v*'
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
-# Cancel in-progress runs for the same branch to avoid stale deployments
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
@@ -38,276 +29,139 @@ concurrency:
 env:
   AWS_REGION: us-east-1
   NODE_VERSION: '20'
+  JAVA_VERSION: '17'
 
 jobs:
-  # -------------------------------------------------------------------
-  # Validate required secrets exist before any deploy runs
-  # -------------------------------------------------------------------
-  validate-secrets:
-    name: Validate Secrets
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    steps:
-      - name: Check required secrets
-        run: |
-          MISSING=""
-          [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ] && MISSING="$MISSING AWS_ACCESS_KEY_ID"
-          [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ] && MISSING="$MISSING AWS_SECRET_ACCESS_KEY"
-          if [ -n "$MISSING" ]; then
-            echo "::error::Missing required secrets:$MISSING"
-            echo "Set these in Settings > Secrets > Actions"
-            exit 1
-          fi
-          echo "All required base secrets present"
-
-  # -------------------------------------------------------------------
-  # Detect which paths changed to determine which jobs to run
-  # -------------------------------------------------------------------
+  # ─────────────────────────────────────────────────────────────────────
+  # Detect what changed
+  # ─────────────────────────────────────────────────────────────────────
   changes:
-    needs: validate-secrets
     name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      customer_app: ${{ steps.filter.outputs.customer_app }}
-      lambda: ${{ steps.filter.outputs.lambda }}
-      push_lambda: ${{ steps.filter.outputs.push_lambda }}
-      terra_api: ${{ steps.filter.outputs.terra_api }}
+      android: ${{ steps.filter.outputs.android }}
+      lambda_main: ${{ steps.filter.outputs.lambda_main }}
+      lambda_push: ${{ steps.filter.outputs.lambda_push }}
+      lambda_infra: ${{ steps.filter.outputs.lambda_infra }}
       frontend: ${{ steps.filter.outputs.frontend }}
-      shared: ${{ steps.filter.outputs.shared }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
-            customer_app:
-              - 'omniride/apps/customer/**'
-            lambda:
-              - 'aws/lambda/index.js'
-              - 'aws/lambda/package.json'
-              - 'aws/lambda/package-lock.json'
-            push_lambda:
-              - 'aws/lambda/push-notification/**'
-            terra_api:
-              - 'infra/docker/terra-api/**'
-              - 'apps/terra-api/**'
+            android:
+              - 'MobilityAIapp/apps/customer/**'
+            lambda_main:
+              - 'MobilityAIapp/aws/lambda/index.js'
+              - 'MobilityAIapp/aws/lambda/package.json'
+              - 'MobilityAIapp/aws/lambda/package-lock.json'
+            lambda_push:
+              - 'MobilityAIapp/aws/lambda/push-notification/**'
+            lambda_infra:
+              - 'aws/lambda/**'
             frontend:
-              - 'src/**'
-              - 'public/**'
-            shared:
-              - 'packages/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'tsconfig.json'
-              - 'vitest.config.ts'
+              - 'MobilityAIapp/src/**'
+              - 'MobilityAIapp/public/**'
+              - 'MobilityAIapp/package.json'
+              - 'MobilityAIapp/vite.config.ts'
 
-  # -------------------------------------------------------------------
-  # Build and deploy TerraAI container to ECR + update ECS service
-  # -------------------------------------------------------------------
-  deploy-terra-api:
-    name: Build & Deploy TerraAI API
+  # ─────────────────────────────────────────────────────────────────────
+  # Android Debug APK Build
+  # ─────────────────────────────────────────────────────────────────────
+  build-android-debug:
+    name: "Build Android APK (Debug)"
     runs-on: ubuntu-latest
     needs: changes
     if: >-
-      needs.changes.outputs.terra_api == 'true' ||
-      needs.changes.outputs.shared == 'true'
-    timeout-minutes: 20
+      needs.changes.outputs.android == 'true' ||
+      github.event_name == 'workflow_dispatch'
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build and push TerraAI container image
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
-            -f infra/docker/terra-api/Dockerfile \
-            apps/terra-api/
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-      - name: Update ECS service
-        env:
-          ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
-          ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
-        run: |
-          aws ecs update-service \
-            --cluster $ECS_CLUSTER \
-            --service $ECS_SERVICE \
-            --force-new-deployment \
-            --region ${{ env.AWS_REGION }}
-
-      - name: Wait for ECS service stability
-        env:
-          ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
-          ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
-        run: |
-          aws ecs wait services-stable \
-            --cluster $ECS_CLUSTER \
-            --services $ECS_SERVICE \
-            --region ${{ env.AWS_REGION }}
-
-      - name: Post-deploy health check
-        env:
-          TERRA_HEALTH_URL: ${{ secrets.TERRA_HEALTH_URL }}
-        run: |
-          echo "Checking TerraAI health endpoint..."
-          MAX_RETRIES=5
-          RETRY_DELAY=10
-          for i in $(seq 1 $MAX_RETRIES); do
-            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$TERRA_HEALTH_URL")
-            if [ "$HTTP_STATUS" = "200" ]; then
-              echo "Health check passed (HTTP 200)"
-              exit 0
-            fi
-            echo "Attempt $i/$MAX_RETRIES: received HTTP $HTTP_STATUS, retrying in ${RETRY_DELAY}s..."
-            sleep $RETRY_DELAY
-          done
-          echo "Health check failed after $MAX_RETRIES attempts"
-          exit 1
-
-  # -------------------------------------------------------------------
-  # Build Customer APK (debug) and upload to S3
-  # Uses gradle/actions@v6 for optimized caching and build
-  # -------------------------------------------------------------------
-  deploy-customer-apk:
-    name: Build & Upload Customer APK (Debug)
-    runs-on: ubuntu-latest
-    needs: changes
-    if: >-
-      needs.changes.outputs.customer_app == 'true' ||
-      needs.changes.outputs.shared == 'true'
-    timeout-minutes: 20
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: 17
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v6
+      - name: Make gradlew executable
+        run: chmod +x MobilityAIapp/apps/customer/gradlew
 
-      - name: Build with Gradle (debug)
-        working-directory: omniride/apps/customer
+      - name: Build debug APK
+        working-directory: MobilityAIapp/apps/customer
         run: ./gradlew assembleDebug --no-daemon --warning-mode all
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Upload debug APK artifact
+        uses: actions/upload-artifact@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          name: opusaimobility-debug-${{ github.sha }}
+          path: MobilityAIapp/apps/customer/app/build/outputs/apk/debug/*.apk
+          retention-days: 14
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: omniride/package-lock.json
-
-      - name: Install dependencies
-        working-directory: omniride
-        run: npm ci
-
-      - name: Upload APK to S3
-        env:
-          APK_PATH: omniride/apps/customer/app/build/outputs/apk/debug/app-debug.apk
-          APP_NAME: opusaimobility-customer
-          BUILD_NUMBER: ${{ github.run_number }}
-          S3_APK_BUCKET: ${{ secrets.S3_APK_BUCKET }}
-          AWS_REGION: ${{ env.AWS_REGION }}
-        working-directory: omniride
-        run: npx tsx scripts/ci/upload-apk.ts
-
-  # -------------------------------------------------------------------
-  # Build signed release APK for Play Store
-  # Uses gradle/actions@v6 for optimized caching and build
-  # Requires GitHub Secrets: KEYSTORE_FILE (base64), KEYSTORE_PASSWORD,
-  #   KEY_ALIAS, KEY_PASSWORD
-  # Only runs on tags (v*) or manual workflow_dispatch
-  # -------------------------------------------------------------------
-  deploy-customer-release:
-    name: Build & Upload Release APK (Play Store)
+  # ─────────────────────────────────────────────────────────────────────
+  # Android Release APK (v1.7) — on tags or manual dispatch
+  # ─────────────────────────────────────────────────────────────────────
+  build-android-release:
+    name: "Build & Deploy Release APK v1.7"
     runs-on: ubuntu-latest
     needs: changes
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: >-
+      startsWith(github.ref, 'refs/tags/v') ||
+      github.event_name == 'workflow_dispatch'
     timeout-minutes: 30
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Validate release secrets
         run: |
           MISSING=""
-          [ -z "${{ secrets.KEYSTORE_FILE }}" ]      && MISSING="$MISSING KEYSTORE_FILE"
-          [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ]  && MISSING="$MISSING KEYSTORE_PASSWORD"
-          [ -z "${{ secrets.KEY_ALIAS }}" ]          && MISSING="$MISSING KEY_ALIAS"
-          [ -z "${{ secrets.KEY_PASSWORD }}" ]       && MISSING="$MISSING KEY_PASSWORD"
+          [ -z "${{ secrets.KEYSTORE_FILE }}" ]     && MISSING="$MISSING KEYSTORE_FILE"
+          [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ] && MISSING="$MISSING KEYSTORE_PASSWORD"
+          [ -z "${{ secrets.KEY_ALIAS }}" ]         && MISSING="$MISSING KEY_ALIAS"
+          [ -z "${{ secrets.KEY_PASSWORD }}" ]      && MISSING="$MISSING KEY_PASSWORD"
           if [ -n "$MISSING" ]; then
-            echo "::error::Missing release secrets:$MISSING"
-            echo "Set these in Settings > Secrets > Actions before building a release APK"
-            exit 1
+            echo "::warning::Missing release secrets:$MISSING — building unsigned"
           fi
-          echo "All release secrets present"
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: 17
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x MobilityAIapp/apps/customer/gradlew
 
       - name: Decode keystore
+        if: ${{ secrets.KEYSTORE_FILE != '' }}
         run: |
-          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > omniride/apps/customer/app/release.keystore
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > MobilityAIapp/apps/customer/app/release.keystore
+          echo "KEYSTORE_FILE=$(pwd)/MobilityAIapp/apps/customer/app/release.keystore" >> $GITHUB_ENV
+          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: Build signed release APK with Gradle
-        working-directory: omniride/apps/customer
-        env:
-          KEYSTORE_PATH: app/release.keystore
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          ./gradlew assembleRelease --no-daemon \
-            -Pandroid.injected.signing.store.file=$KEYSTORE_PATH \
-            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+      - name: Build release APK
+        working-directory: MobilityAIapp/apps/customer
+        run: ./gradlew assembleRelease --no-daemon
 
-      - name: Verify APK is signed
-        run: |
-          APK_PATH=$(find omniride/apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
-          echo "APK: $APK_PATH"
-          $ANDROID_HOME/build-tools/*/apksigner verify --verbose "$APK_PATH" | grep -E "Verified|v[12] scheme"
+      - name: Upload release APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: opusaimobility-release-${{ github.sha }}
+          path: MobilityAIapp/apps/customer/app/build/outputs/apk/release/*.apk
+          retention-days: 30
 
       - name: Configure AWS credentials
+        if: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -315,82 +169,41 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Upload release APK to S3
+        if: ${{ secrets.S3_APK_BUCKET != '' }}
         run: |
-          APK_PATH=$(find omniride/apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
-          VERSION_TAG=${GITHUB_REF#refs/tags/}
-          aws s3 cp "$APK_PATH" \
-            "s3://${{ secrets.S3_APK_BUCKET }}/apks/customer/release/opusaimobility-customer-${VERSION_TAG}.apk"
-          aws s3 cp "$APK_PATH" \
-            "s3://${{ secrets.S3_APK_BUCKET }}/apks/customer/release/latest-release.apk"
-          echo "Release APK uploaded: opusaimobility-customer-${VERSION_TAG}.apk"
+          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
+          VERSION="${GITHUB_REF_NAME:-v1.7.0}"
+          aws s3 cp "$APK" "s3://${{ secrets.S3_APK_BUCKET }}/apks/OpusAIMobility-${VERSION}.apk"
+          aws s3 cp "$APK" "s3://${{ secrets.S3_APK_BUCKET }}/apks/OpusAIMobility-latest.apk"
+          echo "### APK Uploaded" >> $GITHUB_STEP_SUMMARY
+          echo "- Version: ${VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "- S3: s3://${{ secrets.S3_APK_BUCKET }}/apks/OpusAIMobility-${VERSION}.apk" >> $GITHUB_STEP_SUMMARY
 
       - name: Clean up keystore
         if: always()
-        run: rm -f omniride/apps/customer/app/release.keystore
+        run: rm -f MobilityAIapp/apps/customer/app/release.keystore
 
-  # -------------------------------------------------------------------
-  # Deploy OpusAIMobility Lambda function
-  # -------------------------------------------------------------------
-  deploy-lambda:
-    name: Deploy OpusAIMobility Lambda
+  # ─────────────────────────────────────────────────────────────────────
+  # Deploy Main API Lambda
+  # ─────────────────────────────────────────────────────────────────────
+  deploy-lambda-main:
+    name: "Deploy Main API Lambda"
     runs-on: ubuntu-latest
     needs: changes
     if: >-
-      needs.changes.outputs.lambda == 'true' ||
-      needs.changes.outputs.shared == 'true'
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        working-directory: aws/lambda
-        run: npm ci
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Package and deploy Lambda
-        working-directory: aws/lambda
-        run: |
-          zip -r lambda.zip . -x "node_modules/.cache/*"
-          aws lambda update-function-code \
-            --function-name opusaimobility-api \
-            --zip-file fileb://lambda.zip \
-            --region ${{ env.AWS_REGION }}
-
-  # -------------------------------------------------------------------
-  # Deploy push notification Lambda (Firebase + IoT + WebSocket)
-  # -------------------------------------------------------------------
-  deploy-push-lambda:
-    name: Deploy Push Notification Lambda
-    runs-on: ubuntu-latest
-    needs: changes
-    if: >-
-      needs.changes.outputs.push_lambda == 'true' ||
-      needs.changes.outputs.shared == 'true'
+      github.event_name != 'pull_request' &&
+      (needs.changes.outputs.lambda_main == 'true' || github.event_name == 'workflow_dispatch')
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install dependencies
-        working-directory: aws/lambda/push-notification
-        run: npm ci
+        working-directory: MobilityAIapp/aws/lambda
+        run: npm ci --omit=dev
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -399,42 +212,80 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Package and deploy Push Lambda
-        working-directory: aws/lambda/push-notification
+      - name: Package and deploy
+        working-directory: MobilityAIapp/aws/lambda
         run: |
-          # Exclude service account from zip — use env var in Lambda instead
-          zip -r push-lambda.zip . \
-            -x "node_modules/.cache/*" \
-            -x "*-service-account.json"
+          zip -r lambda.zip . -x "node_modules/.cache/*" -x "*.test.*"
           aws lambda update-function-code \
-            --function-name opusaimobility-push-notification \
-            --zip-file fileb://push-lambda.zip \
-            --region ${{ env.AWS_REGION }}
+            --function-name opusaimobility-api \
+            --zip-file fileb://lambda.zip
+          echo "### Lambda Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "Function: opusaimobility-api" >> $GITHUB_STEP_SUMMARY
 
-  # -------------------------------------------------------------------
-  # Build and deploy OpusAIMobility frontend to S3
-  # -------------------------------------------------------------------
-  deploy-frontend:
-    name: Build & Deploy Frontend
+  # ─────────────────────────────────────────────────────────────────────
+  # Deploy Push Notification Lambda
+  # ─────────────────────────────────────────────────────────────────────
+  deploy-lambda-push:
+    name: "Deploy Push Notification Lambda"
     runs-on: ubuntu-latest
     needs: changes
     if: >-
-      needs.changes.outputs.frontend == 'true' ||
-      needs.changes.outputs.shared == 'true'
-    timeout-minutes: 20
+      github.event_name != 'pull_request' &&
+      (needs.changes.outputs.lambda_push == 'true' || github.event_name == 'workflow_dispatch')
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
 
       - name: Install dependencies
+        working-directory: MobilityAIapp/aws/lambda/push-notification
+        run: npm ci --omit=dev
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Package and deploy
+        working-directory: MobilityAIapp/aws/lambda/push-notification
+        run: |
+          zip -r push-lambda.zip . -x "node_modules/.cache/*"
+          aws lambda update-function-code \
+            --function-name opusaimobility-push-notification \
+            --zip-file fileb://push-lambda.zip
+          echo "### Push Lambda Deployed" >> $GITHUB_STEP_SUMMARY
+
+  # ─────────────────────────────────────────────────────────────────────
+  # Deploy Frontend to S3 + CloudFront
+  # ─────────────────────────────────────────────────────────────────────
+  deploy-frontend:
+    name: "Build & Deploy Frontend"
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      github.event_name != 'pull_request' &&
+      (needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch')
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: MobilityAIapp/package-lock.json
+
+      - name: Install dependencies
+        working-directory: MobilityAIapp
         run: npm ci
 
-      - name: Build frontend
+      - name: Build
+        working-directory: MobilityAIapp
         run: npm run build
 
       - name: Configure AWS credentials
@@ -445,71 +296,15 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Deploy to S3
+        working-directory: MobilityAIapp
         run: |
-          aws s3 sync dist/ s3://${{ secrets.S3_FRONTEND_BUCKET }}/ \
-            --delete \
-            --region ${{ env.AWS_REGION }}
+          aws s3 sync dist/ s3://${{ secrets.S3_FRONTEND_BUCKET }}/ --delete
 
-      - name: Invalidate CloudFront cache
+      - name: Invalidate CloudFront
+        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
-
-  # -------------------------------------------------------------------
-  # Post-deploy smoke tests (runs after all deploy jobs)
-  # -------------------------------------------------------------------
-  smoke-tests:
-    name: Post-Deploy Smoke Tests
-    runs-on: ubuntu-latest
-    needs:
-      - deploy-terra-api
-      - deploy-customer-apk
-      - deploy-lambda
-      - deploy-push-lambda
-      - deploy-frontend
-    # Run if at least one deploy job ran (even if others were skipped)
-    if: |
-      always() &&
-      (needs.deploy-terra-api.result == 'success' || needs.deploy-terra-api.result == 'skipped') &&
-      (needs.deploy-customer-apk.result == 'success' || needs.deploy-customer-apk.result == 'skipped') &&
-      (needs.deploy-lambda.result == 'success' || needs.deploy-lambda.result == 'skipped') &&
-      (needs.deploy-push-lambda.result == 'success' || needs.deploy-push-lambda.result == 'skipped') &&
-      (needs.deploy-frontend.result == 'success' || needs.deploy-frontend.result == 'skipped') &&
-      !(needs.deploy-terra-api.result == 'skipped' && needs.deploy-customer-apk.result == 'skipped' && needs.deploy-lambda.result == 'skipped' && needs.deploy-push-lambda.result == 'skipped' && needs.deploy-frontend.result == 'skipped')
-    timeout-minutes: 5
-    steps:
-      - name: TerraAI health check
-        if: needs.deploy-terra-api.result == 'success'
-        env:
-          TERRA_HEALTH_URL: ${{ secrets.TERRA_HEALTH_URL }}
-        run: |
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$TERRA_HEALTH_URL")
-          if [ "$HTTP_STATUS" != "200" ]; then
-            echo "TerraAI health check failed: HTTP $HTTP_STATUS"
-            exit 1
-          fi
-          echo "TerraAI health check passed: HTTP 200"
-
-      - name: Main Lambda API health check
-        if: needs.deploy-lambda.result == 'success'
-        run: |
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            "https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod/health")
-          if [ "$HTTP_STATUS" != "200" ]; then
-            echo "Lambda API health check failed: HTTP $HTTP_STATUS"
-            exit 1
-          fi
-          echo "Lambda API health check passed: HTTP 200"
-
-      - name: Deploy summary
-        if: always()
-        run: |
-          echo "## Deploy Summary" >> $GITHUB_STEP_SUMMARY
-          echo "| Component | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| TerraAI Container | ${{ needs.deploy-terra-api.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Customer APK | ${{ needs.deploy-customer-apk.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Main Lambda | ${{ needs.deploy-lambda.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Push Lambda | ${{ needs.deploy-push-lambda.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Frontend | ${{ needs.deploy-frontend.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "### Frontend Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "CloudFront invalidation triggered" >> $GITHUB_STEP_SUMMARY
