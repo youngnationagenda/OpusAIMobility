@@ -768,9 +768,11 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
                     binding.tvCurrentAddress.setText(Functions.getAddressSubString(getContext(), nearbyModel.latLng));
                 }
                 // [AWS-MIGRATED] PaperDB write → SharedPreferences
-                // Original: Paper.book().write("nearModel"+ MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), nearbyModel);
-                android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-        // FIXME: broken SharedPreferences migration
+                MyPreferences.getSharedPreference(getActivity()).edit()
+                        .putString(MyPreferences.USER_ID + "_nearModel_lat", Double.toString(nearbyModel.lat))
+                        .putString(MyPreferences.USER_ID + "_nearModel_lng", Double.toString(nearbyModel.lng))
+                        .putString(MyPreferences.USER_ID + "_nearModel_title", nearbyModel.title)
+                        .apply();
             }
         });
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -817,4 +819,6 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
     public void getChangedList(ResturantModel recipeDataModel) {
         Functions.updatList(nearbyList, recipeDataModel);
         getFavouriteData();
-//         nearbyAdapter // [AWS] dangling expression
+        nearbyAdapter.notifyDataSetChanged();
+    }
+}

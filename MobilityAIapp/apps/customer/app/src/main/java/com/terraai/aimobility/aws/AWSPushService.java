@@ -33,52 +33,20 @@ import okhttp3.Response;
 
 /**
  * AWSPushService — end-to-end device token registration + notification display.
- *
- * Responsibilities:
- *  1. registerToken(userId, deviceToken)
- *     → POST to Push Lambda (action=registerToken)
- *     → Lambda creates/updates SNS Platform Endpoint
- *     → Lambda stores endpoint ARN in DynamoDB
- *     → Result: future SNS publishes reach this device
- *
- *  2. onNewToken(context, deviceToken)
- *     → Called by Notification_Receive when the OS issues a new GCM token
- *     → Re-registers with backend automatically
- *
- *  3. handleMessage(context, data)
- *     → Called by Notification_Receive when a push arrives
- *     → Builds and shows a system notification
- *     → Routes deep-link intent based on push type (ride/order/food)
- *
- * Usage from Application.onCreate (after login):
- * <pre>
- *     String userId     = prefs.getString(MyPreferences.USER_ID, "");
- *     String token      = prefs.getString(MyPreferences.deviceTokon, "");
- *     AWSPushService.registerToken(context, userId, token);
- * </pre>
- *
- * On logout:
- * <pre>
- *     AWSPushService.clearRegistration(context);
- * </pre>
  */
 public class AWSPushService {
 
     private static final String TAG = "AWSPushService";
 
-    // ── SharedPreferences keys ────────────────────────────────────────────────
     private static final String PREF_FILE       = "aws_push_prefs";
     private static final String PREF_REGISTERED = "token_registered";
     private static final String PREF_LAST_TOKEN = "last_token";
     private static final String PREF_LAST_USER  = "last_user_id";
 
-    // ── Notification channel ──────────────────────────────────────────────────
     private static final String CHANNEL_ID   = "aimobility_push";
     private static final String CHANNEL_NAME = "aimobility Notifications";
     private static final AtomicBoolean CHANNEL_CREATED = new AtomicBoolean(false);
 
-    // ── Push Lambda URL ───────────────────────────────────────────────────────
-    // Auth via Cognito JWT Bearer token — no static API key needed (TERRA-002)
     private static final String PUSH_LAMBDA_URL =
             "https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod/notifications/push";
 
@@ -90,16 +58,6 @@ public class AWSPushService {
     // PUBLIC API
     // ─────────────────────────────────────────────────────────────────────────
 
-    /**
-     * Register a device token with the Push Lambda.
-     *
-     * Safe to call multiple times — skips the network call if the same
-     * (userId, token) pair was already successfully registered.
-     *
-     * @param context     any context (Application or Activity)
-     * @param userId      logged-in user's ID
-     * @param deviceToken GCM/FCM device token from MyPreferences.deviceTokon
-     */
     public static void registerToken(@NonNull Context context,
                                      @NonNull String userId,
                                      @NonNull String deviceToken) {
@@ -121,31 +79,18 @@ public class AWSPushService {
         }
 
         BG.execute(() -> doRegister(context.getApplicationContext(), userId, deviceToken, prefs));
-        // Also registers via main Lambda /devices/token for Pinpoint/IoT delivery
-        // This ensures cross-channel delivery (WebSocket + IoT MQTT)
     }
 
-    /**
-     * Called when the OS issues a new GCM token (re-install, token rotation).
-     * Clears the cached registration so the next call to registerToken forces
-     * a fresh registration with the backend.
-     *
-     * @param context     any context
-     * @param deviceToken the new token
-     */
     public static void onNewToken(@NonNull Context context, @NonNull String deviceToken) {
         Log.i(TAG, "onNewToken: new GCM token received");
 
-        // Save new token to prefs
         MyPreferences.getSharedPreference(context)
                      .edit()
                      .putString(MyPreferences.deviceTokon, deviceToken)
                      .apply();
 
-        // Clear old registration so registerToken re-registers with new token
         clearRegistration(context);
 
-        // Re-register immediately if user is already logged in
         String userId = MyPreferences.getSharedPreference(context)
                                      .getString(MyPreferences.USER_ID, "");
         if (!userId.isEmpty()) {
@@ -153,13 +98,6 @@ public class AWSPushService {
         }
     }
 
-    /**
-     * Handle an incoming push notification payload.
-     * Builds and displays a system notification with appropriate deep-link intent.
-     *
-     * @param context the service context
-     * @param data    JSONObject containing title, body, type, and optional IDs
-     */
     public static void handleMessage(@NonNull Context context, @NonNull JSONObject data) {
         try {
             String title   = data.optString("title",   "aimobility");
@@ -172,7 +110,6 @@ public class AWSPushService {
 
             ensureNotificationChannel(context);
 
-            // ── Build deep-link intent based on push type ─────────────────────
             Intent tapIntent = buildTapIntent(context, type, rideId, orderId);
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     context,
@@ -202,10 +139,6 @@ public class AWSPushService {
         }
     }
 
-    /**
-     * Clear the cached registration state.
-     * Call this on logout so the next login re-registers fresh.
-     */
     public static void clearRegistration(@NonNull Context context) {
         context.getApplicationContext()
                .getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE)
@@ -242,14 +175,14 @@ public class AWSPushService {
             HTTP.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    // Network failure — prefs not updated, so we retry next app start
                     Log.e(TAG, "doRegister: network error — " + e.getMessage());
                 }
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response)
                         throws IOException {
-                    try { // response - Java 8 compat
+                    // Fix: try must have catch or finally — use finally to ensure response is closed
+                    try {
                         String raw = response.body() != null ? response.body().string() : "";
                         Log.d(TAG, "doRegister: HTTP " + response.code() + " — " + raw);
 
@@ -270,6 +203,8 @@ public class AWSPushService {
                             }
                         }
                         Log.w(TAG, "doRegister: registration not confirmed, will retry next launch");
+                    } finally {
+                        response.close();
                     }
                 }
             });
@@ -281,7 +216,6 @@ public class AWSPushService {
 
     private static Intent buildTapIntent(Context context, String type,
                                          String rideId, String orderId) {
-        // Default: open HomeActivity
         Intent intent = new Intent(context, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 

@@ -484,9 +484,11 @@ public class FoodHomeTwo extends RootFragment implements View.OnClickListener, O
                         binding.tvCurrentAddress.setText(Functions.getAddressSubString(getContext(), nearbyModel.latLng));
                     }
                     // [AWS-MIGRATED] PaperDB write → SharedPreferences
-                    // Original: Paper.book().write("nearModel"+ MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), nearbyModel);
-                    android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-        // FIXME: broken SharedPreferences migration
+                    com.terraai.aimobility.codeclasses.MyPreferences.getSharedPreference(getActivity()).edit()
+                            .putString(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_nearModel_lat", Double.toString(nearbyModel.lat))
+                            .putString(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_nearModel_lng", Double.toString(nearbyModel.lng))
+                            .putString(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_nearModel_title", nearbyModel.title)
+                            .apply();
                 }
             }
         });

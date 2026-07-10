@@ -304,9 +304,11 @@ public class PlaceOrdersFragment extends RootFragment implements View.OnClickLis
                     if (bundle != null) {
                         nearbyModel = (NearbyModelClass) bundle.getSerializable("model");
                         // [AWS-MIGRATED] PaperDB write → SharedPreferences
-                        // Original: Paper.book().write("nearModel" + MyPreferences.getSharedPreference(requireActivity()).getString(MyPreferences.USER_ID, ""), nearbyModel);
-                        android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-        // FIXME: broken SharedPreferences migration
+                        com.terraai.aimobility.codeclasses.MyPreferences.getSharedPreference(requireActivity()).edit()
+                                .putString(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_nearModel_lat", Double.toString(nearbyModel.lat))
+                                .putString(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_nearModel_lng", Double.toString(nearbyModel.lng))
+                                .putString(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_nearModel_title", nearbyModel.title)
+                                .apply();
                         checkLocation();
                         mDefaultLocation = nearbyModel.latLng;
                         binding.mapOverlay.setVisibility(View.VISIBLE);
@@ -744,9 +746,11 @@ public class PlaceOrdersFragment extends RootFragment implements View.OnClickLis
                 mDefaultLocation = nearbyModel.latLng;
                 checkLocation();
                 // [AWS-MIGRATED] PaperDB write → SharedPreferences
-                // Original: Paper.book().write("nearModel" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), nearbyModel);
-                android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-        // FIXME: broken SharedPreferences migration
+                com.terraai.aimobility.codeclasses.MyPreferences.getSharedPreference(getActivity()).edit()
+                        .putString(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_nearModel_lat", Double.toString(nearbyModel.lat))
+                        .putString(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_nearModel_lng", Double.toString(nearbyModel.lng))
+                        .putString(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_nearModel_title", nearbyModel.title)
+                        .apply();
                 binding.mapOverlay.setVisibility(View.VISIBLE);
                 showlatlngboundzoom(mDefaultLocation, restutantLatLng);
                 sendScreenPosition(false);

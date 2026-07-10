@@ -379,10 +379,10 @@ public class AddToCartFragment extends RootFragment implements View.OnClickListe
             case R.id.delete_item:
                 Functions.hideSoftKeyboard(getActivity());
                 carList.remove(cartposition);
-                // [AWS-MIGRATED] PaperDB write → SharedPreferences
-                // Original: Paper.book().write("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), carList);
-                android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-        // FIXME: broken SharedPreferences migration
+                // [AWS-MIGRATED] PaperDB write → SharedPreferences (cart size persisted)
+                com.terraai.aimobility.codeclasses.MyPreferences.getSharedPreference(getActivity()).edit()
+                        .putInt(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_cartSize", carList.size())
+                        .apply();
                 mainActivity.checkFragment();
                 if (fragmentCallBack != null) {
                     fragmentCallBack.onItemClick(new Bundle());
@@ -418,20 +418,16 @@ public class AddToCartFragment extends RootFragment implements View.OnClickListe
                             resturantModel.getResturantLat(),
                             resturantModel.getResturantLong());
 
-                    // [AWS-MIGRATED] PaperDB read → SharedPreferences (returns null — implement read)
-                    // Original: ArrayList<CalculationModel> list = /* AWS-MIGRATED: was Paper.book().read("carList" + MyPreferences.getSharedPreference(getActivity() */ null).getString(MyPreferences.USER_ID, ""), new ArrayList<>());
-                    ArrayList<CalculationModel> list = null; // [AWS] TODO: deserialize from SharedPreferences
-
-                    list.remove(cartposition);
-
-                    list.add(cartposition, calculationModel);
-
-
-                    // [AWS-MIGRATED] PaperDB write → SharedPreferences
-                    // Original: Paper.book().write("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), list);
-                    android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-        // FIXME: broken SharedPreferences migration
-
+                    // [AWS-MIGRATED] PaperDB read+write → use in-memory carList directly
+                    if (cartposition >= 0 && cartposition < carList.size()) {
+                        carList.remove(cartposition);
+                        carList.add(cartposition, calculationModel);
+                    } else {
+                        carList.add(calculationModel);
+                    }
+                    com.terraai.aimobility.codeclasses.MyPreferences.getSharedPreference(getActivity()).edit()
+                            .putInt(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_cartSize", carList.size())
+                            .apply();
                     mainActivity.updateist(carList);
 
                     if (fragmentCallBack != null) {
@@ -533,15 +529,11 @@ public class AddToCartFragment extends RootFragment implements View.OnClickListe
                 resturantModel.getResturantLong());
 
 
-        // [AWS-MIGRATED] PaperDB read → SharedPreferences (returns null — implement read)
-        // Original: ArrayList<CalculationModel> list = /* AWS-MIGRATED: was Paper.book().read("carList" + MyPreferences.getSharedPreference(getActivity() */ null).getString(MyPreferences.USER_ID, ""), new ArrayList<>());
-        ArrayList<CalculationModel> list = null; // [AWS] TODO: deserialize from SharedPreferences
-        list.add(calculationModel);
-
-        // [AWS-MIGRATED] PaperDB write → SharedPreferences
-        // Original: Paper.book().write("carList" + MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""), list);
-        android.preference.PreferenceManager.getDefaultSharedPreferences(com.terraai.aimobility.codeclasses.AiMobilityApp.getAppContext())
-        // FIXME: broken SharedPreferences migration
+        // [AWS-MIGRATED] PaperDB write → use in-memory carList
+        carList.add(calculationModel);
+        com.terraai.aimobility.codeclasses.MyPreferences.getSharedPreference(getActivity()).edit()
+                .putInt(com.terraai.aimobility.codeclasses.MyPreferences.USER_ID + "_cartSize", carList.size())
+                .apply();
         mainActivity.checkFragment();
         if (fragmentCallBack != null) {
             fragmentCallBack.onItemClick(new Bundle());
