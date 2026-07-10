@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
@@ -117,7 +119,7 @@ public class AddToCartFragment extends RootFragment implements View.OnClickListe
             // Original: carList = /* AWS-MIGRATED: was Paper.book().read("carList" + MyPreferences.getSharedPreference(getActivity() */ null).getString(MyPreferences.USER_ID, ""), new ArrayList<>());
             // [AWS] Read result discarded
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         listChild = new ArrayList<>();

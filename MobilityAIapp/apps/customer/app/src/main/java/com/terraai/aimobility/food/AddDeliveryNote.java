@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -281,7 +283,7 @@ public class AddDeliveryNote extends RootFragment implements View.OnClickListene
         try {
             params.put("id", favPlaceId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);
@@ -339,7 +341,7 @@ public class AddDeliveryNote extends RootFragment implements View.OnClickListene
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         binding.btnSaveContinue.startLoading();

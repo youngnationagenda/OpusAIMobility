@@ -1,5 +1,7 @@
 package com.terraai.aimobility.adapter;
 
+import android.util.Log;
+
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -78,13 +80,13 @@ public class MyPrintDocument extends PrintDocumentAdapter {
                 callback.onWriteFinished(new PageRange[]{PageRange.ALL_PAGES});
         } catch (Exception e) {
             callback.onWriteFailed(e.getMessage());
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         } finally {
             try {
                 in.close();
                 out.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Log.e("aimobility", ex.getMessage() != null ? ex.getMessage() : ex.toString(), ex);
                 Toast.makeText(context, "ex : "+ex.toString(), Toast.LENGTH_SHORT).show();
             }
         }

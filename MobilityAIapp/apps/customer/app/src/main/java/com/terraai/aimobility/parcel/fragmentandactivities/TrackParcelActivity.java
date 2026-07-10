@@ -1,5 +1,7 @@
 package com.terraai.aimobility.parcel.fragmentandactivities;
 
+import android.util.Log;
+
 import static com.terraai.aimobility.codeclasses.Functions.calculateDistance;
 
 import android.Manifest;
@@ -178,7 +180,7 @@ public class TrackParcelActivity extends AppCompatLocaleActivity implements View
         try {
             params.put("parcel_order_id", orderId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.logDMsg("sendobj at showOrderDetail : " + params.toString());
@@ -222,7 +224,7 @@ public class TrackParcelActivity extends AppCompatLocaleActivity implements View
 //                                        try {
 //                                            parcelHistoryModel.rider  = om.readValue(riderObj.toString(), Rider.class);
 //                                        } catch (JsonProcessingException e) {
-//                                            e.printStackTrace();
+//                                            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
 //                                        }
 //
 //
@@ -248,7 +250,7 @@ public class TrackParcelActivity extends AppCompatLocaleActivity implements View
                                         showMarker();
                                     }
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                     Functions.logDMsg("exception at showRiderOrderDetails : "+e.toString());
                                     Functions.logDMsg("exception at showRiderOrderDetails : "+e.getMessage().toString());
                                 }
@@ -875,7 +877,7 @@ public class TrackParcelActivity extends AppCompatLocaleActivity implements View
             try {
                 latlngBuilder.include(mrk.getPosition());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             }
         }
 

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.loginsignup;
 
+import android.util.Log;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -114,7 +116,7 @@ public class ConfirmYourNumberFragment extends RootFragment implements View.OnCl
             params.put("user_id", MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""));
             params.put("phone", phoneNumber);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);
@@ -158,14 +160,14 @@ public class ConfirmYourNumberFragment extends RootFragment implements View.OnCl
                                                     }
                                                 }
                                             } catch (Exception e) {
-                                                e.printStackTrace();
+                                                Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                             }
                                         }
                                     } else {
                                         Functions.dialouge(binding.getRoot().getContext(), binding.getRoot().getContext().getString(R.string.alert), respobj.getString("msg"));
                                     }
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                 }
                             }
                         }
@@ -205,7 +207,7 @@ public class ConfirmYourNumberFragment extends RootFragment implements View.OnCl
             params.put("code", binding.pinView.getText().toString());
             params.put("role","customer");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.logDMsg("params verifyPhoneNo :" + params.toString());
@@ -271,7 +273,7 @@ public class ConfirmYourNumberFragment extends RootFragment implements View.OnCl
             parameters.put("role","customer");
         } catch (
                 Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(binding.getRoot().getContext(), false, false);
@@ -374,7 +376,7 @@ public class ConfirmYourNumberFragment extends RootFragment implements View.OnCl
             getActivity().overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
             getActivity().finish();
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
     }
 
@@ -386,7 +388,7 @@ public class ConfirmYourNumberFragment extends RootFragment implements View.OnCl
             sendobj.put("phone", phoneNumber);
             sendobj.put("role","customer");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         Functions.showLoader(getContext(), false, false);
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
@@ -425,7 +427,7 @@ public class ConfirmYourNumberFragment extends RootFragment implements View.OnCl
             sendobj.put("user_id", userId);
             sendobj.put("phone", phoneNumber);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         Functions.showLoader(getContext(), false, false);
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

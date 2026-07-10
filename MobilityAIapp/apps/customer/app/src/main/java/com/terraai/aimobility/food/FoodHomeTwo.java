@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import static android.content.Context.MODE_PRIVATE;
 
 import android.Manifest;
@@ -152,7 +154,7 @@ public class FoodHomeTwo extends RootFragment implements View.OnClickListener, O
             // Original: nearbyModelClass = /* AWS-MIGRATED: was /* [AWS] was Paper.book().read("nearModel") — implement via SharedPreferences */ null */ null;
             // [AWS] Read result discarded
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (nearbyModelClass != null) {
@@ -194,7 +196,7 @@ public class FoodHomeTwo extends RootFragment implements View.OnClickListener, O
             params.put("long", longitude);
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         binding.allRestaurantsRecyclerView.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.VISIBLE);
@@ -388,7 +390,7 @@ public class FoodHomeTwo extends RootFragment implements View.OnClickListener, O
             params.put("min_price", minPrice);
             params.put("max_price", maxPrice);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         binding.allRestaurantsRecyclerView.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.VISIBLE);

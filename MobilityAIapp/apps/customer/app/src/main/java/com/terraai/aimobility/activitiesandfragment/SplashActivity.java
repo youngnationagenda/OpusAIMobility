@@ -1,5 +1,7 @@
 package com.terraai.aimobility.activitiesandfragment;
 
+import android.util.Log;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -115,7 +117,7 @@ public class SplashActivity extends AppCompatLocaleActivity {
             params.put("user_id", MyPreferences.getSharedPreference(SplashActivity.this).getString(MyPreferences.USER_ID, ""));
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(this,

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -181,7 +183,7 @@ public class RestaurantMenuFragment extends RootFragment implements View.OnClick
             // Original: carList = /* AWS-MIGRATED: was Paper.book().read("carList" + MyPreferences.getSharedPreference(getActivity() */ null).getString(MyPreferences.USER_ID, ""), new ArrayList<>());
             // [AWS] Read result discarded
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (!carList.isEmpty() && !fromWhere.equals("fromCheckout")) {
@@ -487,7 +489,7 @@ public class RestaurantMenuFragment extends RootFragment implements View.OnClick
         try {
             params.put("id", resturentId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         binding.linearBottomSheet.shimmerViewContainer.shimmerViewContainer.setVisibility(VISIBLE);
         binding.linearBottomSheet.shimmerViewContainer.shimmerViewContainer.startShimmer();

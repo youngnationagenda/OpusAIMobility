@@ -1,5 +1,7 @@
 package com.terraai.aimobility.activitiesandfragment;
 
+import android.util.Log;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
@@ -128,7 +130,7 @@ public class CustomErrorActivity extends AppCompatLocaleActivity implements View
             jsonObject.put("bundle_id", pacakgeName);
             jsonObject.put("crash", CustomActivityOnCrash.getAllErrorDetailsFromIntent(CustomErrorActivity.this, getIntent()));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(this,false,false);

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride;
 
+import android.util.Log;
+
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -173,7 +175,7 @@ public class ContactUsFragment extends RootFragment implements View.OnClickListe
             }
             params.put("attachment", base64);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);
@@ -393,7 +395,7 @@ public class ContactUsFragment extends RootFragment implements View.OnClickListe
                                     break;
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                         }
                         Uri selectedImage = (Uri.fromFile(new File(imageFilePath)));
                         beginCrop(selectedImage);
@@ -421,7 +423,7 @@ public class ContactUsFragment extends RootFragment implements View.OnClickListe
                         try {
                             imageStream = getActivity().getContentResolver().openInputStream(resultUri);
                         } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                         }
                         bitmap = BitmapFactory.decodeStream(imageStream);
 

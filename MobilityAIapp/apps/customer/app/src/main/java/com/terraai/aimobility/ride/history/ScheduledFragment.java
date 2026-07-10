@@ -110,7 +110,7 @@ public class ScheduledFragment extends RootFragment implements SwipeRefreshLayou
             params.put("user_id", userId);
             params.put("starting_point", pageCount);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
 
@@ -233,7 +233,7 @@ public class ScheduledFragment extends RootFragment implements SwipeRefreshLayou
             params.put("user_id", "" + userId);
             params.put("request_id", historyModel.id);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);

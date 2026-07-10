@@ -1,5 +1,7 @@
 package com.terraai.aimobility.parcel.fragmentandactivities;
 
+import android.util.Log;
+
 import android.animation.Animator;
 import android.app.Dialog;
 import android.content.Context;
@@ -481,7 +483,7 @@ public class ReviewDeliveryFragment extends RootFragment implements View.OnClick
 
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.logDMsg(sendobj.toString());
@@ -554,7 +556,7 @@ public class ReviewDeliveryFragment extends RootFragment implements View.OnClick
             params.put("waypoints",dropOffArray);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

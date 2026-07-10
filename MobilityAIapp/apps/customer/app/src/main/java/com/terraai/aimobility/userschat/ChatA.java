@@ -627,7 +627,7 @@ public class ChatA extends AppCompatLocaleActivity {
 
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

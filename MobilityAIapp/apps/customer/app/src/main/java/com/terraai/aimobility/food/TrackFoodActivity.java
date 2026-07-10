@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import static com.terraai.aimobility.codeclasses.Functions.calculateDistance;
 
 import android.Manifest;
@@ -168,7 +170,7 @@ public class TrackFoodActivity extends AppCompatLocaleActivity implements View.O
         try {
             params.put("food_order_id", orderId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
@@ -738,7 +740,7 @@ public class TrackFoodActivity extends AppCompatLocaleActivity implements View.O
             params.put("user_id", "" + userId);
             params.put("request_id", orderId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(TrackFoodActivity.this, false, false);
@@ -817,7 +819,7 @@ public class TrackFoodActivity extends AppCompatLocaleActivity implements View.O
             try {
                 latlngBuilder.include(mrk.getPosition());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             }
         }
 

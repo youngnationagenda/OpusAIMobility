@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
@@ -202,7 +204,7 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
             // Original: nearbyModelClass = /* AWS-MIGRATED: was Paper.book().read("nearModel" + MyPreferences.getSharedPreference(getActivity() */ null).getString(MyPreferences.USER_ID, ""));
             // [AWS] Read result discarded
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (nearbyModelClass != null) {
@@ -229,7 +231,7 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
                 binding.cartView.cartLayout.setVisibility(View.GONE);
             }
         }catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
     }
@@ -394,7 +396,7 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
             params.put("long", longitude);
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         binding.swipeRefreshLayout.setRefreshing(true);
@@ -493,7 +495,7 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
         try {
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
                 params.toString(),
@@ -672,7 +674,7 @@ public class FoodHomeFragment extends RootFragment implements View.OnClickListen
             params.put("min_price", minPrice);
             params.put("max_price", maxPrice);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         binding.progressBar.setVisibility(View.VISIBLE);

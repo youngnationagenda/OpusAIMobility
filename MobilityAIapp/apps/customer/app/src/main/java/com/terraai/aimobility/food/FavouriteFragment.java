@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -91,7 +93,7 @@ public class FavouriteFragment extends RootFragment implements SwipeRefreshLayou
         try {
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (favouriteList.isEmpty() && !binding.swipeRefreshLayout.isRefreshing()) {

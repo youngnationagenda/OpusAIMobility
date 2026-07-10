@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.loginsignup;
 
+import android.util.Log;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -245,7 +247,7 @@ public class ResetForgotPasswordFragment extends RootFragment implements View.On
             params.put("email", email);
             params.put("password", binding.etNewPassword.getText().toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         binding.updatePasswordBtn.startLoading();
@@ -289,7 +291,7 @@ public class ResetForgotPasswordFragment extends RootFragment implements View.On
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
     }

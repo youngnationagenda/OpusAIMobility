@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -180,7 +182,7 @@ public class EnterNewAddressFragment extends RootFragment implements View.OnClic
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
                 ApiException apiException = (ApiException) exception;
-                apiException.printStackTrace();
+                Log.e("aimobility", apiException.getMessage() != null ? apiException.getMessage() : apiException.toString(), apiException);
             }
         });
     }

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.mapclasses;
 
+import android.util.Log;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -286,17 +288,17 @@ public class MapWorker {
                     return result;
 
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                     Functions.logDMsg("getDirection:InterruptedException"+e.toString());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                     Functions.logDMsg("getDirection:IOException"+e.toString());
                 } catch (com.google.maps.errors.ApiException e) {
-                    e.printStackTrace();
+                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                     Functions.logDMsg("getDirection:ApiException"+e.toString());
                 }
                 catch (Exception e){
-                    e.printStackTrace();
+                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                     Functions.logDMsg("getDirection:ApiException"+e.toString());
                 }
                 return null;
@@ -509,11 +511,11 @@ public class MapWorker {
 //                    return result;
 //
 //                } catch (InterruptedException e) {
-//                    e.printStackTrace();
+//                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
 //                } catch (IOException e) {
-//                    e.printStackTrace();
+//                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
 //                } catch (com.google.maps.errors.ApiException e) {
-//                    e.printStackTrace();
+//                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
 //                }
 //                return null;
 //            }

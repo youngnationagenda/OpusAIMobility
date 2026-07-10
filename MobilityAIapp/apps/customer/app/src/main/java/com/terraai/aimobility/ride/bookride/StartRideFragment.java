@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.bookride;
 
+import android.util.Log;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -685,7 +687,7 @@ public class StartRideFragment extends RootFragment implements OnMapReadyCallbac
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
     }
@@ -699,7 +701,7 @@ public class StartRideFragment extends RootFragment implements OnMapReadyCallbac
             params.put("dropoff_lat", "" + dropOffLatlong.latitude);
             params.put("dropoff_long", "" + dropOffLatlong.longitude);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (vehicleList.isEmpty()) {
@@ -883,7 +885,7 @@ public class StartRideFragment extends RootFragment implements OnMapReadyCallbac
             params.put("dropoff_long", "" + dropoffMarker.getPosition().longitude);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             Functions.logDMsg("Exception at requestVehicle : " + e.toString());
         }
 
@@ -950,7 +952,7 @@ public class StartRideFragment extends RootFragment implements OnMapReadyCallbac
             params.put("short_name", locationModel.getPickUpAddress());
             params.put("location_string", Functions.getAddressString(getActivity(), dropoffMarker.getPosition().latitude, dropoffMarker.getPosition().longitude));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

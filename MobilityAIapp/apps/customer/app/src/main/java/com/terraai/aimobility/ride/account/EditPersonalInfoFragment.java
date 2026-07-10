@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.account;
 
+import android.util.Log;
+
 import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -196,7 +198,7 @@ public class EditPersonalInfoFragment extends RootFragment implements View.OnCli
             params.put("gender", "" + gender);
             params.put("dob", "" + DateOperations.changeDateFormat("MM/dd/yyyy", "yyyy-MM-dd", "" + binding.tvDob.getText().toString()));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);

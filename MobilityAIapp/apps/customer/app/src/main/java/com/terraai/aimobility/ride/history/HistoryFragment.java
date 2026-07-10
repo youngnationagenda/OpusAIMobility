@@ -112,7 +112,7 @@ public class HistoryFragment extends RootFragment implements SwipeRefreshLayout.
             params.put("user_id", userId);
             params.put("starting_point", pageCount);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (historyModelArrayList.isEmpty() && !binding.swiperefreshlayout.isRefreshing()) {

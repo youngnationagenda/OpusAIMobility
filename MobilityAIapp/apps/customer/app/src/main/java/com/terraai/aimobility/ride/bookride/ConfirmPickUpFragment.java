@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.bookride;
 
+import android.util.Log;
+
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.terraai.aimobility.codeclasses.Variables.PACKAGE_URL_SCHEME;
 
@@ -429,7 +431,7 @@ public class ConfirmPickUpFragment extends RootFragment implements OnMapReadyCal
         try {
             params.put("id", favPlaceId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);
@@ -498,7 +500,7 @@ public class ConfirmPickUpFragment extends RootFragment implements OnMapReadyCal
         try {
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (savedList != null && savedList.size() > 0) {

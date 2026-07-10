@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -176,7 +178,7 @@ public class RatingFragment extends RootFragment implements View.OnClickListener
             params.put("order_id", orderId);
             params.put("star", Float.toString(rating));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);

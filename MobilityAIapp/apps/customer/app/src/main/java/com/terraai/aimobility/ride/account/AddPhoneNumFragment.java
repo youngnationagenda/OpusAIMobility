@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.account;
 
+import android.util.Log;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -206,7 +208,7 @@ public class AddPhoneNumFragment extends RootFragment implements View.OnClickLis
             sendobj.put("user_id", userId);
             sendobj.put("phone", phoneNo);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         binding.continueBtn.startLoading();
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

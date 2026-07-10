@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.payment;
 
+import android.util.Log;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -163,7 +165,7 @@ public class PaymentFragment extends RootFragment implements View.OnClickListene
         try {
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (paymentMethodsModelArrayList.isEmpty() && !binding.swiperefreshlayout.isRefreshing()) {

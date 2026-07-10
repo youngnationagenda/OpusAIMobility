@@ -512,7 +512,7 @@ public class PlaceOrdersFragment extends RootFragment implements View.OnClickLis
             jsonObject.put("lang", "english");
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
 
         }
 
@@ -598,7 +598,7 @@ public class PlaceOrdersFragment extends RootFragment implements View.OnClickLis
         try {
             dateOne = new SimpleDateFormat("HH:mm:ss").parse(resturantModel.getTimeModelArrayList().get(day - 1).getOpening_time());
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             Functions.logDMsg("minDate : " + e.toString());
         }
 

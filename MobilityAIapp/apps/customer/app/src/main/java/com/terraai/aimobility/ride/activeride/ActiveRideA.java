@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.activeride;
 
+import android.util.Log;
+
 import static com.terraai.aimobility.codeclasses.Functions.calculateDistance;
 
 import android.Manifest;
@@ -171,7 +173,7 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
         try {
             params.put("request_id", requestId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
@@ -362,7 +364,7 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
             sendobj.put("dropoff_long", "" + latlng.longitude);
             sendobj.put("dropoff_location_short_string", "" + locationModel.getDropOffAddress());
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
                 sendobj.toString(),
@@ -381,7 +383,7 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
                                         Functions.dialouge(binding.getRoot().getContext(), binding.getRoot().getContext().getString(R.string.alert), respobj.getString("msg"));
                                     }
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                 }
                             }
                         }
@@ -431,7 +433,7 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
         try {
             params.put("user_id", userId);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
@@ -473,7 +475,7 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
                                         finish();
                                     }
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                 }
                             }
                         }
@@ -1044,7 +1046,7 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
             params.put("user_id", "" + userId);
             params.put("request_id", requestId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(ActiveRideA.this, false, false);
@@ -1122,7 +1124,7 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
             try {
                 latlngBuilder.include(mrk.getPosition());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             }
         }
 

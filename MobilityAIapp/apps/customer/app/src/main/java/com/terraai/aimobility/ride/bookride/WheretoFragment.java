@@ -818,7 +818,7 @@ public class WheretoFragment extends Fragment
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
                 ApiException apiException = (ApiException) exception;
-                apiException.printStackTrace();
+                Log.e("aimobility", apiException.getMessage() != null ? apiException.getMessage() : apiException.toString(), apiException);
             }
         });
     }
@@ -978,7 +978,7 @@ public class WheretoFragment extends Fragment
         try {
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         recentPlaceList.clear();
@@ -1095,7 +1095,7 @@ public class WheretoFragment extends Fragment
         try {
             params.put("id", id);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);

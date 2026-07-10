@@ -1,5 +1,7 @@
 package com.terraai.aimobility.parcel.adapter;
 
+import android.util.Log;
+
 import static com.terraai.aimobility.bottomsheet.AnchorSheetBehavior.STATE_COLLAPSED;
 import static com.terraai.aimobility.bottomsheet.AnchorSheetBehavior.STATE_EXPANDED;
 import android.Manifest;
@@ -686,7 +688,7 @@ public class ParcelChangeAddress extends Fragment
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
                 ApiException apiException = (ApiException) exception;
-                apiException.printStackTrace();
+                Log.e("aimobility", apiException.getMessage() != null ? apiException.getMessage() : apiException.toString(), apiException);
             }
         });
     }
@@ -768,7 +770,7 @@ public class ParcelChangeAddress extends Fragment
         try {
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         recentPlaceList.clear();
@@ -886,7 +888,7 @@ public class ParcelChangeAddress extends Fragment
         try {
             params.put("id", id);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         Functions.showLoader(getActivity(), false, false);
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -113,7 +115,7 @@ public class OrdersFragment extends RootFragment implements View.OnClickListener
             // Original: carList = /* AWS-MIGRATED: was Paper.book().read("carList" + MyPreferences.getSharedPreference(getActivity() */ null).getString(MyPreferences.USER_ID, ""), new ArrayList<>());
             // [AWS] Read result discarded
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         if (carList.size() > 0) {
             binding.cartView.cartLayout.setVisibility(View.VISIBLE);
@@ -156,7 +158,7 @@ public class OrdersFragment extends RootFragment implements View.OnClickListener
             params.put("user_id", userId);
             params.put("starting_point", startingPoint);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (arrayList.isEmpty() && binding.swipeRefreshLayout.isRefreshing()) {
@@ -354,7 +356,7 @@ public class OrdersFragment extends RootFragment implements View.OnClickListener
                                         ispostFinsh = true;
                                     }
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                     Functions.logDMsg("exception at getYourOrderData : " + e.toString());
                                 } finally {
                                     binding.loadMoreProgress.setVisibility(View.GONE);

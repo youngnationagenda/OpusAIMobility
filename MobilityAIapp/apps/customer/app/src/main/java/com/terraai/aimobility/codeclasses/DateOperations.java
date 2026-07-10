@@ -1,5 +1,7 @@
 package com.terraai.aimobility.codeclasses;
 
+import android.util.Log;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,7 +21,7 @@ public class DateOperations {
             date = sdf.format(d);
         } catch (ParseException e) {
             Functions.logDMsg("showMessageTime exception : " + e.toString());
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (date != null) {
@@ -50,7 +52,7 @@ public class DateOperations {
             databasedate = d.getTime();
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         long difference = currenttime - databasedate;
         if (difference < 86400000) {
@@ -82,7 +84,7 @@ public class DateOperations {
             difference = date2.getTime() - date1.getTime();
         } catch (ParseException e) {
             Functions.logDMsg("exception at calculateTime :" + e.toString());
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         String totalTime = formatDuration(difference, history);
@@ -124,7 +126,7 @@ public class DateOperations {
             return targetFormat.format(sourceDate);
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             Functions.logDMsg("e at date : " + e.toString());
             return "";
         }

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -157,7 +159,7 @@ public class DeliveryAddressFragment extends RootFragment implements View.OnClic
         try {
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         recentPlaceList.clear();
@@ -209,7 +211,7 @@ public class DeliveryAddressFragment extends RootFragment implements View.OnClic
 
                                     showRecentLocationsAdapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                     Functions.logDMsg("exception at showRecentLocations : " + e.toString());
                                 }
                             }
@@ -291,7 +293,7 @@ public class DeliveryAddressFragment extends RootFragment implements View.OnClic
         try {
             params.put("id", id);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         Functions.showLoader(getActivity(), false, false);
 

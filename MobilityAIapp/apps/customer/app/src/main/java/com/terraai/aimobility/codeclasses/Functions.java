@@ -208,7 +208,7 @@ public class Functions {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             version = (pInfo).versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         return version;
@@ -508,8 +508,8 @@ public class Functions {
 
 
         } catch (Exception e) {
-            System.out.print("!====Popbackstack error : " + e);
-            e.printStackTrace();
+            Log.e("aimobility", "Popbackstack error: " + e.getMessage());
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
     }
 
@@ -544,7 +544,7 @@ public class Functions {
                 strAdd = strReturnedAddress.toString();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         return strAdd;
     }
@@ -563,7 +563,7 @@ public class Functions {
                 strAdd = strReturnedAddress.toString();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         return strAdd;
     }
@@ -877,7 +877,7 @@ public class Functions {
     public static void open_google_map(Context context,LatLng origin,LatLng destination) {
         if (origin != null && destination!=null) {
             String gurl =
-                    "http://maps.google.com/maps?saddr=" + origin.latitude + "," + origin.longitude + "&" + "daddr=" + destination.latitude + "," +destination.longitude;
+                    "https://maps.google.com/maps?saddr=" + origin.latitude + "," + origin.longitude + "&" + "daddr=" + destination.latitude + "," +destination.longitude;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(gurl));
             context.startActivity(intent);
         }

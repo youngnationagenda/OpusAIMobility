@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.loginsignup;
 
+import android.util.Log;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -133,7 +135,7 @@ public class LogInFragment extends RootFragment implements View.OnClickListener 
             params.put("password", binding.etPassword.getText().toString());
             params.put("device_token", deviceToken);
             params.put("role", "customer");
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e); }
 
         binding.continueBtn.startLoading();
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

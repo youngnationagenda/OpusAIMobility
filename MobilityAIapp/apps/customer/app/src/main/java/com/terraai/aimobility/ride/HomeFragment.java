@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride;
 
+import android.util.Log;
+
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.terraai.aimobility.codeclasses.Variables.PACKAGE_URL_SCHEME;
 import static com.terraai.aimobility.codeclasses.Variables.foodImageUrl;
@@ -216,7 +218,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             params.put("user_id", MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""));
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

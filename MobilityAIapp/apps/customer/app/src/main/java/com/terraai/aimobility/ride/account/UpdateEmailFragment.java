@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.account;
 
+import android.util.Log;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -142,7 +144,7 @@ public class UpdateEmailFragment extends RootFragment implements View.OnClickLis
             params.put("email", emailBinding.etEmail.getText().toString());
             params.put("user_id", MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""));
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         emailBinding.saveBtn.startLoading();

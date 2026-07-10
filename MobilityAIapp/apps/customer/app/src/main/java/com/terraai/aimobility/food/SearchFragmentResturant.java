@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -121,7 +123,7 @@ public class SearchFragmentResturant extends RootFragment implements View.OnClic
             params.put("user_id", userId);
             params.put("keyword", searchQuery);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         binding.noDataLayout.noDataView.setVisibility(View.GONE);

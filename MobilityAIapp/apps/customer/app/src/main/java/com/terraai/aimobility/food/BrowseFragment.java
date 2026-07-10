@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -71,7 +73,7 @@ public class BrowseFragment extends RootFragment implements SwipeRefreshLayout.O
                 binding.cartFrameLayout.cartLayout.setVisibility(View.GONE);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
     }
 

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.bookride;
 
+import android.util.Log;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -145,7 +147,7 @@ public class AddToSavedPlacesFragment extends RootFragment implements View.OnCli
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         binding.saveBtn.startLoading();

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.payment;
 
+import android.util.Log;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -313,7 +315,7 @@ public class AddCreditCard extends Fragment implements View.OnClickListener {
             params.put("exp_month", month);
             params.put("exp_year", year);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.logDMsg("sendobj at callApiForCard:" + params.toString());

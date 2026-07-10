@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.loginsignup;
 
+import android.util.Log;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -131,7 +133,7 @@ public class ForgotPasswordFragment extends RootFragment implements View.OnClick
         try {
             params.put("email", binding.etEmail.getText().toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         binding.resetBtn.startLoading();

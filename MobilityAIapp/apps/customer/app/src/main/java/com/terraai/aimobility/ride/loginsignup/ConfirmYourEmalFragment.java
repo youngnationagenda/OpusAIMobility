@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.loginsignup;
 
+import android.util.Log;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -119,7 +121,7 @@ public class ConfirmYourEmalFragment extends RootFragment implements View.OnClic
 
             params.put("code", binding.pinView.getText().toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);
@@ -187,7 +189,7 @@ public class ConfirmYourEmalFragment extends RootFragment implements View.OnClic
             sendobj.put("phone", email);
             sendobj.put("role","customer");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         Functions.showLoader(getContext(), false, false);
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

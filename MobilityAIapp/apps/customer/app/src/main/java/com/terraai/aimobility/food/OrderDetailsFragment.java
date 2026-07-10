@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -276,7 +278,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
             document.close();
             printPdf();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
          }
     }
 
@@ -407,7 +409,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
         try {
             params.put("food_order_id", yourOrdersModel.getOrderId());
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
@@ -461,7 +463,7 @@ public class OrderDetailsFragment extends Fragment implements View.OnClickListen
         try {
             printDocument(FileUtils.getAppFolder(getActivity()) + yourOrdersModel.getResturantModel().getResturantName() + ".pdf");
         } catch (java.io.IOException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
     }
 

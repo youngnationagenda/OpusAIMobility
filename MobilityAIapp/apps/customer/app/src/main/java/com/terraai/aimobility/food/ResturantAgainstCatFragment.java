@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -127,7 +129,7 @@ public class ResturantAgainstCatFragment extends RootFragment implements View.On
             params.put("user_id", userId);
             params.put("keyword", searchQuery);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         binding.shimmerFrameLayout.shimmerViewContainer.setVisibility(View.VISIBLE);
@@ -208,7 +210,7 @@ public class ResturantAgainstCatFragment extends RootFragment implements View.On
             params.put("food_category_id", categoriesModel.getId());
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (!binding.swipeRefreshLayout.isRefreshing()) {

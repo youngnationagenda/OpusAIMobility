@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.loginsignup;
 
+import android.util.Log;
+
 import static com.terraai.aimobility.codeclasses.MyPreferences.mPrefs;
 
 import android.content.Intent;
@@ -469,7 +471,7 @@ public class SignUpFragment extends RootFragment implements View.OnClickListener
 
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         binding.continueBtn.startLoading();
 
@@ -550,7 +552,7 @@ public class SignUpFragment extends RootFragment implements View.OnClickListener
                                     }
 
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                 }
                             }
                         }

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.payment;
 
+import android.util.Log;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +79,7 @@ public class DeleteFragmantDialog extends BottomSheetDialogFragment implements V
             params.put("user_id", userId);
             params.put("id", id);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);

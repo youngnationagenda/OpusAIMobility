@@ -96,7 +96,7 @@ public class DataParse {
             requestModel.setUserWallet(userObject.optString("wallet"));
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             Functions.logDMsg("Exception: "+e);
         }
 
@@ -192,7 +192,7 @@ public class DataParse {
             }
         }
         catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             Functions.logDMsg("e at resturant parse : "+e.toString());
             apiCallBack.onParseData(tempList);
         }
@@ -276,7 +276,7 @@ public class DataParse {
                     tempList.add(resturantModel);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             Functions.logDMsg("e at resturant parse : "+e.toString());
             apiCallBack.onParseData(tempList);
         }
@@ -291,7 +291,7 @@ public class DataParse {
             params.put("user_id", userId);
             params.put("restaurant_id", restaurantId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         RetrofitRequest.JsonPostRequest(context,
                 params.toString(),
@@ -318,7 +318,7 @@ public class DataParse {
             params.put("user_id", userId);
             params.put("restaurant_id", restaurantId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         RetrofitRequest.JsonPostRequest(context,
                 params.toString(),
@@ -356,7 +356,7 @@ public class DataParse {
                 tempList.add(resturantModel);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             apiCallBack.onParseData(tempList);
         }
 
@@ -563,7 +563,7 @@ public class DataParse {
 
             }
         }catch (JSONException e){
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             apiCallBack.onParseData(yourOrdersModel);
         }
 
@@ -599,7 +599,7 @@ public class DataParse {
             try {
                 parcelHistoryModel.rider = om.readValue(riderObj.toString(), Rider.class);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
             }
 
 

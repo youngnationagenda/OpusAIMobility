@@ -1,5 +1,7 @@
 package com.terraai.aimobility.codeclasses;
 
+import android.util.Log;
+
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -31,7 +33,7 @@ public class GeoHelper {
         try {
             addresses = fancyGeocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         return addresses;
     }

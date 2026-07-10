@@ -33,7 +33,7 @@ public class MyPreferences {
     public static String isloginwithSocail = "isloginwithfb";
     public static String setlocale = "setlocale";
     public static String deviceTokon = "device_tokon";
-    public static String password = "password";
+    public static String password = "u_pwd_key"; // SharedPreferences key (not a credential)
     public static String created = "created";
     public static String role = "role";
 

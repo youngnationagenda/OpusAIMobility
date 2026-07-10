@@ -1,5 +1,7 @@
 package com.terraai.aimobility.parcel.fragmentandactivities;
 
+import android.util.Log;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -76,7 +78,7 @@ public class HistoryParcelDetailFragment extends RootFragment implements View.On
         try {
             sendobj.put("parcel_order_id", "" + model.getOrderId());
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (isprogress)
@@ -148,7 +150,7 @@ public class HistoryParcelDetailFragment extends RootFragment implements View.On
 //            try {
 //                model.rider  = om.readValue(riderObj.toString(), Rider.class);
 //            } catch (JsonProcessingException e) {
-//                e.printStackTrace();
+//                Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
 //            }
 //
 //        } catch (Exception e) {

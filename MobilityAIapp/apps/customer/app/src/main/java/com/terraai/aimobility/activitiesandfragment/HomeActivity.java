@@ -1,5 +1,7 @@
 package com.terraai.aimobility.activitiesandfragment;
 
+import android.util.Log;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -102,7 +104,7 @@ public class HomeActivity extends AppCompatLocaleActivity {
             params.put("version", Functions.getVersion(HomeActivity.this));
             params.put("ip", "" + ip);
             params.put("device_token", token);
-        } catch (JSONException e) { e.printStackTrace(); }
+        } catch (JSONException e) { Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e); }
         RetrofitRequest.JsonPostRequest(this, params.toString(),
                 Singleton.getApiCall(HomeActivity.this).addDeviceData(params.toString()),
                 new ApiCallback() {

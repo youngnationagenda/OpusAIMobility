@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.activeride;
 
+import android.util.Log;
+
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -208,7 +210,7 @@ public class RatingFragment extends BottomSheetDialogFragment implements View.On
             sendobj.put("tip", "");
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         Functions.showLoader(getActivity(), false, false);
 

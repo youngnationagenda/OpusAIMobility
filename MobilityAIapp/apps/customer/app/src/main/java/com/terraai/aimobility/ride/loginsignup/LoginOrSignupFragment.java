@@ -194,7 +194,7 @@ public class LoginOrSignupFragment extends RootFragment implements View.OnClickL
         try {
             jsonObject.put("email", binding.etEmail.getText().toString());
             jsonObject.put("role", "customer");
-        } catch (JSONException e) { e.printStackTrace(); }
+        } catch (JSONException e) { Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e); }
 
         Functions.showLoader(binding.getRoot().getContext(), false, false);
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
@@ -294,7 +294,7 @@ public class LoginOrSignupFragment extends RootFragment implements View.OnClickL
             sendobj.put("verify", "0");
             sendobj.put("phone", phoneNo);
             sendobj.put("role", "customer");
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e); }
 
         binding.continueBtn.startLoading();
         binding.continueWithEmail.setEnabled(false);

@@ -1,5 +1,7 @@
 package com.terraai.aimobility.userschat;
 
+import android.util.Log;
+
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -169,7 +171,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             databasedate = d.getTime();
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         long difference = currenttime - databasedate;
         if (difference < 86400000) {
@@ -205,7 +207,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             d = Variables.dateFormat.parse(date);
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (d != null) {

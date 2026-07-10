@@ -1,5 +1,7 @@
 package com.terraai.aimobility.food;
 
+import android.util.Log;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,7 +99,7 @@ public class SavedAddressFoodFragment extends RootFragment implements View.OnCli
         try {
             params.put("user_id", userId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (savedList.isEmpty() && !binding.swiperefreshlayout.isRefreshing()) {
@@ -258,7 +260,7 @@ public class SavedAddressFoodFragment extends RootFragment implements View.OnCli
         try {
             params.put("id", favPlaceId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);

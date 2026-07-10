@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride;
 
+import android.util.Log;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,7 +107,7 @@ public class NotificationFragment extends RootFragment implements View.OnClickLi
             params.put("user_id", MyPreferences.getSharedPreference(getActivity()).getString(MyPreferences.USER_ID, ""));
             params.put("starting_point", startingPoint);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         if (!binding.swiperefreshlayout.isRefreshing()) {
@@ -157,7 +159,7 @@ public class NotificationFragment extends RootFragment implements View.OnClickLi
                                             binding.nodataLayout.setVisibility(View.VISIBLE);
                                     }
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                 } finally {
                                     binding.loadMoreProgress.setVisibility(View.GONE);
                                 }

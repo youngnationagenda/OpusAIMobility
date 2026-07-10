@@ -6,8 +6,14 @@ const auth = require('./auth');
 const { notifyUser } = require('./notify');
 
 // API_KEY removed — TERRA-002: API key fallback auth disabled, Cognito JWT is sole auth
-const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID || 'us-east-1_LKa4ElQem'; // terraaimobility-production
-const COGNITO_CLIENT_ID    = process.env.COGNITO_CLIENT_ID    || '2am01r4fmsp0s08991ftgub887'; // terraaimobility-android
+if (!process.env.COGNITO_USER_POOL_ID) {
+  throw new Error('COGNITO_USER_POOL_ID environment variable is required');
+}
+const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID;
+if (!process.env.COGNITO_CLIENT_ID) {
+  throw new Error('COGNITO_CLIENT_ID environment variable is required');
+}
+const COGNITO_CLIENT_ID = process.env.COGNITO_CLIENT_ID;
 
 // ── Fallback config (used only if DynamoDB config table doesn't exist yet) ───
 const FALLBACK_COUNTRIES   = [{ id:'1',name:'Kenya',code:'+254',iso:'KE',iso_code:'KE',currency_symbol:'KSh',currency_code:'KES' },{ id:'226',name:'United States',code:'+1',iso:'US',iso_code:'US',currency_symbol:'$',currency_code:'USD' }];

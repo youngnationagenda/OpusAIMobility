@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.account;
 
+import android.util.Log;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -169,7 +171,7 @@ public class ResetPasswordFragment extends RootFragment implements View.OnClickL
             params.put("old_password", binding.etOldPassword.getText().toString());
             params.put("new_password", binding.etNewPassword.getText().toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(getActivity(), false, false);

@@ -62,7 +62,19 @@ public class WebViewFragment extends Fragment {
         });
 
 
+        // JavaScript is required for app-internal web pages
         webView.getSettings().setJavaScriptEnabled(true);
+        // Security hardening — restrict WebView attack surface
+        webView.getSettings().setAllowFileAccess(false);
+        webView.getSettings().setAllowContentAccess(false);
+        webView.getSettings().setAllowFileAccessFromFileURLs(false);
+        webView.getSettings().setAllowUniversalAccessFromFileURLs(false);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            webView.getSettings().setMixedContentMode(
+                    android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        }
+        webView.getSettings().setSavePassword(false);
+        webView.getSettings().setDomStorageEnabled(false);
 
         webView.loadUrl(url);
 

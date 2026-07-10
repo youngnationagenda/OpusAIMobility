@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.account;
 
+import android.util.Log;
+
 import static com.terraai.aimobility.codeclasses.Variables.PACKAGE_URL_SCHEME;
 
 import android.Manifest;
@@ -85,7 +87,7 @@ public class AccountFragment extends RootFragment implements View.OnClickListene
                     try {
                         imageStream = getActivity().getContentResolver().openInputStream(resultUri);
                     } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                        Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                     }
                     final Bitmap imagebitmap = BitmapFactory.decodeStream(imageStream);
                     Bitmap rotatedBitmap = Bitmap.createBitmap(imagebitmap, 0, 0, imagebitmap.getWidth(), imagebitmap.getHeight(), null, true);
@@ -126,7 +128,7 @@ public class AccountFragment extends RootFragment implements View.OnClickListene
                                     break;
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                         }
                         Uri selectedImage = (Uri.fromFile(new File(imageFilePath)));
                         beginCrop(selectedImage);
@@ -430,7 +432,7 @@ public class AccountFragment extends RootFragment implements View.OnClickListene
             params.put("user_id", userId);
             params.put("image", imageBase64);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         Functions.showLoader(getActivity(), false, false);
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
@@ -492,7 +494,7 @@ public class AccountFragment extends RootFragment implements View.OnClickListene
         try {
             sendobj.put("user_id", MyPreferences.mPrefs.getString(MyPreferences.USER_ID, ""));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

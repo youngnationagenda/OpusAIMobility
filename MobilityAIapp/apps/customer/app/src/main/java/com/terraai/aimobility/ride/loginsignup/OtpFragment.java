@@ -1,5 +1,7 @@
 package com.terraai.aimobility.ride.loginsignup;
 
+import android.util.Log;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -112,7 +114,7 @@ public class OtpFragment extends RootFragment implements View.OnClickListener {
             params.put("code", binding.pinView.getText().toString());
             params.put("role","customer");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
         Functions.showLoader(binding.getRoot().getContext(), false, false);
@@ -165,7 +167,7 @@ public class OtpFragment extends RootFragment implements View.OnClickListener {
             }
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
 
 
@@ -258,7 +260,7 @@ public class OtpFragment extends RootFragment implements View.OnClickListener {
                                     }
 
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
                                 }
                             }
                         }
@@ -279,7 +281,7 @@ public class OtpFragment extends RootFragment implements View.OnClickListener {
             sendobj.put("phone", fromWhere);
             sendobj.put("role","user");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
         }
         Functions.showLoader(getContext(), false, false);
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),
