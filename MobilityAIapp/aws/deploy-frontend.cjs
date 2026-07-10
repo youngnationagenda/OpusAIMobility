@@ -22,7 +22,7 @@ const BUCKET          = 'opusaimobility-assets-prod';
 const CF_DIST_ID      = 'E1TIJJKJ2UEIO7';
 const SECRET_NAME     = 'opusaimobility/gemini-api-key';
 const REGION          = 'us-east-1';
-const DOMAIN          = 'https://opusaimobility.yna.co.ke';
+const DOMAIN          = 'https://omniride.yna.co.ke';  // actual CloudFront alias on dist E1TIJJKJ2UEIO7
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function run(cmd, label) {
