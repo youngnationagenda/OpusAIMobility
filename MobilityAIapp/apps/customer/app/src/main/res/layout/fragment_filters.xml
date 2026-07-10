@@ -238,10 +238,7 @@
             app:trackColorActive="@color/app_color"
             app:trackColorInactive="@color/gray"
             app:thumbColor="@color/app_color"
-            app:thumbRadius="12dp"
-            app:valueFrom="0"
-            app:valueTo="1000"
-            app:values="@array/range_slider_defaults" />
+            app:thumbRadius="12dp" />
 
         <RelativeLayout
             android:id="@+id/applyBtn"
