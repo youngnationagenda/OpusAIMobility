@@ -1,21 +1,19 @@
-# ─────────────────────────────────────────────────────────────────────────────
+# =============================================================================
 # CI Pipeline — OpusAIMobility
 #
 # Runs on every push and pull-request to validate the codebase:
-#   • TypeScript type checking
-#   • Unit + property-based tests (Vitest)
-#   • Lambda dependency audit
-#   • APK upload script validation
+#   • TypeScript type checking  (MobilityAIapp/)
+#   • Unit + property-based tests via Vitest  (MobilityAIapp/)
+#   • Lambda dependency audit  (MobilityAIapp/aws/lambda + push-notification)
+#   • CI scripts type-check  (MobilityAIapp/scripts/ci)
+#   • AWS OIDC + Connection ARN health-check  (PRs to main only)
 #
-# Uses GitHub OIDC → AWS STS (no long-lived keys).
-# Amazon Q Developer reviews changed files on PRs via the Connection ARN.
-#
-# AWS resources:
-#   • OIDC role  : arn:aws:iam::683541453923:role/opusaimobility-github-deploy
-#   • Connection : arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1
+# Auth: GitHub OIDC → AWS STS  (zero long-lived keys)
+#   role-to-assume: arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+#   Connection ARN: arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1
 #
 # Requirements: 11.1, 11.2, 11.3
-# ─────────────────────────────────────────────────────────────────────────────
+# =============================================================================
 
 name: CI
 
@@ -31,31 +29,28 @@ on:
       - main
       - develop
 
-# Cancel older runs for the same branch/PR to save minutes
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
-  id-token: write       # OIDC token → AWS STS
+  id-token: write
   contents: read
-  pull-requests: write  # Allow posting check summaries
+  pull-requests: write
 
 env:
   AWS_REGION: us-east-1
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 jobs:
-  # ─────────────────────────────────────────────────────────────────────────
-  # TypeScript + Lint
-  # ─────────────────────────────────────────────────────────────────────────
+
+  # ===========================================================================
+  # 1. TypeScript type-check
+  # ===========================================================================
   type-check:
     name: TypeScript — Type Check
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: .   # MobilityAIapp root
 
     steps:
       - name: Checkout
@@ -65,24 +60,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: MobilityAIapp/package-lock.json
 
       - name: Install dependencies
+        working-directory: MobilityAIapp
         run: npm ci
 
       - name: TypeScript type check
+        working-directory: MobilityAIapp
         run: npm run type:check
 
-  # ─────────────────────────────────────────────────────────────────────────
-  # Unit & Property-Based Tests (Vitest)
-  # ─────────────────────────────────────────────────────────────────────────
+  # ===========================================================================
+  # 2. Vitest — unit + property-based tests
+  # ===========================================================================
   test:
     name: Vitest — Unit & Property Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: .
 
     steps:
       - name: Checkout
@@ -92,12 +87,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: MobilityAIapp/package-lock.json
 
       - name: Install dependencies
+        working-directory: MobilityAIapp
         run: npm ci
 
-      - name: Run tests
+      - name: Run Vitest tests
+        working-directory: MobilityAIapp
         run: npm test -- --reporter=verbose
 
       - name: Upload test results
@@ -106,14 +104,14 @@ jobs:
         with:
           name: vitest-results-${{ github.run_number }}
           path: |
-            coverage/
-            test-results/
+            MobilityAIapp/coverage/
+            MobilityAIapp/test-results/
           if-no-files-found: ignore
           retention-days: 7
 
-  # ─────────────────────────────────────────────────────────────────────────
-  # Lambda dependency audit
-  # ─────────────────────────────────────────────────────────────────────────
+  # ===========================================================================
+  # 3. Lambda dependency audit
+  # ===========================================================================
   lambda-audit:
     name: Lambda — Dependency Audit
     runs-on: ubuntu-latest
@@ -127,23 +125,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: MobilityAIapp/aws/lambda/package-lock.json
 
-      - name: Audit main Lambda dependencies
-        working-directory: aws/lambda
+      - name: Audit main Lambda (MobilityAIapp/aws/lambda)
+        working-directory: MobilityAIapp/aws/lambda
         run: |
           npm ci
           npm audit --audit-level=high
 
-      - name: Audit push-notification Lambda dependencies
-        working-directory: aws/lambda/push-notification
+      - name: Audit push-notification Lambda (MobilityAIapp/aws/lambda/push-notification)
+        working-directory: MobilityAIapp/aws/lambda/push-notification
         run: |
           npm ci
           npm audit --audit-level=high
 
-  # ─────────────────────────────────────────────────────────────────────────
-  # CI scripts validation — APK upload script
-  # ─────────────────────────────────────────────────────────────────────────
+  # ===========================================================================
+  # 4. CI scripts — type-check upload-apk.ts
+  # ===========================================================================
   ci-scripts:
     name: CI Scripts — Type Check
     runs-on: ubuntu-latest
@@ -157,24 +156,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: npm
+          cache-dependency-path: MobilityAIapp/scripts/ci/package.json
 
       - name: Install CI script dependencies
-        working-directory: scripts/ci
+        working-directory: MobilityAIapp/scripts/ci
         run: npm ci
 
       - name: Type-check CI scripts
-        working-directory: scripts/ci
+        working-directory: MobilityAIapp/scripts/ci
         run: npx tsc --noEmit
 
-  # ─────────────────────────────────────────────────────────────────────────
-  # AWS connectivity check — verify OIDC + Connection ARN (on PRs to main)
-  # ─────────────────────────────────────────────────────────────────────────
+  # ===========================================================================
+  # 5. AWS connectivity — OIDC + Connection ARN (PRs to main only)
+  # ===========================================================================
   aws-connectivity:
     name: AWS — OIDC & Connection ARN Check
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Only run on PRs to main to avoid unnecessary STS calls on feature branches
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
 
     steps:
@@ -186,9 +185,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Verify assumed identity
-        run: |
-          echo "=== AWS Caller Identity ==="
-          aws sts get-caller-identity --output table
+        run: aws sts get-caller-identity --output table
 
       - name: Verify Amazon Q Connection ARN is AVAILABLE
         run: |
@@ -201,18 +198,17 @@ jobs:
             echo "::error::Amazon Q Connection is not AVAILABLE (status: $STATUS)"
             exit 1
           fi
-          echo "✅ Connection ARN is AVAILABLE"
+          echo "Amazon Q Connection ARN is AVAILABLE"
 
-      - name: Verify OpusAIMobility Lambda functions exist
+      - name: List OpusAIMobility Lambda functions
         run: |
-          echo "=== Lambda Functions ==="
           aws lambda list-functions \
-            --query "Functions[?contains(FunctionName,'opusaimobility')].{Name:FunctionName,Runtime:Runtime,State:State}" \
+            --query "Functions[?contains(FunctionName,'opusaimobility')].{Name:FunctionName,Runtime:Runtime}" \
             --output table
 
-  # ─────────────────────────────────────────────────────────────────────────
-  # CI summary gate — all jobs must pass
-  # ─────────────────────────────────────────────────────────────────────────
+  # ===========================================================================
+  # 6. CI gate — all required jobs must succeed
+  # ===========================================================================
   ci-gate:
     name: CI Gate — All Checks Passed
     runs-on: ubuntu-latest
@@ -232,19 +228,19 @@ jobs:
           echo "lambda-audit: ${{ needs.lambda-audit.result }}"
           echo "ci-scripts  : ${{ needs.ci-scripts.result }}"
 
-          if [[ "${{ needs.type-check.result }}"   != "success" ]] || \
-             [[ "${{ needs.test.result }}"          != "success" ]] || \
-             [[ "${{ needs.lambda-audit.result }}"  != "success" ]] || \
-             [[ "${{ needs.ci-scripts.result }}"    != "success" ]]; then
+          if [[ "${{ needs.type-check.result }}"  != "success" ]] || \
+             [[ "${{ needs.test.result }}"         != "success" ]] || \
+             [[ "${{ needs.lambda-audit.result }}" != "success" ]] || \
+             [[ "${{ needs.ci-scripts.result }}"   != "success" ]]; then
             echo "::error::One or more CI checks failed — merge is blocked."
             exit 1
           fi
-          echo "✅ All CI checks passed"
+          echo "All CI checks passed"
 
       - name: Post CI summary
         if: always()
         run: |
-          echo "## ✅ CI Summary — OpusAIMobility" >> $GITHUB_STEP_SUMMARY
+          echo "## CI Summary — OpusAIMobility" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Job              | Result |" >> $GITHUB_STEP_SUMMARY
           echo "|------------------|--------|" >> $GITHUB_STEP_SUMMARY
@@ -255,4 +251,4 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "**Run:**    [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "**Run:** [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
