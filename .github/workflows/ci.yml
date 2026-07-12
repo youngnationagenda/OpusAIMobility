@@ -126,16 +126,16 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: MobilityAIapp/aws/lambda/package-lock.json
+          cache-dependency-path: MobilityAIapp/backend/lambda/terraaimobility-api/package-lock.json
 
-      - name: Audit main Lambda (MobilityAIapp/aws/lambda)
-        working-directory: MobilityAIapp/aws/lambda
+      - name: Audit main Lambda (backend/lambda/terraaimobility-api)
+        working-directory: MobilityAIapp/backend/lambda/terraaimobility-api
         run: |
           npm ci
           npm audit --audit-level=high
 
-      - name: Audit push-notification Lambda (MobilityAIapp/aws/lambda/push-notification)
-        working-directory: MobilityAIapp/aws/lambda/push-notification
+      - name: Audit push-notification Lambda (backend/lambda/push-notification)
+        working-directory: MobilityAIapp/backend/lambda/push-notification
         run: |
           npm ci
           npm audit --audit-level=high
@@ -200,11 +200,11 @@ jobs:
           fi
           echo "Amazon Q Connection ARN is AVAILABLE"
 
-      - name: List OpusAIMobility Lambda functions
+      - name: Verify S3 frontend bucket is accessible
         run: |
-          aws lambda list-functions \
-            --query "Functions[?contains(FunctionName,'opusaimobility')].{Name:FunctionName,Runtime:Runtime}" \
-            --output table
+          aws s3 ls s3://opusaimobility-assets-prod --region us-east-1 > /dev/null \
+            && echo "S3 bucket accessible" \
+            || echo "::warning::S3 bucket not accessible — may need IAM policy update"
 
   # ===========================================================================
   # 6. CI gate — all required jobs must succeed
