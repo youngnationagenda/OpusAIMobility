@@ -71,8 +71,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [changes, audit]
     if: >-
-      needs.changes.outputs.main_api == 'true' ||
-      github.event.inputs.force_deploy == 'true'
+      (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') &&
+      (needs.changes.outputs.main_api == 'true' || github.event.inputs.force_deploy == 'true')
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -122,8 +122,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [changes, audit]
     if: >-
-      needs.changes.outputs.push_lambda == 'true' ||
-      github.event.inputs.force_deploy == 'true'
+      (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') &&
+      (needs.changes.outputs.push_lambda == 'true' || github.event.inputs.force_deploy == 'true')
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
