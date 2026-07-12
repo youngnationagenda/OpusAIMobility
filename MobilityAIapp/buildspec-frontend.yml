@@ -1,72 +1,43 @@
-# =============================================================================
-# OpusAIMobility -- AWS CodeBuild Frontend-Only Build Spec
-# Runs on: AWS CodeBuild (Amazon Linux 2023, standard:5.0, MEDIUM compute)
-# Triggered by: push to main affecting src/, public/, server/, scripts/, package.json
-#
-# Phases:
-#   install   -- Node 22 only
-#   pre_build -- npm ci, type check, full test suite, server staticPath check
-#   build     -- Vite production build + HTTP boot probe (server:check)
-#   post_build -- S3 sync + CloudFront invalidation
-# =============================================================================
-
 version: 0.2
+
+env:
+  variables:
+    APP_DIR: "MobilityAIapp"
+    S3_FRONTEND_BUCKET: "opusaimobility-assets-prod"
+    CLOUDFRONT_DISTRIBUTION_ID: "E18GJ5VKHBIJAI"
 
 phases:
   install:
     runtime-versions:
       nodejs: 22
     commands:
-      - echo "=== Installing dependencies ==="
-      - cd MobilityAIapp
-      - npm ci --prefer-offline
-      - cd server && npm ci --prefer-offline && cd ..
-      - node -v && npm -v
+      - "cd $APP_DIR && npm ci --prefer-offline"
+      - "cd $APP_DIR/server && npm ci --prefer-offline"
 
   pre_build:
     commands:
-      - echo "=== Pre-build: type check ==="
-      - cd MobilityAIapp
-      - npm run type:check
-
-      - echo "=== Pre-build: test suite ==="
-      - npm test -- --silent
-
-      - echo "=== Pre-build: staticPath integrity check ==="
-      - node scripts/ci/check-static-path.cjs
+      - "cd $APP_DIR && npm run type:check"
+      - "cd $APP_DIR && npm test -- --silent"
+      - "cd $APP_DIR && node scripts/ci/check-static-path.cjs"
 
   build:
     commands:
-      - echo "=== Build: vite production build ==="
-      - cd MobilityAIapp
-      - npm run build
-
-      - echo "=== Build: server pre-flight HTTP probe ==="
-      - npm run server:check
+      - "cd $APP_DIR && npm run build"
+      - "cd $APP_DIR && npm run server:check"
 
   post_build:
     commands:
-      - echo "=== Post-build: S3 assets sync (immutable) ==="
-      - cd MobilityAIapp
-      - aws s3 sync dist/assets "s3://$S3_FRONTEND_BUCKET/assets/" --delete --cache-control "public, max-age=31536000, immutable" --region us-east-1
-
-      - echo "=== Post-build: S3 index.html upload (no-cache) ==="
-      - aws s3 cp dist/index.html "s3://$S3_FRONTEND_BUCKET/index.html" --cache-control "no-cache, no-store, must-revalidate" --content-type "text/html" --region us-east-1
-
-      - echo "=== Post-build: S3 root files sync (1-day cache) ==="
-      - aws s3 sync dist "s3://$S3_FRONTEND_BUCKET/" --exclude "assets/*" --exclude "index.html" --cache-control "public, max-age=86400" --region us-east-1
-
-      - echo "=== Post-build: CloudFront invalidation ==="
-      - aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" --region us-east-1
-
-      - echo "=== Deploy complete -- https://opusaimobility.yna.co.ke ==="
+      - "cd $APP_DIR && aws s3 sync dist/assets s3://$S3_FRONTEND_BUCKET/assets/ --delete --cache-control 'public, max-age=31536000, immutable' --region us-east-1"
+      - "cd $APP_DIR && aws s3 cp dist/index.html s3://$S3_FRONTEND_BUCKET/index.html --cache-control 'no-cache, no-store, must-revalidate' --content-type 'text/html' --region us-east-1"
+      - "cd $APP_DIR && aws s3 sync dist s3://$S3_FRONTEND_BUCKET/ --exclude 'assets/*' --exclude 'index.html' --cache-control 'public, max-age=86400' --region us-east-1"
+      - "aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths '/*' --region us-east-1"
 
 artifacts:
   files:
-    - "MobilityAIapp/dist/**/*"
+    - "$APP_DIR/dist/**/*"
   discard-paths: no
 
 cache:
   paths:
-    - "MobilityAIapp/node_modules/**/*"
-    - "MobilityAIapp/server/node_modules/**/*"
+    - "$APP_DIR/node_modules/**/*"
+    - "$APP_DIR/server/node_modules/**/*"
