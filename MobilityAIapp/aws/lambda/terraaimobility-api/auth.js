@@ -25,12 +25,31 @@ const verifier = CognitoJwtVerifier.create({
 });
 
 const PUBLIC_ROUTES = new Set([
+  // ── Auth (public — no JWT needed) ───
   'login', 'loginUser', 'signUp', 'registerUser', 'socialLogin',
   'forgotPassword', 'resetPassword', 'verifyPhoneNo', 'sendOtp', 'verifyOtp',
   'verifyEmail', 'verifyForgotPasswordCode', 'changePasswordForgot',
   'health', 'ping', '', '/',
   'getCountries', 'getCountry', 'showCountries',
-  'refreshToken',
+  'refreshToken', 'logout',
+  // ── REST path aliases (TERRA-003) ───
+  'auth/signup', 'auth/signin', 'auth/login', 'auth/register',
+  'auth/forgot-password', 'auth/reset-password', 'auth/verify-otp', 'auth/send-otp',
+  'auth/refresh',
+  // ── Mapped legacy actions (publicly accessible) ───
+  'getRideTypes', 'showRideTypes', 'requestVehicle',
+  'getServiceCharges', 'manageServiceFee',
+  'estimateFare', 'getSavedAddresses', 'getHelp', 'getNearbyDrivers',
+  'getRestaurants', 'getAllRestaurants', 'showRestaurants',
+  'getGoodTypes', 'showGoodTypes',
+  'getSettings', 'setting',
+  'getDashboardStats', 'dashboardData',
+  'editProfile', 'addUser', 'getUserProfile', 'getProfile',
+  'placeFoodOrder', 'createFoodOrder',
+  'placeParcelOrder', 'createParcelOrder',
+  'requestRide', 'bookRide',
+  'getPaymentMethods', 'topUpWallet',
+  'getNotifications', 'showUserNotifications', 'sendMessageNotification',
 ]);
 
 function getAuthHeader(event) {
