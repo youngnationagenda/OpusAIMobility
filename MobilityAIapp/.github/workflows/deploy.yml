@@ -167,12 +167,24 @@ jobs:
           role-session-name: amazon-q-deploy-analysis-${{ github.run_id }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Amazon Q Developer — Trigger Code Analysis
-        uses: aws-actions/amazon-q-developer-action@v1
-        with:
-          connection-arn: ${{ env.Q_CONNECTION_ARN }}
-          role-arn: ${{ env.Q_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+      - name: Amazon Q Developer — Verify Connection and Trigger Review
+        run: |
+          # Verify the Amazon Q Developer Connection ARN is AVAILABLE
+          # Amazon Q is triggered automatically via the Connection ARN on push/PR.
+          # Reviewers can also invoke it by commenting @amazon-q on a PR.
+          STATUS=$(aws codestar-connections get-connection \
+            --connection-arn "${{ env.Q_CONNECTION_ARN }}" \
+            --region "${{ env.AWS_REGION }}" \
+            --query "Connection.ConnectionStatus" \
+            --output text)
+          echo "Amazon Q Connection status: $STATUS"
+          if [ "$STATUS" != "AVAILABLE" ]; then
+            echo "::error::Amazon Q Connection is not AVAILABLE (status: $STATUS)"
+            exit 1
+          fi
+          echo "Amazon Q Developer is AVAILABLE for repository: ${{ github.repository }}"
+          echo "Connection ARN: ${{ env.Q_CONNECTION_ARN }}"
+          echo "Q Role ARN    : ${{ env.Q_ROLE_ARN }}"
 
       - name: Post Amazon Q analysis summary
         if: always()

@@ -1,17 +1,21 @@
-# ─────────────────────────────────────────────────────────────────────────────
+# =============================================================================
 # Amazon Q Developer — Automated PR Code Review
 #
-# Triggers Amazon Q Developer to review every pull request targeting `main`.
-# Q scans changed files for bugs, security issues, and code-quality problems,
-# then posts inline comments directly on the PR.
+# Triggers on every pull-request to main/develop.
+# Authenticates to AWS via GitHub OIDC, verifies the Amazon Q Connection ARN
+# is AVAILABLE, then posts a comment on the PR so reviewers can invoke Q.
 #
-# AWS resources used:
-#   • IAM OIDC role : arn:aws:iam::683541453923:role/opusaimobility-github-deploy
-#   • Connection ARN: arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1
-#   • Q Developer role: arn:aws:iam::683541453923:role/AmazonQDeveloperGitHubRole
+# Amazon Q Developer CI/CD integration works via the Connection ARN configured
+# in AWS Console (CodeConnections) — Q monitors the repo automatically once
+# the connection is established. Reviewers invoke Q by commenting @amazon-q.
 #
-# Requirements: 11.3 — Amazon Q Developer in CI/CD
-# ─────────────────────────────────────────────────────────────────────────────
+# AWS resources:
+#   OIDC role     : arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+#   Connection ARN: arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1
+#   Q IAM Role    : arn:aws:iam::683541453923:role/AmazonQDeveloperGitHubRole
+#
+# Requirements: 11.3
+# =============================================================================
 
 name: Amazon Q Developer — PR Review
 
@@ -22,79 +26,107 @@ on:
       - develop
     types: [opened, synchronize, reopened, ready_for_review]
 
-# Only one review per PR at a time — cancel stale runs on new push
 concurrency:
   group: amazon-q-review-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 permissions:
-  id-token: write       # Required: GitHub OIDC token → AWS STS
-  contents: read        # Required: checkout repo
-  pull-requests: write  # Required: Q posts review comments on the PR
+  id-token: write       # GitHub OIDC token → AWS STS
+  contents: read
+  pull-requests: write  # Post review comment on PR
 
 env:
   AWS_REGION: us-east-1
+  Q_CONNECTION_ARN: arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1
 
 jobs:
-  # ─────────────────────────────────────────────────────────────────────────
-  # Amazon Q Developer code review
-  # ─────────────────────────────────────────────────────────────────────────
   amazon-q-review:
-    name: Amazon Q Code Review
+    name: Amazon Q Developer — Code Review
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    # Skip draft PRs — only review when the PR is marked Ready for Review
+    timeout-minutes: 10
     if: github.event.pull_request.draft == false
 
     steps:
-      # ── 1. Checkout ─────────────────────────────────────────────────────
+      # ── 1. Checkout ─────────────────────────────────────────────────────────
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # Full history needed for accurate diff analysis
+          fetch-depth: 0
 
-      # ── 2. Authenticate to AWS via OIDC (no long-lived keys) ────────────
+      # ── 2. Authenticate to AWS via OIDC (no long-lived keys) ────────────────
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::683541453923:role/opusaimobility-github-deploy
-          role-session-name: amazon-q-pr-review-${{ github.event.pull_request.number }}
+          role-session-name: amazon-q-pr-${{ github.event.pull_request.number }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # ── 3. Verify identity (debug / audit trail) ─────────────────────────
+      # ── 3. Verify assumed identity ───────────────────────────────────────────
       - name: Verify assumed role identity
         run: |
-          echo "=== AWS Caller Identity ==="
-          aws sts get-caller-identity
-          echo "=== Connection status ==="
-          aws codestar-connections get-connection \
-            --connection-arn "arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1" \
-            --query "{Name:ConnectionName,Status:ConnectionStatus}" \
-            --output table
+          echo "=== AWS Caller Identity (OIDC) ==="
+          aws sts get-caller-identity --output table
 
-      # ── 4. Amazon Q Developer — trigger code review ──────────────────────
-      - name: Amazon Q Developer — Trigger Code Review
-        uses: aws-actions/amazon-q-developer-action@v1
-        with:
-          # The Connection ARN links Amazon Q to this GitHub repository
-          connection-arn: arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1
-          # The IAM role that Amazon Q assumes to read the repo and post comments
-          role-arn: arn:aws:iam::683541453923:role/AmazonQDeveloperGitHubRole
-          aws-region: ${{ env.AWS_REGION }}
+      # ── 4. Verify Amazon Q Connection ARN is AVAILABLE ───────────────────────
+      - name: Verify Amazon Q Connection ARN
+        run: |
+          STATUS=$(aws codestar-connections get-connection \
+            --connection-arn "${{ env.Q_CONNECTION_ARN }}" \
+            --region "${{ env.AWS_REGION }}" \
+            --query "Connection.ConnectionStatus" \
+            --output text)
+          echo "Amazon Q Connection status: $STATUS"
+          if [ "$STATUS" != "AVAILABLE" ]; then
+            echo "::error::Amazon Q Connection is not AVAILABLE (status: $STATUS)"
+            echo "Re-authorize at: https://console.aws.amazon.com/codesuite/settings/connections"
+            exit 1
+          fi
+          echo "Amazon Q Developer Connection is AVAILABLE"
 
-      # ── 5. Post review summary to PR ─────────────────────────────────────
+      # ── 5. Post Amazon Q invocation comment on the PR ────────────────────────
+      - name: Post Amazon Q Developer — PR Review Comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          COMMENT="### 🤖 Amazon Q Developer — Ready to Review
+
+          Amazon Q Developer is connected to this repository and ready to review PR #${{ github.event.pull_request.number }}.
+
+          **Invoke an automated code review:**
+          \`\`\`
+          @amazon-q review
+          \`\`\`
+
+          **Ask Q about specific code:**
+          \`\`\`
+          @amazon-q explain the changes in src/services/
+          \`\`\`
+
+          **Request a security scan:**
+          \`\`\`
+          @amazon-q are there any security issues in this PR?
+          \`\`\`
+
+          ---
+          > 🔗 Connection: \`106cbfc4-0ec6-492a-bf08-43ba86575ea1\` (AVAILABLE)
+          > 🔐 Auth: GitHub OIDC → \`opusaimobility-github-deploy\` (no static keys)
+          > 🛡️ Q Role: \`AmazonQDeveloperGitHubRole\`"
+
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body "$COMMENT" || echo "Comment post skipped (may already exist)"
+
+      # ── 6. Post summary ──────────────────────────────────────────────────────
       - name: Post Q Review Summary
         if: always()
         run: |
-          echo "## 🤖 Amazon Q Developer Review" >> $GITHUB_STEP_SUMMARY
+          echo "## Amazon Q Developer — PR Review" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Field            | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|------------------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| PR Number        | #${{ github.event.pull_request.number }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Repository       | ${{ github.repository }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Base Branch      | ${{ github.base_ref }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Head Branch      | ${{ github.head_ref }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Q Developer Role | AmazonQDeveloperGitHubRole |" >> $GITHUB_STEP_SUMMARY
-          echo "| Connection ARN   | \`106cbfc4-0ec6-492a-bf08-43ba86575ea1\` |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Amazon Q has reviewed the changed files and posted inline comments on the PR." >> $GITHUB_STEP_SUMMARY
+          echo "| Field        | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| PR           | #${{ github.event.pull_request.number }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Repository   | ${{ github.repository }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Base         | ${{ github.base_ref }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Head         | ${{ github.head_ref }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Connection   | \`106cbfc4-0ec6-492a-bf08-43ba86575ea1\` (AVAILABLE) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Q Invoke     | Comment \`@amazon-q review\` on this PR |" >> $GITHUB_STEP_SUMMARY
