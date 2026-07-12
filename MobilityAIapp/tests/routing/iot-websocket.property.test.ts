@@ -110,7 +110,8 @@ const arbNotifFrame = fc.record({
   title:     fc.string({ minLength: 1, maxLength: 100 }),
   body:      fc.string({ minLength: 1, maxLength: 500 }),
   type:      fc.constantFrom('ride_update', 'driver_assigned', 'payment', 'system', 'promo'),
-  timestamp: fc.date().map(d => d.toISOString()),
+  // Constrain date range: fc.date() can produce NaN dates (Invalid time value)
+  timestamp: fc.date({ min: new Date(0), max: new Date('2100-01-01T00:00:00.000Z') }).map(d => d.toISOString()),
 });
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
