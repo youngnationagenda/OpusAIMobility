@@ -2,7 +2,6 @@ version: 0.2
 
 env:
   variables:
-    APP_DIR: "MobilityAIapp"
     S3_FRONTEND_BUCKET: "opusaimobility-assets-prod"
     CLOUDFRONT_DISTRIBUTION_ID: "E18GJ5VKHBIJAI"
 
@@ -11,8 +10,7 @@ phases:
     runtime-versions:
       nodejs: 22
     commands:
-      - "cd MobilityAIapp && npm ci --prefer-offline"
-      - "cd MobilityAIapp/server && npm ci --prefer-offline"
+      - "cd MobilityAIapp && npm ci --prefer-offline && cd server && npm ci --prefer-offline"
 
   pre_build:
     commands:
