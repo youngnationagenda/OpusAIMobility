@@ -70,6 +70,20 @@ health-response.json
 _*.js
 _*.sh
 
+# ── CodeBuild sandbox session files ───────────────────────────────
+codebuild-sandbox-key
+codebuild-sandbox-key.pub
+codebuild-ssh-config
+connect-sandbox.bat
+sandbox-*.sh
+set-github-secrets.py
+patch-cf.py
+check_all.py
+cf-e18-config.json
+cf-e18-update.json
+smoke-*.json
+*-deploy.zip
+
 # ── Logs ──────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
