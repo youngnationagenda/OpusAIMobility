@@ -1,0 +1,18 @@
+{
+  "description": "OpusAIMobility DynamoDB tables — created 2026-07-12",
+  "region": "us-east-1",
+  "billingMode": "PAY_PER_REQUEST",
+  "tables": [
+    { "name": "opusaimobility-users",         "partitionKey": "userId",    "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-users" },
+    { "name": "opusaimobility-trips",         "partitionKey": "tripId",    "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-trips" },
+    { "name": "opusaimobility-orders",        "partitionKey": "orderId",   "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-orders" },
+    { "name": "opusaimobility-errands",       "partitionKey": "errandId",  "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-errands" },
+    { "name": "opusaimobility-transactions",  "partitionKey": "txId",      "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-transactions" },
+    { "name": "opusaimobility-swap-stations", "partitionKey": "stationId", "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-swap-stations" },
+    { "name": "opusaimobility-inventory",     "partitionKey": "itemId",    "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-inventory" },
+    { "name": "opusaimobility-blockchain",    "partitionKey": "txHash",    "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-blockchain" },
+    { "name": "opusaimobility-audit-logs",    "partitionKey": "logId",     "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-audit-logs" },
+    { "name": "opusaimobility-platform",      "partitionKey": "configKey", "status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-platform" },
+    { "name": "opusaimobility-push-endpoints","partitionKey": "endpointId","status": "ACTIVE", "arn": "arn:aws:dynamodb:us-east-1:683541453923:table/opusaimobility-push-endpoints" }
+  ]
+}
