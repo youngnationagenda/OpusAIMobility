@@ -179,6 +179,7 @@ jobs:
     name: Build and Deploy TerraAI API
     runs-on: ubuntu-latest
     needs: changes
+    continue-on-error: true
     if: >-
       needs.changes.outputs.terra_api == 'true' ||
       needs.changes.outputs.shared == 'true' ||
