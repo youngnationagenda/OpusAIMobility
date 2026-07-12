@@ -1,0 +1,44 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# OpusAIMobility — Frontend-Only Build Specification
+# For faster deploys when only frontend code changes
+# ═══════════════════════════════════════════════════════════════════════════════
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - node --version
+      - npm --version
+
+  pre_build:
+    commands:
+      - cd MobilityAIapp && npm ci
+
+  build:
+    commands:
+      - cd MobilityAIapp && npm run build
+
+  post_build:
+    commands:
+      - |
+        if [ -n "$S3_FRONTEND_BUCKET" ]; then
+          aws s3 sync MobilityAIapp/dist/ s3://$S3_FRONTEND_BUCKET/ --delete
+        fi
+      - |
+        if [ -n "$CLOUDFRONT_DISTRIBUTION_ID" ]; then
+          aws cloudfront create-invalidation \
+            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+            --paths "/*"
+        fi
+
+artifacts:
+  base-directory: MobilityAIapp/dist
+  files:
+    - "**/*"
+
+cache:
+  paths:
+    - "/root/.npm/**/*"
+    - "MobilityAIapp/node_modules/**/*"

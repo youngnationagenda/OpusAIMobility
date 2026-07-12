@@ -1,0 +1,258 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# CI Pipeline — OpusAIMobility
+#
+# Runs on every push and pull-request to validate the codebase:
+#   • TypeScript type checking
+#   • Unit + property-based tests (Vitest)
+#   • Lambda dependency audit
+#   • APK upload script validation
+#
+# Uses GitHub OIDC → AWS STS (no long-lived keys).
+# Amazon Q Developer reviews changed files on PRs via the Connection ARN.
+#
+# AWS resources:
+#   • OIDC role  : arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+#   • Connection : arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1
+#
+# Requirements: 11.1, 11.2, 11.3
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+# Cancel older runs for the same branch/PR to save minutes
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write       # OIDC token → AWS STS
+  contents: read
+  pull-requests: write  # Allow posting check summaries
+
+env:
+  AWS_REGION: us-east-1
+  NODE_VERSION: '20'
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────
+  # TypeScript + Lint
+  # ─────────────────────────────────────────────────────────────────────────
+  type-check:
+    name: TypeScript — Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: .   # MobilityAIapp root
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npm run type:check
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Unit & Property-Based Tests (Vitest)
+  # ─────────────────────────────────────────────────────────────────────────
+  test:
+    name: Vitest — Unit & Property Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test -- --reporter=verbose
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitest-results-${{ github.run_number }}
+          path: |
+            coverage/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Lambda dependency audit
+  # ─────────────────────────────────────────────────────────────────────────
+  lambda-audit:
+    name: Lambda — Dependency Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Audit main Lambda dependencies
+        working-directory: aws/lambda
+        run: |
+          npm ci
+          npm audit --audit-level=high
+
+      - name: Audit push-notification Lambda dependencies
+        working-directory: aws/lambda/push-notification
+        run: |
+          npm ci
+          npm audit --audit-level=high
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # CI scripts validation — APK upload script
+  # ─────────────────────────────────────────────────────────────────────────
+  ci-scripts:
+    name: CI Scripts — Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install CI script dependencies
+        working-directory: scripts/ci
+        run: npm ci
+
+      - name: Type-check CI scripts
+        working-directory: scripts/ci
+        run: npx tsc --noEmit
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # AWS connectivity check — verify OIDC + Connection ARN (on PRs to main)
+  # ─────────────────────────────────────────────────────────────────────────
+  aws-connectivity:
+    name: AWS — OIDC & Connection ARN Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only run on PRs to main to avoid unnecessary STS calls on feature branches
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+          role-session-name: ci-oidc-check-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify assumed identity
+        run: |
+          echo "=== AWS Caller Identity ==="
+          aws sts get-caller-identity --output table
+
+      - name: Verify Amazon Q Connection ARN is AVAILABLE
+        run: |
+          STATUS=$(aws codestar-connections get-connection \
+            --connection-arn "arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1" \
+            --query "Connection.ConnectionStatus" \
+            --output text)
+          echo "Connection status: $STATUS"
+          if [ "$STATUS" != "AVAILABLE" ]; then
+            echo "::error::Amazon Q Connection is not AVAILABLE (status: $STATUS)"
+            exit 1
+          fi
+          echo "✅ Connection ARN is AVAILABLE"
+
+      - name: Verify OpusAIMobility Lambda functions exist
+        run: |
+          echo "=== Lambda Functions ==="
+          aws lambda list-functions \
+            --query "Functions[?contains(FunctionName,'opusaimobility')].{Name:FunctionName,Runtime:Runtime,State:State}" \
+            --output table
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # CI summary gate — all jobs must pass
+  # ─────────────────────────────────────────────────────────────────────────
+  ci-gate:
+    name: CI Gate — All Checks Passed
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs:
+      - type-check
+      - test
+      - lambda-audit
+      - ci-scripts
+    if: always()
+
+    steps:
+      - name: Check all CI jobs passed
+        run: |
+          echo "type-check  : ${{ needs.type-check.result }}"
+          echo "test        : ${{ needs.test.result }}"
+          echo "lambda-audit: ${{ needs.lambda-audit.result }}"
+          echo "ci-scripts  : ${{ needs.ci-scripts.result }}"
+
+          if [[ "${{ needs.type-check.result }}"   != "success" ]] || \
+             [[ "${{ needs.test.result }}"          != "success" ]] || \
+             [[ "${{ needs.lambda-audit.result }}"  != "success" ]] || \
+             [[ "${{ needs.ci-scripts.result }}"    != "success" ]]; then
+            echo "::error::One or more CI checks failed — merge is blocked."
+            exit 1
+          fi
+          echo "✅ All CI checks passed"
+
+      - name: Post CI summary
+        if: always()
+        run: |
+          echo "## ✅ CI Summary — OpusAIMobility" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job              | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| TypeScript       | ${{ needs.type-check.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Vitest Tests     | ${{ needs.test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Lambda Audit     | ${{ needs.lambda-audit.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CI Scripts       | ${{ needs.ci-scripts.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Run:**    [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,241 @@
+# ==============================================================================
+# OpusAIMobility - AWS CodeBuild Project (CloudFormation)
+# Host OS: Amazon Linux 2023
+# ==============================================================================
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CodeBuild project for OpusAIMobility - Android, Frontend, and Lambda builds"
+
+Parameters:
+  GitHubRepoUrl:
+    Type: String
+    Default: "https://github.com/youngnationagenda/OpusAIMobility.git"
+    Description: GitHub repository URL
+
+  GitHubBranch:
+    Type: String
+    Default: "main"
+    Description: Branch to build
+
+  S3ApkBucket:
+    Type: String
+    Default: "opusaimobility-apk-distribution"
+    Description: S3 bucket for APK distribution
+
+  S3FrontendBucket:
+    Type: String
+    Default: "opusaimobility-frontend"
+    Description: S3 bucket for frontend hosting
+
+  CloudFrontDistributionId:
+    Type: String
+    Default: ""
+    Description: CloudFront distribution ID for cache invalidation
+
+  LambdaFunctionName:
+    Type: String
+    Default: "omniride-api"
+    Description: Main Lambda function name
+
+Resources:
+  # IAM Role for CodeBuild
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: OpusAIMobility-CodeBuild-Role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodeBuildBasePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/OpusAIMobility*"
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:GetBucketLocation
+                  - s3:ListBucket
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${S3ApkBucket}/*"
+                  - !Sub "arn:aws:s3:::${S3ApkBucket}"
+                  - !Sub "arn:aws:s3:::${S3FrontendBucket}/*"
+                  - !Sub "arn:aws:s3:::${S3FrontendBucket}"
+                  - !Sub "arn:aws:s3:::codepipeline-${AWS::Region}-*"
+              - Effect: Allow
+                Action:
+                  - lambda:UpdateFunctionCode
+                  - lambda:GetFunction
+                Resource:
+                  - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaFunctionName}"
+                  - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:opusaimobility-push-notification"
+              - Effect: Allow
+                Action:
+                  - cloudfront:CreateInvalidation
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameters
+                  - ssm:GetParameter
+                Resource:
+                  - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/opusaimobility/*"
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource:
+                  - !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:opusaimobility/*"
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource:
+                  - !Sub "arn:aws:s3:::${ArtifactBucket}/*"
+              - Effect: Allow
+                Action:
+                  - codeconnections:UseConnection
+                  - codeconnections:GetConnection
+                Resource:
+                  - !Sub "arn:aws:codeconnections:${AWS::Region}:${AWS::AccountId}:connection/*"
+
+  # S3 Bucket for build artifacts and cache
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "opusaimobility-codebuild-artifacts-${AWS::AccountId}"
+      LifecycleConfiguration:
+        Rules:
+          - Id: CleanupOldArtifacts
+            Status: Enabled
+            ExpirationInDays: 30
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  # CodeBuild Project - Full Build (Android + Frontend + Lambda)
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: OpusAIMobility
+      Description: "Full CI/CD build - Android APK, React frontend, Lambda packages"
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      TimeoutInMinutes: 30
+      QueuedTimeoutInMinutes: 60
+      Source:
+        Type: GITHUB
+        Location: !Ref GitHubRepoUrl
+        BuildSpec: buildspec.yml
+        GitCloneDepth: 1
+      SourceVersion: !Ref GitHubBranch
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_LARGE
+        Image: aws/codebuild/amazonlinux-x86_64-standard:5.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        EnvironmentVariables:
+          - Name: S3_APK_BUCKET
+            Value: !Ref S3ApkBucket
+            Type: PLAINTEXT
+          - Name: S3_FRONTEND_BUCKET
+            Value: !Ref S3FrontendBucket
+            Type: PLAINTEXT
+          - Name: CLOUDFRONT_DISTRIBUTION_ID
+            Value: !Ref CloudFrontDistributionId
+            Type: PLAINTEXT
+          - Name: LAMBDA_FUNCTION_NAME
+            Value: !Ref LambdaFunctionName
+            Type: PLAINTEXT
+      Artifacts:
+        Type: S3
+        Location: !Ref ArtifactBucket
+        Packaging: ZIP
+        NamespaceType: BUILD_ID
+        Name: opusaimobility-artifacts
+      Cache:
+        Type: S3
+        Location: !Sub "${ArtifactBucket}/cache"
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+          GroupName: /aws/codebuild/OpusAIMobility
+          StreamName: build-log
+      Tags:
+        - Key: Project
+          Value: OpusAIMobility
+        - Key: Environment
+          Value: production
+
+  # CodeBuild Project - Frontend Only (faster for frontend-only changes)
+  CodeBuildFrontendProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: OpusAIMobility-Frontend
+      Description: "Frontend-only build and deploy"
+      ServiceRole: !GetAtt CodeBuildServiceRole.Arn
+      TimeoutInMinutes: 15
+      Source:
+        Type: GITHUB
+        Location: !Ref GitHubRepoUrl
+        BuildSpec: buildspec-frontend.yml
+        GitCloneDepth: 1
+      SourceVersion: !Ref GitHubBranch
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_MEDIUM
+        Image: aws/codebuild/amazonlinux-x86_64-standard:5.0
+        ImagePullCredentialsType: CODEBUILD
+        EnvironmentVariables:
+          - Name: S3_FRONTEND_BUCKET
+            Value: !Ref S3FrontendBucket
+            Type: PLAINTEXT
+          - Name: CLOUDFRONT_DISTRIBUTION_ID
+            Value: !Ref CloudFrontDistributionId
+            Type: PLAINTEXT
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Cache:
+        Type: S3
+        Location: !Sub "${ArtifactBucket}/cache/frontend"
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+          GroupName: /aws/codebuild/OpusAIMobility-Frontend
+      Tags:
+        - Key: Project
+          Value: OpusAIMobility
+        - Key: Component
+          Value: frontend
+
+Outputs:
+  CodeBuildProjectName:
+    Value: !Ref CodeBuildProject
+    Description: CodeBuild project name
+
+  CodeBuildProjectArn:
+    Value: !GetAtt CodeBuildProject.Arn
+    Description: CodeBuild project ARN
+
+  CodeBuildFrontendProjectName:
+    Value: !Ref CodeBuildFrontendProject
+    Description: Frontend CodeBuild project name
+
+  ArtifactBucketName:
+    Value: !Ref ArtifactBucket
+    Description: S3 bucket for build artifacts
+
+  CodeBuildRoleArn:
+    Value: !GetAtt CodeBuildServiceRole.Arn
+    Description: CodeBuild service role ARN

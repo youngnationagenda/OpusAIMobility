@@ -1,0 +1,641 @@
+# =============================================================================
+# CI/CD Deploy Pipeline — OpusAIMobility
+#
+# Builds and deploys all components on push to main.
+# Uses path-based filtering so only affected components are rebuilt.
+#
+# SECURITY: Uses GitHub OIDC → AWS STS (zero long-lived keys stored in GitHub).
+#   role-to-assume: arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+#
+# AMAZON Q DEVELOPER: Integrated via Connection ARN for automated code analysis
+#   on every deployment and PR.
+#   Connection ARN : arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1
+#   Q IAM Role     : arn:aws:iam::683541453923:role/AmazonQDeveloperGitHubRole
+#
+# REQUIRED GITHUB SECRETS (Settings > Secrets > Actions):
+#   ECR_REPOSITORY             — e.g. opusaimobility/terra-api
+#   ECS_CLUSTER                — e.g. opusaimobility
+#   ECS_SERVICE                — e.g. opusaimobility-terra-api
+#   TERRA_HEALTH_URL           — https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod/terra/health
+#   S3_APK_BUCKET              — e.g. opusaimobility-assets-prod
+#   S3_FRONTEND_BUCKET         — e.g. omniride-assets-prod
+#   CLOUDFRONT_DISTRIBUTION_ID — e.g. E1TIJJKJ2UEIO7
+#   KEYSTORE_FILE              — base64-encoded .jks  (release builds only)
+#   KEYSTORE_PASSWORD          — keystore password    (release builds only)
+#   KEY_ALIAS                  — key alias            (release builds only)
+#   KEY_PASSWORD               — key password         (release builds only)
+#
+# DEPRECATED LAMBDAS — do NOT deploy:
+#   aimobility-push → replaced by opusaimobility-push-notification
+#
+# Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7
+# =============================================================================
+
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: "Force deploy all components (ignore path filters)"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+
+# Cancel in-progress runs on the same branch — avoids duplicate deploys
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+# ── OIDC permissions ──────────────────────────────────────────────────────────
+# id-token: write  → GitHub mints OIDC JWT → AWS STS validates it
+# contents: read   → clone the repo
+# pull-requests: write → Amazon Q posts review comments
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  AWS_REGION: us-east-1
+  NODE_VERSION: "20"
+  # ── OIDC deploy role — no static AWS keys needed ──────────────────────────
+  AWS_DEPLOY_ROLE: arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+  # ── Amazon Q Developer — Connection ARN (GitHub <-> Amazon Q bridge) ──────
+  Q_CONNECTION_ARN: arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1
+  Q_ROLE_ARN: arn:aws:iam::683541453923:role/AmazonQDeveloperGitHubRole
+
+jobs:
+
+  # ===========================================================================
+  # 1. VALIDATE — AWS OIDC auth + Connection ARN health check
+  # ===========================================================================
+  validate-aws:
+    name: Validate AWS OIDC + Amazon Q Connection
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Configure AWS credentials (OIDC — no static keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: deploy-validate-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify assumed role identity
+        run: |
+          echo "=== Assumed Role (OIDC) ==="
+          aws sts get-caller-identity --output table
+
+      - name: Verify Amazon Q Connection ARN is AVAILABLE
+        run: |
+          STATUS=$(aws codestar-connections get-connection \
+            --connection-arn "${{ env.Q_CONNECTION_ARN }}" \
+            --query "Connection.ConnectionStatus" \
+            --output text)
+          echo "Amazon Q Connection status: $STATUS"
+          if [ "$STATUS" != "AVAILABLE" ]; then
+            echo "::error::Amazon Q Connection is not AVAILABLE. Re-authorize in AWS Console > CodeConnections."
+            exit 1
+          fi
+          echo "Amazon Q Connection ARN is AVAILABLE"
+
+  # ===========================================================================
+  # 2. DETECT — Which paths changed?
+  # ===========================================================================
+  changes:
+    name: Detect Changed Paths
+    runs-on: ubuntu-latest
+    needs: validate-aws
+    outputs:
+      customer_app: ${{ steps.filter.outputs.customer_app }}
+      lambda:       ${{ steps.filter.outputs.lambda }}
+      push_lambda:  ${{ steps.filter.outputs.push_lambda }}
+      terra_api:    ${{ steps.filter.outputs.terra_api }}
+      frontend:     ${{ steps.filter.outputs.frontend }}
+      shared:       ${{ steps.filter.outputs.shared }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            customer_app:
+              - 'apps/customer/**'
+            lambda:
+              - 'aws/lambda/index.js'
+              - 'aws/lambda/package.json'
+              - 'aws/lambda/package-lock.json'
+            push_lambda:
+              - 'aws/lambda/push-notification/**'
+            terra_api:
+              - 'infra/docker/terra-api/**'
+              - 'apps/terra-api/**'
+            frontend:
+              - 'src/**'
+              - 'public/**'
+            shared:
+              - 'packages/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'tsconfig.json'
+              - 'vitest.config.ts'
+
+  # ===========================================================================
+  # 3. AMAZON Q DEVELOPER — Automated code analysis on every deploy
+  # ===========================================================================
+  amazon-q-analysis:
+    name: Amazon Q Developer — Deploy Analysis
+    runs-on: ubuntu-latest
+    needs: changes
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: amazon-q-deploy-analysis-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Amazon Q Developer — Trigger Code Analysis
+        uses: aws-actions/amazon-q-developer-action@v1
+        with:
+          connection-arn: ${{ env.Q_CONNECTION_ARN }}
+          role-arn: ${{ env.Q_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Post Amazon Q analysis summary
+        if: always()
+        run: |
+          echo "## Amazon Q Developer — Deploy Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field         | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit        | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Connection    | \`106cbfc4-0ec6-492a-bf08-43ba86575ea1\` (AVAILABLE) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Q Role        | AmazonQDeveloperGitHubRole |" >> $GITHUB_STEP_SUMMARY
+          echo "| OIDC Role     | opusaimobility-github-deploy |" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # 4. DEPLOY — TerraAI container to ECR + ECS
+  # ===========================================================================
+  deploy-terra-api:
+    name: Build and Deploy TerraAI API
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.terra_api == 'true' ||
+      needs.changes.outputs.shared == 'true' ||
+      github.event.inputs.force_deploy == 'true'
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: deploy-terra-api-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push TerraAI container image
+        id: build-image
+        env:
+          ECR_REGISTRY:   ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG:      ${{ github.sha }}
+        run: |
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
+            -f infra/docker/terra-api/Dockerfile \
+            apps/terra-api/
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Update ECS service
+        env:
+          ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+          ECS_SERVICE:  ${{ secrets.ECS_SERVICE }}
+        run: |
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER \
+            --service  $ECS_SERVICE \
+            --force-new-deployment \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Wait for ECS service stability
+        env:
+          ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+          ECS_SERVICE:  ${{ secrets.ECS_SERVICE }}
+        run: |
+          aws ecs wait services-stable \
+            --cluster  $ECS_CLUSTER \
+            --services $ECS_SERVICE \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Post-deploy health check
+        env:
+          TERRA_HEALTH_URL: ${{ secrets.TERRA_HEALTH_URL }}
+        run: |
+          echo "Checking TerraAI health endpoint..."
+          MAX_RETRIES=5
+          RETRY_DELAY=10
+          for i in $(seq 1 $MAX_RETRIES); do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$TERRA_HEALTH_URL")
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "Health check passed (HTTP 200)"
+              exit 0
+            fi
+            echo "Attempt $i/$MAX_RETRIES: HTTP $HTTP_STATUS — retrying in ${RETRY_DELAY}s..."
+            sleep $RETRY_DELAY
+          done
+          echo "::error::TerraAI health check failed after $MAX_RETRIES attempts"
+          exit 1
+
+  # ===========================================================================
+  # 5. DEPLOY — Customer debug APK → S3
+  # ===========================================================================
+  deploy-customer-apk:
+    name: Build and Upload Customer APK (Debug)
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.customer_app == 'true' ||
+      needs.changes.outputs.shared == 'true' ||
+      github.event.inputs.force_deploy == 'true'
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build Customer APK (debug)
+        working-directory: apps/customer
+        run: |
+          chmod +x ./gradlew 2>/dev/null || true
+          ./gradlew assembleDebug
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: deploy-apk-debug-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Upload debug APK to S3
+        env:
+          APK_PATH:    apps/customer/build/outputs/apk/debug/customer-debug.apk
+          APP_NAME:    opusaimobility-customer
+          BUILD_NUMBER: ${{ github.run_number }}
+          S3_APK_BUCKET: ${{ secrets.S3_APK_BUCKET }}
+          AWS_REGION:  ${{ env.AWS_REGION }}
+        run: npx tsx scripts/ci/upload-apk.ts
+
+  # ===========================================================================
+  # 6. DEPLOY — Signed release APK (Play Store) — tags + manual dispatch only
+  # ===========================================================================
+  deploy-customer-release:
+    name: Build and Upload Release APK (Play Store)
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      (startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch') &&
+      (needs.changes.outputs.customer_app == 'true' || needs.changes.outputs.shared == 'true' || startsWith(github.ref, 'refs/tags/v'))
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate release secrets
+        run: |
+          MISSING=""
+          [ -z "${{ secrets.KEYSTORE_FILE }}" ]     && MISSING="$MISSING KEYSTORE_FILE"
+          [ -z "${{ secrets.KEYSTORE_PASSWORD }}" ] && MISSING="$MISSING KEYSTORE_PASSWORD"
+          [ -z "${{ secrets.KEY_ALIAS }}" ]         && MISSING="$MISSING KEY_ALIAS"
+          [ -z "${{ secrets.KEY_PASSWORD }}" ]      && MISSING="$MISSING KEY_PASSWORD"
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing release secrets: $MISSING"
+            exit 1
+          fi
+          echo "All release signing secrets present"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > apps/customer/app/release.keystore
+
+      - name: Build signed release APK
+        working-directory: apps/customer
+        env:
+          KEYSTORE_PATH:     app/release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS:         ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
+        run: |
+          chmod +x ./gradlew 2>/dev/null || true
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=$KEYSTORE_PATH \
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
+
+      - name: Verify APK signature
+        run: |
+          APK_PATH=$(find apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
+          echo "APK: $APK_PATH"
+          $ANDROID_HOME/build-tools/*/apksigner verify --verbose "$APK_PATH"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: deploy-apk-release-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload release APK to S3
+        run: |
+          APK_PATH=$(find apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
+          VERSION_TAG=${GITHUB_REF#refs/tags/}
+          aws s3 cp "$APK_PATH" \
+            "s3://${{ secrets.S3_APK_BUCKET }}/apks/customer/release/opusaimobility-customer-${VERSION_TAG}.apk"
+          aws s3 cp "$APK_PATH" \
+            "s3://${{ secrets.S3_APK_BUCKET }}/apks/customer/release/latest-release.apk"
+          echo "Release APK uploaded: opusaimobility-customer-${VERSION_TAG}.apk"
+
+      - name: Clean up keystore
+        if: always()
+        run: rm -f apps/customer/app/release.keystore
+
+  # ===========================================================================
+  # 7. DEPLOY — OpusAIMobility main Lambda
+  # ===========================================================================
+  deploy-lambda:
+    name: Deploy OpusAIMobility Lambda
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.lambda == 'true' ||
+      needs.changes.outputs.shared == 'true' ||
+      github.event.inputs.force_deploy == 'true'
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install Lambda dependencies
+        working-directory: aws/lambda
+        run: npm ci
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: deploy-lambda-main-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Package and deploy Lambda
+        working-directory: aws/lambda
+        run: |
+          zip -r lambda.zip . -x "node_modules/.cache/*"
+          aws lambda update-function-code \
+            --function-name opusaimobility-api \
+            --zip-file fileb://lambda.zip \
+            --region ${{ env.AWS_REGION }}
+          echo "Lambda deployed: opusaimobility-api (commit ${{ github.sha }})"
+
+      - name: Wait for Lambda update to complete
+        run: |
+          aws lambda wait function-updated \
+            --function-name opusaimobility-api \
+            --region ${{ env.AWS_REGION }}
+
+  # ===========================================================================
+  # 8. DEPLOY — Push Notification Lambda
+  # ===========================================================================
+  deploy-push-lambda:
+    name: Deploy Push Notification Lambda
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.push_lambda == 'true' ||
+      needs.changes.outputs.shared == 'true' ||
+      github.event.inputs.force_deploy == 'true'
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install push Lambda dependencies
+        working-directory: aws/lambda/push-notification
+        run: npm ci
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: deploy-push-lambda-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Package and deploy Push Lambda
+        working-directory: aws/lambda/push-notification
+        run: |
+          zip -r push-lambda.zip . \
+            -x "node_modules/.cache/*" \
+            -x "*-service-account.json"
+          aws lambda update-function-code \
+            --function-name opusaimobility-push-notification \
+            --zip-file fileb://push-lambda.zip \
+            --region ${{ env.AWS_REGION }}
+          echo "Lambda deployed: opusaimobility-push-notification (commit ${{ github.sha }})"
+
+      - name: Wait for push Lambda update to complete
+        run: |
+          aws lambda wait function-updated \
+            --function-name opusaimobility-push-notification \
+            --region ${{ env.AWS_REGION }}
+
+  # ===========================================================================
+  # 9. DEPLOY — Frontend (Vite build → S3 → CloudFront invalidation)
+  # ===========================================================================
+  deploy-frontend:
+    name: Build and Deploy Frontend
+    runs-on: ubuntu-latest
+    needs: changes
+    if: >-
+      needs.changes.outputs.frontend == 'true' ||
+      needs.changes.outputs.shared == 'true' ||
+      github.event.inputs.force_deploy == 'true'
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend (Vite)
+        env:
+          # ── API & Region ─────────────────────────────────────────────────
+          VITE_API_BASE_URL:              https://opusaimobility.yna.co.ke
+          VITE_AWS_REGION:               us-east-1
+          # ── Amazon Cognito ───────────────────────────────────────────────
+          VITE_COGNITO_USER_POOL_ID:     us-east-1_LKa4ElQem
+          VITE_COGNITO_CLIENT_ID:        3a207uin5o3p4k1ngk334crntl
+          # ── Amazon S3 ────────────────────────────────────────────────────
+          VITE_S3_BUCKET:                opusaimobility-assets-prod
+          VITE_S3_BASE_URL:              https://opusaimobility-assets-prod.s3.us-east-1.amazonaws.com
+          # ── AWS IoT Core ─────────────────────────────────────────────────
+          VITE_IOT_ENDPOINT:             wss://arqymixni12gc-ats.iot.us-east-1.amazonaws.com/mqtt
+          VITE_IOT_STREAM_URL_ENDPOINT:  /iot/stream-url
+          # ── Amazon SNS ───────────────────────────────────────────────────
+          VITE_SNS_TOPIC_ARN:            arn:aws:sns:us-east-1:683541453923:opusaimobility-notifications
+          # ── Amazon Pinpoint ───────────────────────────────────────────────
+          VITE_PINPOINT_APP_ID:          20d7e36cc4094a04b63b7fd1e5596fcf
+          VITE_PUSH_NOTIFICATION_LAMBDA: opusaimobility-push-notification
+        run: npm run build
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: deploy-frontend-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Sync build to S3
+        run: |
+          aws s3 sync dist/ s3://${{ secrets.S3_FRONTEND_BUCKET }}/ \
+            --delete \
+            --region ${{ env.AWS_REGION }}
+          echo "Frontend synced to s3://${{ secrets.S3_FRONTEND_BUCKET }}"
+
+      - name: Invalidate CloudFront cache (Production — E1TIJJKJ2UEIO7)
+        run: |
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*" \
+            --query "Invalidation.Id" \
+            --output text)
+          echo "CloudFront invalidation created: $INVALIDATION_ID"
+          echo "Distribution: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
+
+  # ===========================================================================
+  # 10. SMOKE TESTS — Post-deploy health checks
+  # ===========================================================================
+  smoke-tests:
+    name: Post-Deploy Smoke Tests
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-terra-api
+      - deploy-customer-apk
+      - deploy-lambda
+      - deploy-push-lambda
+      - deploy-frontend
+    if: |
+      always() &&
+      (needs.deploy-terra-api.result    == 'success' || needs.deploy-terra-api.result    == 'skipped') &&
+      (needs.deploy-customer-apk.result == 'success' || needs.deploy-customer-apk.result == 'skipped') &&
+      (needs.deploy-lambda.result       == 'success' || needs.deploy-lambda.result       == 'skipped') &&
+      (needs.deploy-push-lambda.result  == 'success' || needs.deploy-push-lambda.result  == 'skipped') &&
+      (needs.deploy-frontend.result     == 'success' || needs.deploy-frontend.result     == 'skipped') &&
+      !(needs.deploy-terra-api.result == 'skipped' &&
+        needs.deploy-customer-apk.result == 'skipped' &&
+        needs.deploy-lambda.result == 'skipped' &&
+        needs.deploy-push-lambda.result == 'skipped' &&
+        needs.deploy-frontend.result == 'skipped')
+    timeout-minutes: 5
+    steps:
+      - name: TerraAI health check
+        if: needs.deploy-terra-api.result == 'success'
+        env:
+          TERRA_HEALTH_URL: ${{ secrets.TERRA_HEALTH_URL }}
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$TERRA_HEALTH_URL")
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "::error::TerraAI health check failed: HTTP $HTTP_STATUS"
+            exit 1
+          fi
+          echo "TerraAI health check passed: HTTP 200"
+
+      - name: Lambda API health check
+        if: needs.deploy-lambda.result == 'success'
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod/health")
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "::error::Lambda API health check failed: HTTP $HTTP_STATUS"
+            exit 1
+          fi
+          echo "Lambda API health check passed: HTTP 200"
+
+      - name: Deploy summary
+        if: always()
+        run: |
+          echo "## Deploy Summary — OpusAIMobility" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Component              | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| TerraAI Container      | ${{ needs.deploy-terra-api.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Customer APK (debug)   | ${{ needs.deploy-customer-apk.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Main Lambda            | ${{ needs.deploy-lambda.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Push Lambda            | ${{ needs.deploy-push-lambda.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend               | ${{ needs.deploy-frontend.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Amazon Q Analysis      | ${{ needs.amazon-q-analysis.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Run:**    [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "**Auth:**   OIDC (no static AWS keys)" >> $GITHUB_STEP_SUMMARY
+          echo "**Q ARN:**  \`106cbfc4-0ec6-492a-bf08-43ba86575ea1\`" >> $GITHUB_STEP_SUMMARY

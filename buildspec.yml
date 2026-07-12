@@ -1,0 +1,145 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# OpusAIMobility — AWS CodeBuild Build Specification
+# Builds: Android APK, Frontend (React/Vite), Lambda packages
+# Runtime: Amazon Linux 2023 (AL2023)
+# ═══════════════════════════════════════════════════════════════════════════════
+version: 0.2
+
+env:
+  variables:
+    AWS_REGION: us-east-1
+    NODE_VERSION: "20"
+    JAVA_VERSION: "17"
+  parameter-store:
+    KEYSTORE_PASSWORD: /opusaimobility/keystore-password
+    KEY_ALIAS: /opusaimobility/key-alias
+    KEY_PASSWORD: /opusaimobility/key-password
+  secrets-manager:
+    KEYSTORE_FILE: opusaimobility/keystore:base64
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+      nodejs: 20
+    commands:
+      - echo "=== Install Phase ==="
+      - java -version
+      - node --version
+      - npm --version
+
+  pre_build:
+    commands:
+      - echo "=== Pre-Build Phase ==="
+      # Frontend dependencies
+      - cd MobilityAIapp && npm ci
+      - cd ..
+      # Lambda dependencies
+      - cd MobilityAIapp/aws/lambda && npm ci --omit=dev
+      - cd ../../..
+      # Android setup
+      - chmod +x MobilityAIapp/apps/customer/gradlew
+      # Decode keystore if available
+      - |
+        if [ -n "$KEYSTORE_FILE" ]; then
+          echo "$KEYSTORE_FILE" | base64 --decode > MobilityAIapp/apps/customer/app/release.keystore
+          echo "Keystore decoded successfully"
+        fi
+
+  build:
+    commands:
+      - echo "=== Build Phase ==="
+      # Build Frontend
+      - echo "Building Frontend..."
+      - cd MobilityAIapp && npm run build
+      - cd ..
+      # Build Android APK
+      - echo "Building Android APK..."
+      - cd MobilityAIapp/apps/customer
+      - |
+        if [ -f "app/release.keystore" ]; then
+          ./gradlew assembleRelease --no-daemon --warning-mode all
+        else
+          ./gradlew assembleDebug --no-daemon --warning-mode all
+        fi
+      - cd ../../..
+      # Package Lambda
+      - echo "Packaging Lambda functions..."
+      - cd MobilityAIapp/aws/lambda
+      - zip -r lambda-main.zip . -x "node_modules/.cache/*" -x "*.test.*"
+      - cd ../../..
+      # Package Push Lambda
+      - |
+        if [ -d "MobilityAIapp/aws/lambda/push-notification" ]; then
+          cd MobilityAIapp/aws/lambda/push-notification
+          npm ci --omit=dev
+          zip -r push-lambda.zip . -x "node_modules/.cache/*"
+          cd ../../../..
+        fi
+
+  post_build:
+    commands:
+      - echo "=== Post-Build Phase ==="
+      # Deploy Frontend to S3
+      - |
+        if [ -n "$S3_FRONTEND_BUCKET" ]; then
+          aws s3 sync MobilityAIapp/dist/ s3://$S3_FRONTEND_BUCKET/ --delete
+          echo "Frontend deployed to S3"
+        fi
+      # Invalidate CloudFront
+      - |
+        if [ -n "$CLOUDFRONT_DISTRIBUTION_ID" ]; then
+          aws cloudfront create-invalidation \
+            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+            --paths "/*"
+          echo "CloudFront invalidation triggered"
+        fi
+      # Deploy Lambda
+      - |
+        if [ -n "$LAMBDA_FUNCTION_NAME" ]; then
+          aws lambda update-function-code \
+            --function-name $LAMBDA_FUNCTION_NAME \
+            --zip-file fileb://MobilityAIapp/aws/lambda/lambda-main.zip
+          echo "Main Lambda deployed"
+        fi
+      # Upload APK to S3
+      - |
+        if [ -n "$S3_APK_BUCKET" ]; then
+          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk -name "*.apk" | head -1)
+          if [ -n "$APK" ]; then
+            VERSION="${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}"
+            aws s3 cp "$APK" "s3://$S3_APK_BUCKET/apks/OpusAIMobility-${VERSION}.apk"
+            aws s3 cp "$APK" "s3://$S3_APK_BUCKET/apks/OpusAIMobility-latest.apk"
+            echo "APK uploaded to S3"
+          fi
+        fi
+      # Cleanup
+      - rm -f MobilityAIapp/apps/customer/app/release.keystore
+
+artifacts:
+  files:
+    - MobilityAIapp/dist/**/*
+    - MobilityAIapp/apps/customer/app/build/outputs/apk/**/*.apk
+    - MobilityAIapp/aws/lambda/lambda-main.zip
+  discard-paths: no
+  secondary-artifacts:
+    frontend:
+      base-directory: MobilityAIapp/dist
+      files:
+        - "**/*"
+    android-apk:
+      base-directory: MobilityAIapp/apps/customer/app/build/outputs/apk
+      files:
+        - "**/*.apk"
+    lambda-packages:
+      files:
+        - MobilityAIapp/aws/lambda/lambda-main.zip
+        - MobilityAIapp/aws/lambda/push-notification/push-lambda.zip
+      discard-paths: yes
+
+cache:
+  paths:
+    - "/root/.npm/**/*"
+    - "/root/.gradle/caches/**/*"
+    - "/root/.gradle/wrapper/**/*"
+    - "MobilityAIapp/node_modules/**/*"

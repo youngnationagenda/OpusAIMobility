@@ -1,0 +1,59 @@
+{
+  "description": "GitHub Actions OIDC deploy role — OpusAIMobility CI/CD",
+  "createdBy": "Sonie",
+  "lastUpdated": "2026-07-12",
+  "resources": {
+    "oidcProvider": {
+      "arn": "arn:aws:iam::683541453923:oidc-provider/token.actions.githubusercontent.com",
+      "url": "https://token.actions.githubusercontent.com",
+      "clientId": "sts.amazonaws.com"
+    },
+    "deployRole": {
+      "name": "opusaimobility-github-deploy",
+      "arn": "arn:aws:iam::683541453923:role/opusaimobility-github-deploy",
+      "maxSessionDuration": 3600,
+      "trustPrincipal": "token.actions.githubusercontent.com",
+      "condition": {
+        "aud": "sts.amazonaws.com",
+        "sub": "repo:youngnationagenda/OpusAIMobility:*"
+      }
+    },
+    "deployPolicy": {
+      "name": "opusaimobility-github-deploy-policy",
+      "arn": "arn:aws:iam::683541453923:policy/opusaimobility-github-deploy-policy"
+    },
+    "amazonQRole": {
+      "name": "AmazonQDeveloperGitHubRole",
+      "arn": "arn:aws:iam::683541453923:role/AmazonQDeveloperGitHubRole"
+    },
+    "connectionArn": "arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1",
+    "connectionName": "amazon-q-developer-github",
+    "connectionStatus": "AVAILABLE"
+  },
+  "githubRepo": "youngnationagenda/OpusAIMobility",
+  "githubSecrets": {
+    "note": "No AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY — OIDC only. Old key secrets have been deleted.",
+    "set": [
+      "ECR_REPOSITORY",
+      "ECS_CLUSTER",
+      "ECS_SERVICE",
+      "TERRA_HEALTH_URL",
+      "S3_FRONTEND_BUCKET",
+      "CLOUDFRONT_DISTRIBUTION_ID",
+      "S3_APK_BUCKET",
+      "KEYSTORE_FILE",
+      "KEYSTORE_PASSWORD",
+      "KEY_ALIAS",
+      "KEY_PASSWORD"
+    ],
+    "deleted": [
+      "AWS_ACCESS_KEY_ID",
+      "AWS_SECRET_ACCESS_KEY"
+    ]
+  },
+  "workflows": {
+    "deploy":         ".github/workflows/deploy.yml",
+    "ci":             ".github/workflows/ci.yml",
+    "amazonQPrReview":".github/workflows/amazon-q-pr-review.yml"
+  }
+}
