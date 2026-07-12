@@ -43,9 +43,9 @@
 | Secret Name | Value |
 |---|---|
 | `S3_FRONTEND_BUCKET` | `opusaimobility-assets-prod` |
-| `CLOUDFRONT_DISTRIBUTION_ID` | `E1TIJJKJ2UEIO7` |
+| `CLOUDFRONT_DISTRIBUTION_ID` | `E18GJ5VKHBIJAI` |
 
-> **CloudFront Distribution `E1TIJJKJ2UEIO7`** → `d2rofh106fep8b.cloudfront.net`
+> **CloudFront Distribution `E18GJ5VKHBIJAI`** → `d22up4o3zhu9gf.cloudfront.net`
 > Custom domain: **`https://app.opusaimobility.yna.co.ke`** ✅ LIVE
 > Origin: `opusaimobility-assets-prod.s3.us-east-1.amazonaws.com`
 > ACM cert: `*.opusaimobility.yna.co.ke` (ISSUED, valid until 2027-01-22)
@@ -115,7 +115,7 @@ If you only want CI + Lambda + Frontend deploys working now:
 
 ```
 S3_FRONTEND_BUCKET         = opusaimobility-assets-prod
-CLOUDFRONT_DISTRIBUTION_ID = E1TIJJKJ2UEIO7
+CLOUDFRONT_DISTRIBUTION_ID = E18GJ5VKHBIJAI
 S3_APK_BUCKET              = opusaimobility-apk-distribution
 ```
 
@@ -128,8 +128,7 @@ The `deploy-terra-api` job will be skipped if `ECR_REPOSITORY` / `ECS_CLUSTER` /
 
 | URL | Description |
 |---|---|
-| `https://opusaimobility.yna.co.ke` | API + WAF (CloudFront `E18GJ5VKHBIJAI`) |
-| `https://app.opusaimobility.yna.co.ke` | Frontend PWA (CloudFront `E1TIJJKJ2UEIO7`) ✅ NEW |
+| `https://opusaimobility.yna.co.ke` | API + Frontend + WAF (CloudFront `E18GJ5VKHBIJAI`) |
 | `wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod` | WebSocket (driver location) |
 
 ---

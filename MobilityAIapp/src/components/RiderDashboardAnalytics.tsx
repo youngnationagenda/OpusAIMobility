@@ -206,10 +206,10 @@ const RiderDashboardAnalytics: React.FC<RiderDashboardAnalyticsProps> = ({ profi
           </button>
           <div>
             <h2 className="text-lg font-black tracking-tight text-white leading-none">Fleet Telemetry Active</h2>
-            <p className="text-[8px] font-black text-cyan-400 uppercase tracking-[0.2em] mt-1.5 flex items-center gap-1.5">
+            <span className="text-[8px] font-black text-cyan-400 uppercase tracking-[0.2em] mt-1.5 flex items-center gap-1.5">
                <div className={`w-1 h-1 rounded-full ${iotWsConnected ? 'bg-cyan-500 animate-pulse' : 'bg-yellow-500'}`} />
                {iotWsConnected ? 'IoT Live · ' : 'REST · '}Operational Node: {profile.id}
-            </p>
+            </span>
           </div>
         </div>
         <div className="flex items-center gap-2">

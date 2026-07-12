@@ -2,10 +2,17 @@
 /**
  * OpusAIMobility — Frontend Auto-Deploy Script
  * ─────────────────────────────────────────────
- * Does 3 things in one command:
- *   1. npm run build  (fresh Vite production build)
- *   2. aws s3 sync    (upload to opusaimobility-assets-prod)
- *   3. CloudFront invalidation (clears edge cache instantly)
+ * Steps (always):
+ *   1. npm run build          — fresh Vite production build
+ *   2. server:check           — assert dist/index.html exists & is valid HTML
+ *   3. aws s3 sync            — upload to opusaimobility-assets-prod
+ *   4. CloudFront invalidation — clears edge cache instantly
+ *
+ * Optional flags:
+ *   --restart-server          — force-deploy new ECS task (or redeploy Lambda
+ *                               serving the app) after S3 sync so the Node proxy
+ *                               picks up the new dist/ immediately
+ *   --gemini-key AIza...      — update Gemini key in Secrets Manager
  *
  * Architecture:
  *   opusaimobility.yna.co.ke  →  CF dist E18GJ5VKHBIJAI
@@ -16,21 +23,26 @@
  *
  * Usage:
  *   node aws/deploy-frontend.cjs
- *
- * Optional — pass a Gemini key to update it in Secrets Manager too:
- *   node aws/deploy-frontend.cjs --gemini-key AIza...
+ *   node aws/deploy-frontend.cjs --restart-server
+ *   node aws/deploy-frontend.cjs --restart-server --gemini-key AIza...
  */
 
 const { execSync } = require('child_process');
 const path = require('path');
+const fs   = require('fs');
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const DIST_DIR    = path.resolve(__dirname, '..', 'dist');
+const ROOT_DIR    = path.resolve(__dirname, '..');
+const DIST_DIR    = path.join(ROOT_DIR, 'dist');
 const BUCKET      = 'opusaimobility-assets-prod';
 const CF_DIST_ID  = 'E18GJ5VKHBIJAI';   // opusaimobility.yna.co.ke (frontend + API)
 const SECRET_NAME = 'opusaimobility/gemini-api-key';
 const REGION      = 'us-east-1';
 const DOMAIN      = 'https://opusaimobility.yna.co.ke';
+
+// ECS config — used only when --restart-server is passed
+const ECS_CLUSTER = 'opusaimobility';
+const ECS_SERVICE = 'opusaimobility-server';   // service name (created when server is deployed to ECS)
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function run(cmd, label) {
@@ -47,10 +59,15 @@ function run(cmd, label) {
   }
 }
 
+function ok(msg)   { console.log(`   ✔  ${msg}`); }
+function fail(msg) { console.error(`   ✗  ${msg}`); process.exit(1); }
+function info(msg) { console.log(`   ℹ  ${msg}`); }
+
 // ── Parse args ────────────────────────────────────────────────────────────────
-const args      = process.argv.slice(2);
-const geminiIdx = args.indexOf('--gemini-key');
-const geminiKey = geminiIdx !== -1 ? args[geminiIdx + 1] : null;
+const args           = process.argv.slice(2);
+const restartServer  = args.includes('--restart-server');
+const geminiIdx      = args.indexOf('--gemini-key');
+const geminiKey      = geminiIdx !== -1 ? args[geminiIdx + 1] : null;
 
 // ─────────────────────────────────────────────────────────────────────────────
 console.log('');
@@ -60,17 +77,24 @@ console.log('╠═════════════════════�
 console.log(`║  Bucket  : ${BUCKET}`);
 console.log(`║  CF Dist : ${CF_DIST_ID}  (opusaimobility.yna.co.ke)`);
 console.log(`║  Domain  : ${DOMAIN}`);
+if (restartServer) console.log(`║  ECS     : ${ECS_CLUSTER} / ${ECS_SERVICE}  ← will restart`);
 console.log('╚══════════════════════════════════════════════════════╝');
 
 // ── STEP 1 — Build ────────────────────────────────────────────────────────────
 console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log(' STEP 1 — Building app (npm run build)');
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-run(`cd "${path.resolve(__dirname, '..')}" && npm run build`, 'vite build');
+run(`cd "${ROOT_DIR}" && npm run build`, 'vite build');
 
-// ── STEP 2 — Sync assets (long cache, content-hashed filenames) ───────────────
+// ── STEP 2 — Server pre-flight check ─────────────────────────────────────────
 console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-console.log(' STEP 2 — Syncing to S3');
+console.log(' STEP 2 — Server pre-flight check (dist/ integrity)');
+console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+run(`node "${path.join(ROOT_DIR, 'scripts', 'ci', 'server-check.cjs')}"`, 'server:check — dist integrity gate');
+
+// ── STEP 3 — Sync assets ──────────────────────────────────────────────────────
+console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+console.log(' STEP 3 — Syncing to S3');
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
 run(
@@ -98,9 +122,9 @@ run(
   'S3 sync: root files (1-day cache)'
 );
 
-// ── STEP 3 — CloudFront Invalidation ─────────────────────────────────────────
+// ── STEP 4 — CloudFront Invalidation ─────────────────────────────────────────
 console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-console.log(' STEP 3 — Invalidating CloudFront cache');
+console.log(' STEP 4 — Invalidating CloudFront cache');
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
 const invResult = JSON.parse(
@@ -114,12 +138,57 @@ const invResult = JSON.parse(
 );
 const invId     = invResult?.Invalidation?.Id;
 const invStatus = invResult?.Invalidation?.Status;
-console.log(`   ✔ Invalidation ID: ${invId}  (${invStatus})`);
+ok(`Invalidation ID: ${invId}  (${invStatus})`);
 
-// ── STEP 4 (optional) — Update Gemini key in Secrets Manager ─────────────────
+// ── STEP 5 (optional) — Restart ECS server task ───────────────────────────────
+if (restartServer) {
+  console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log(' STEP 5 — Restarting ECS server task');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+  // Check whether the ECS service actually exists before attempting restart
+  let serviceExists = false;
+  try {
+    const describeOut = execSync(
+      `aws ecs describe-services` +
+      ` --cluster ${ECS_CLUSTER}` +
+      ` --services ${ECS_SERVICE}` +
+      ` --region ${REGION}` +
+      ` --output json`,
+      { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }
+    );
+    const describeJson = JSON.parse(describeOut);
+    const svc = describeJson?.services?.[0];
+    serviceExists = svc && svc.status === 'ACTIVE';
+  } catch (_) {
+    serviceExists = false;
+  }
+
+  if (!serviceExists) {
+    info(`ECS service "${ECS_SERVICE}" not found or inactive on cluster "${ECS_CLUSTER}".`);
+    info('Skipping ECS restart — server is running as a standalone process.');
+    info('To deploy the server to ECS, run: aws ecs create-service ... (see infra/ecs/task-def.json)');
+  } else {
+    // Force a new deployment — ECS will pull the latest task definition and start
+    // a fresh container, which will mount the new dist/ from S3 via the app bundle
+    run(
+      `aws ecs update-service` +
+      ` --cluster ${ECS_CLUSTER}` +
+      ` --service ${ECS_SERVICE}` +
+      ` --force-new-deployment` +
+      ` --region ${REGION}` +
+      ` --output json`,
+      `ECS force-new-deployment: ${ECS_CLUSTER}/${ECS_SERVICE}`
+    );
+    ok(`ECS service "${ECS_SERVICE}" redeployment initiated.`);
+    info('New task will be running within ~60 seconds (Fargate cold start).');
+  }
+}
+
+// ── STEP 6 (optional) — Update Gemini key in Secrets Manager ─────────────────
 if (geminiKey) {
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log(' STEP 4 — Updating Gemini API key in Secrets Manager');
+  console.log(' STEP 6 — Updating Gemini API key in Secrets Manager');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   run(
     `aws secretsmanager put-secret-value` +
@@ -128,7 +197,7 @@ if (geminiKey) {
     ` --region ${REGION} --output json`,
     'Secrets Manager: update gemini key'
   );
-  console.log('   ✔ Gemini API key updated in Secrets Manager');
+  ok('Gemini API key updated in Secrets Manager');
 }
 
 // ── Done ──────────────────────────────────────────────────────────────────────
@@ -139,7 +208,8 @@ console.log('╠═════════════════════�
 console.log(`║  🌐  ${DOMAIN}`);
 console.log(`║  ☁️   CF: ${CF_DIST_ID}  (cache cleared)`);
 console.log(`║  🪣  S3: ${BUCKET}`);
-if (geminiKey) console.log(`║  🔑  Gemini key: updated in Secrets Manager`);
+if (restartServer) console.log(`║  🔄  ECS: restart triggered for ${ECS_SERVICE}`);
+if (geminiKey)     console.log(`║  🔑  Gemini key: updated in Secrets Manager`);
 console.log('╚══════════════════════════════════════════════════════╝');
 console.log('');
 console.log('  Note: CloudFront propagation takes ~30–60 seconds.');

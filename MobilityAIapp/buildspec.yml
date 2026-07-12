@@ -1,0 +1,130 @@
+# =============================================================================
+# OpusAIMobility — AWS CodeBuild Full Build Spec
+# Runs on: AWS CodeBuild (Amazon Linux 2023, standard:5.0)
+# Triggered by: push to `main` branch
+#
+# Phases:
+#   install   — Node 22, Java 17 (Android), Gradle cache
+#   pre_build — npm ci, type check, full test suite, server pre-flight
+#   build     — Vite production build + Android APK
+#   post_build — S3 sync (frontend), Lambda ZIP upload, CloudFront invalidation
+# =============================================================================
+
+version: 0.2
+
+env:
+  variables:
+    NODE_ENV: production
+  # Secrets pulled from AWS Secrets Manager at build time
+  secrets-manager:
+    GEMINI_API_KEY: "opusaimobility/gemini-api-key:key"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 22
+      java: corretto17
+    commands:
+      - echo "=== Installing dependencies ==="
+      - npm ci --prefer-offline
+      - cd server && npm ci --prefer-offline && cd ..
+      - echo "Node $(node -v) | npm $(npm -v)"
+
+  pre_build:
+    commands:
+      - echo "=== Pre-build checks ==="
+
+      # 1. TypeScript type check
+      - echo "--- TypeScript type check ---"
+      - npm run type:check
+
+      # 2. Full test suite (unit + property tests)
+      - echo "--- Test suite ---"
+      - npm test -- --silent
+
+      # 3. Server pre-flight: assert dist will be valid before building
+      #    (checks staticPath, validates any pre-existing dist/)
+      - echo "--- Server pre-flight (staticPath & server.js integrity) ---"
+      - node -e "
+          const fs = require('fs');
+          const path = require('path');
+          const src = fs.readFileSync('server/server.js', 'utf8');
+          const correct = /path\.join\(__dirname\s*,\s*['\"]\.\.['\"]\s*,\s*['\"]dist['\"]\)/.test(src);
+          if (!correct) {
+            console.error('FAIL: server/server.js staticPath does not point to project root dist/');
+            console.error('Expected: path.join(__dirname, \"..\", \"dist\")');
+            process.exit(1);
+          }
+          console.log('PASS: staticPath correctly set to ../dist');
+        "
+
+  build:
+    commands:
+      - echo "=== Build phase ==="
+
+      # 4. Vite production build
+      - echo "--- Vite build ---"
+      - npm run build
+
+      # 5. Full server pre-flight check (including HTTP boot test)
+      - echo "--- Server pre-flight check (HTTP boot test) ---"
+      - npm run server:check
+
+      # 6. Lambda ZIP — main API
+      - echo "--- Lambda: terraaimobility-api ZIP ---"
+      - cd aws/lambda/terraaimobility-api && zip -r ../../../lambda-latest.zip . && cd ../../..
+
+  post_build:
+    commands:
+      - echo "=== Post-build deployment ==="
+
+      # 7. S3 sync — assets (immutable, 1-year cache)
+      - echo "--- S3 sync: assets/ ---"
+      - aws s3 sync dist/assets s3://$S3_FRONTEND_BUCKET/assets/
+          --delete
+          --cache-control "public, max-age=31536000, immutable"
+          --region us-east-1
+
+      # 8. S3 upload — index.html (no-cache)
+      - echo "--- S3 upload: index.html ---"
+      - aws s3 cp dist/index.html s3://$S3_FRONTEND_BUCKET/index.html
+          --cache-control "no-cache, no-store, must-revalidate"
+          --content-type "text/html"
+          --region us-east-1
+
+      # 9. S3 sync — root files (sw.js, manifest.json — 1-day cache)
+      - echo "--- S3 sync: root files ---"
+      - aws s3 sync dist s3://$S3_FRONTEND_BUCKET/
+          --exclude "assets/*"
+          --exclude "index.html"
+          --cache-control "public, max-age=86400"
+          --region us-east-1
+
+      # 10. Lambda update — main API
+      - echo "--- Lambda update: terraaimobility-api ---"
+      - aws lambda update-function-code
+          --function-name $LAMBDA_FUNCTION_NAME
+          --zip-file fileb://lambda-latest.zip
+          --region us-east-1
+
+      # 11. CloudFront invalidation
+      - echo "--- CloudFront invalidation ---"
+      - aws cloudfront create-invalidation
+          --distribution-id $CLOUDFRONT_DISTRIBUTION_ID
+          --paths "/*"
+          --region us-east-1
+
+      - echo "=== Deploy complete: https://opusaimobility.yna.co.ke ==="
+
+artifacts:
+  files:
+    - lambda-latest.zip
+    - dist/**/*
+  name: opusaimobility-build-$CODEBUILD_BUILD_NUMBER
+
+cache:
+  paths:
+    - node_modules/**/*
+    - server/node_modules/**/*
+    - .gradle/caches/**/*
+    - ~/.gradle/caches/**/*

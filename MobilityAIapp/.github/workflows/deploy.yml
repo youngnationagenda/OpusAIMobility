@@ -17,8 +17,8 @@
 #   ECS_SERVICE                — opusaimobility-terra-api
 #   TERRA_HEALTH_URL           — https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod/terra/health
 #   S3_APK_BUCKET              — opusaimobility-apk-distribution
-#   S3_FRONTEND_BUCKET         — opusaimobility-assets-prod  (serves app.opusaimobility.yna.co.ke)
-#   CLOUDFRONT_DISTRIBUTION_ID — E1TIJJKJ2UEIO7
+#   S3_FRONTEND_BUCKET         — opusaimobility-assets-prod  (serves opusaimobility.yna.co.ke)
+#   CLOUDFRONT_DISTRIBUTION_ID — E18GJ5VKHBIJAI
 #   KEYSTORE_FILE              — base64-encoded .jks  (release builds only)
 #   KEYSTORE_PASSWORD          — keystore password    (release builds only)
 #   KEY_ALIAS                  — key alias            (release builds only)

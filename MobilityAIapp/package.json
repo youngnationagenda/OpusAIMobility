@@ -14,9 +14,12 @@
     "preview": "vite preview",
     "test": "vitest --run",
     "type:check": "tsc --noEmit",
-    "server": "node server/server.js",
-    "server:dev": "nodemon server/server.js",
-    "deploy": "node aws/deploy-frontend.cjs"
+    "server:check": "node scripts/ci/server-check.cjs",
+    "server": "npm run server:check && node server/server.js",
+    "server:dev": "npm run server:check && nodemon server/server.js",
+    "server:unsafe": "node server/server.js",
+    "deploy": "node aws/deploy-frontend.cjs",
+    "deploy:restart": "node aws/deploy-frontend.cjs --restart-server"
   },
   "dependencies": {
     "leaflet": "1.9.4",

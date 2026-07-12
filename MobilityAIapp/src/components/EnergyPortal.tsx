@@ -241,9 +241,9 @@ const EnergyPortal: React.FC<EnergyPortalProps> = ({ profile, onClose, onUpdateR
           </button>
           <div>
             <h2 className="text-lg font-black tracking-tight text-white leading-none">Energy Hub</h2>
-            <p className="text-[8px] font-black text-cyan-400 uppercase tracking-[0.2em] mt-1.5 flex items-center gap-1.5">
-               <div className="w-1 h-1 bg-cyan-500 rounded-full animate-pulse" /> Live Supply Chain Node
-            </p>
+            <span className="text-[8px] font-black text-cyan-400 uppercase tracking-[0.2em] mt-1.5 flex items-center gap-1.5">
+               <span className="w-1 h-1 bg-cyan-500 rounded-full animate-pulse inline-block shrink-0" /> Live Supply Chain Node
+            </span>
           </div>
         </div>
         <div className="flex items-center gap-2">

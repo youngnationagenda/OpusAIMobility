@@ -125,10 +125,10 @@ const ChargingStationHub: React.FC<ChargingStationHubProps> = ({ onClose }) => {
       
       {/* Geolocation Mock Footer */}
       <div className="p-4 bg-gray-800 text-center border-t border-gray-700">
-         <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest flex items-center justify-center gap-2">
-            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+         <div className="text-[9px] font-black text-gray-500 uppercase tracking-widest flex items-center justify-center gap-2">
+            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse inline-block shrink-0" />
             Using high-precision rider geolocation
-         </p>
+         </div>
       </div>
     </div>
   );

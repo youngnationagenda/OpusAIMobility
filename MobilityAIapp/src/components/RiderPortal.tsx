@@ -280,9 +280,9 @@ const RiderPortal: React.FC<RiderPortalProps> = ({ onClose, riderProfile, onUpda
           <button onClick={() => setCurrentView('dashboard')} className="p-2 bg-gray-700 rounded-xl"><ChevronLeft className="w-6 h-6" /></button>
           <div className="text-center">
             <h2 className="text-xl font-black">{activeJob.clientName || 'Mission Node'}</h2>
-            <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest flex items-center justify-center gap-1.5">
-              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> Live Deployment
-            </p>
+            <div className="text-[9px] font-black text-emerald-400 uppercase tracking-widest flex items-center justify-center gap-1.5">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse inline-block shrink-0" /> Live Deployment
+            </div>
           </div>
           <button className="p-3 bg-blue-600/20 text-blue-400 rounded-2xl border border-blue-400/20"><Phone className="w-5 h-5" /></button>
         </div>
@@ -477,10 +477,10 @@ const RiderPortal: React.FC<RiderPortalProps> = ({ onClose, riderProfile, onUpda
 
                 {/* Lat/Lng Signal Overlay */}
                 <div className="absolute bottom-6 left-8 z-20 px-4 py-2 bg-black/80 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl">
-                   <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest flex items-center gap-3">
-                      <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                   <div className="text-[9px] font-black text-emerald-400 uppercase tracking-widest flex items-center gap-3">
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)] inline-block shrink-0" />
                       Sector 14-B Grid Node Verified
-                   </p>
+                   </div>
                 </div>
              </div>
           </div>
