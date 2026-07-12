@@ -23,7 +23,7 @@ Parameters:
 
   S3FrontendBucket:
     Type: String
-    Default: "opusaimobility-frontend"
+    Default: "opusaimobility-assets-prod"
     Description: S3 bucket for frontend hosting
 
   CloudFrontDistributionId:
@@ -33,7 +33,7 @@ Parameters:
 
   LambdaFunctionName:
     Type: String
-    Default: "omniride-api"
+    Default: "terraaimobility-api"
     Description: Main Lambda function name
 
 Resources:

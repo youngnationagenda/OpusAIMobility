@@ -110,7 +110,7 @@ const arbNotifFrame = fc.record({
   title:     fc.string({ minLength: 1, maxLength: 100 }),
   body:      fc.string({ minLength: 1, maxLength: 500 }),
   type:      fc.constantFrom('ride_update', 'driver_assigned', 'payment', 'system', 'promo'),
-  timestamp: fc.date({ min: new Date(0), max: new Date('2100-01-01T00:00:00.000Z') }).map(d => d.toISOString()),
+  timestamp: fc.integer({ min: 0, max: 4_102_444_800_000 }).map(ms => new Date(ms).toISOString()),
 });
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
