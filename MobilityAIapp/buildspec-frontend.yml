@@ -1,16 +1,13 @@
 # =============================================================================
-# OpusAIMobility — AWS CodeBuild Frontend-Only Build Spec
+# OpusAIMobility -- AWS CodeBuild Frontend-Only Build Spec
 # Runs on: AWS CodeBuild (Amazon Linux 2023, standard:5.0, MEDIUM compute)
-# Triggered by: changes to src/, public/, server/, package.json, vite.config.ts
-#
-# Faster than the full buildspec — skips Android APK and Lambda packaging.
-# Runs in ~2 min vs ~15 min for the full build.
+# Triggered by: push to main affecting src/, public/, server/, scripts/, package.json
 #
 # Phases:
-#   install   — Node 22 only
-#   pre_build — npm ci, type check, full test suite, server pre-flight
-#   build     — Vite production build + HTTP boot test
-#   post_build — S3 sync + CloudFront invalidation
+#   install   -- Node 22 only
+#   pre_build -- npm ci, type check, full test suite, server staticPath check
+#   build     -- Vite production build + HTTP boot probe (server:check)
+#   post_build -- S3 sync + CloudFront invalidation
 # =============================================================================
 
 version: 0.2
@@ -21,93 +18,55 @@ phases:
       nodejs: 22
     commands:
       - echo "=== Installing dependencies ==="
+      - cd MobilityAIapp
       - npm ci --prefer-offline
       - cd server && npm ci --prefer-offline && cd ..
-      - echo "Node $(node -v) | npm $(npm -v)"
+      - node -v && npm -v
 
   pre_build:
     commands:
-      - echo "=== Pre-build checks ==="
-
-      # 1. TypeScript type check — catch compile errors before spending build time
-      - echo "--- TypeScript type check ---"
+      - echo "=== Pre-build: type check ==="
+      - cd MobilityAIapp
       - npm run type:check
 
-      # 2. Full test suite
-      - echo "--- Test suite ---"
+      - echo "=== Pre-build: test suite ==="
       - npm test -- --silent
 
-      # 3. server/server.js staticPath integrity check
-      #    Confirms the path fix (../dist vs dist) is present before building.
-      #    This is the CI gate that was added to prevent the server serving
-      #    a missing dist/ on boot.
-      - echo "--- server.js staticPath check ---"
-      - |
-        node -e "
-          const fs   = require('fs');
-          const src  = fs.readFileSync('server/server.js', 'utf8');
-          const good = /path\.join\(__dirname\s*,\s*['\"]\.\.['\"]\s*,\s*['\"]dist['\"]\)/.test(src);
-          const bad  = /path\.join\(__dirname\s*,\s*['\"]dist['\"](?!\s*\))/.test(src);
-          if (bad && !good) {
-            console.error('FAIL: server/server.js staticPath = server/dist (WRONG)');
-            console.error('      Fix: path.join(__dirname, \"..\", \"dist\")');
-            process.exit(1);
-          }
-          if (!good) {
-            console.error('FAIL: Could not confirm staticPath points to project root dist/');
-            process.exit(1);
-          }
-          console.log('PASS: server.js staticPath → ../dist  ✓');
-        "
+      - echo "=== Pre-build: staticPath integrity check ==="
+      - node scripts/ci/check-static-path.cjs
 
   build:
     commands:
-      - echo "=== Vite production build ==="
+      - echo "=== Build: vite production build ==="
+      - cd MobilityAIapp
       - npm run build
 
-      # 4. Full server pre-flight: boots server on throwaway port, probes HTTP /,
-      #    asserts 200 + OpusAIMobility HTML shell in response body.
-      #    If this fails the deploy is blocked — S3 sync will NOT run.
-      - echo "--- Server pre-flight check (HTTP boot probe) ---"
+      - echo "=== Build: server pre-flight HTTP probe ==="
       - npm run server:check
 
   post_build:
     commands:
-      - echo "=== Deploying to S3 + CloudFront ==="
+      - echo "=== Post-build: S3 assets sync (immutable) ==="
+      - cd MobilityAIapp
+      - aws s3 sync dist/assets "s3://$S3_FRONTEND_BUCKET/assets/" --delete --cache-control "public, max-age=31536000, immutable" --region us-east-1
 
-      # 5. S3 sync — content-hashed assets (immutable cache)
-      - aws s3 sync dist/assets s3://$S3_FRONTEND_BUCKET/assets/
-          --delete
-          --cache-control "public, max-age=31536000, immutable"
-          --region us-east-1
+      - echo "=== Post-build: S3 index.html upload (no-cache) ==="
+      - aws s3 cp dist/index.html "s3://$S3_FRONTEND_BUCKET/index.html" --cache-control "no-cache, no-store, must-revalidate" --content-type "text/html" --region us-east-1
 
-      # 6. S3 upload — index.html (always no-cache so browsers pick up new chunks)
-      - aws s3 cp dist/index.html s3://$S3_FRONTEND_BUCKET/index.html
-          --cache-control "no-cache, no-store, must-revalidate"
-          --content-type "text/html"
-          --region us-east-1
+      - echo "=== Post-build: S3 root files sync (1-day cache) ==="
+      - aws s3 sync dist "s3://$S3_FRONTEND_BUCKET/" --exclude "assets/*" --exclude "index.html" --cache-control "public, max-age=86400" --region us-east-1
 
-      # 7. S3 sync — root files (sw.js, manifest.json)
-      - aws s3 sync dist s3://$S3_FRONTEND_BUCKET/
-          --exclude "assets/*"
-          --exclude "index.html"
-          --cache-control "public, max-age=86400"
-          --region us-east-1
+      - echo "=== Post-build: CloudFront invalidation ==="
+      - aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" --region us-east-1
 
-      # 8. CloudFront invalidation — flush edge cache
-      - aws cloudfront create-invalidation
-          --distribution-id $CLOUDFRONT_DISTRIBUTION_ID
-          --paths "/*"
-          --region us-east-1
-
-      - echo "=== Frontend deploy complete: https://opusaimobility.yna.co.ke ==="
+      - echo "=== Deploy complete -- https://opusaimobility.yna.co.ke ==="
 
 artifacts:
   files:
-    - dist/**/*
+    - "MobilityAIapp/dist/**/*"
   discard-paths: no
 
 cache:
   paths:
-    - node_modules/**/*
-    - server/node_modules/**/*
+    - "MobilityAIapp/node_modules/**/*"
+    - "MobilityAIapp/server/node_modules/**/*"
