@@ -204,6 +204,10 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           IMAGE_TAG:      ${{ github.sha }}
         run: |
+          if [ -z "$ECR_REPOSITORY" ]; then
+            echo "::warning::ECR_REPOSITORY secret not set — skipping TerraAI container build"
+            exit 0
+          fi
           docker build \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
