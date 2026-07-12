@@ -782,7 +782,7 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
 
     // [AWS-MIGRATED] DatabaseReference mGetReference ; → use AWSManager REST API
     Object mGetReference = null; // [AWS] placeholder — use AWSManager
-    ValueEventListener valueEventListener;
+    Object /* ValueEventListener stub */ valueEventListener;
     private void methodUpdatedriverlatlng() {
         if (driverId != null && !driverId.equalsIgnoreCase("") && requestId != null) {
             mGetReference = rootRef.child("DriversTrips").child(requestId + "_" + driverId);

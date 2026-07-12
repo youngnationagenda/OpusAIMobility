@@ -36,7 +36,7 @@ import com.terraai.aimobility.parcel.model.RecipientModel;
 import com.terraai.aimobility.ride.account.AccountFragment;
 import com.rilixtech.widget.countrycodepicker.CountryCodePicker;
 
-import org.bouncycastle.cms.Recipient;
+// import org.bouncycastle.cms.Recipient; // removed - not needed
 
 import java.util.ArrayList;
 

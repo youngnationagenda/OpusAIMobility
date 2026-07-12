@@ -73,7 +73,7 @@ public class ChatA extends AppCompatLocaleActivity {
         Object receiveTypingIndication = null;
      List<Chat_GetSet> mChats = new ArrayList<>();
      ChatAdapter mAdapter;
-     Query queryGetchat;
+     Object /* Query stub */ queryGetchat;
      BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -83,8 +83,8 @@ public class ChatA extends AppCompatLocaleActivity {
             }
         }
     };
-     ValueEventListener valueEventListener;
-     ChildEventListener eventListener;
+     Object /* ValueEventListener stub */ valueEventListener;
+     Object /* ChildEventListener stub */ eventListener;
 
 
 
@@ -385,7 +385,7 @@ public class ChatA extends AppCompatLocaleActivity {
     private void changeStatus() {
         final Date c = Calendar.getInstance().getTime();
         final DatabaseReference reference = null; // [AWS-MIGRATED] FirebaseDatabase removed
-        final Query query1 = reference.child("chat").child(requestId).orderByChild("status").equalTo("0");
+        final Object /* Query stub */ query1 = reference.child("chat").child(requestId).orderByChild("status").equalTo("0");
 
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

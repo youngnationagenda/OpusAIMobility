@@ -99,7 +99,7 @@ public class RideOrRentFragment extends RootFragment implements OnMapReadyCallba
     String username, fname, lname, image, email, userImage;
     Bitmap carMarker;
     MapWorker mapWorker;
-    GeoFire geoFire;
+    Object /* GeoFire stub */ geoFire;
     // [AWS-MIGRATED] GeoFire → /getNearbyDrivers Lambda endpoint
     // Original: GeoQuery geoQuery;
     GeoQueryEventListener geoQueryEventListener;
@@ -600,8 +600,8 @@ public class RideOrRentFragment extends RootFragment implements OnMapReadyCallba
     private void nearbyDrivers() {
         // [AWS-MIGRATED] DatabaseReference ref = /* AWS-MIGRATED: was FirebaseDatabase — use AWSManager.getInstance(context).post() for real-time updates */ → use AWSManager REST API
         Object ref = null; // [AWS] placeholder — use AWSManager
-        geoFire = /* AWS-MIGRATED: GeoFire removed — driver location via Lambda API /getNearbyDrivers */
-        geoQuery = null; // [AWS] GeoFire call removed
+        geoFire = /* AWS-MIGRATED: Object /* GeoFire stub */ removed — driver location via Lambda API /getNearbyDrivers */
+        geoObject /* Query stub */ = null; // [AWS] Object /* GeoFire stub */ call removed
 
         geoQueryEventListener = new GeoQueryEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)

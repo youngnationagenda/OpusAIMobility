@@ -89,7 +89,7 @@ dependencies {
     // iText7 — isolated here; excluded from :app debug builds via
     // releaseImplementation project(':pdf') in app/build.gradle.
     // BouncyCastle excluded because we supply it separately (pinned above).
-    implementation('com.itextpdf:itext7-core:7.2.3') {
+    api('com.itextpdf:itext7-core:7.2.3') {
         exclude group: 'org.bouncycastle'
     }
 

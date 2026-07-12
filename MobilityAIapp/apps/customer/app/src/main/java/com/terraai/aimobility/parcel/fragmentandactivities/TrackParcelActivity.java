@@ -580,7 +580,7 @@ public class TrackParcelActivity extends AppCompatLocaleActivity implements View
 
     // [AWS] DatabaseReference mGetReference replaced — use AWSManager REST API
         Object mGetReference = null;
-    ValueEventListener valueEventListener;
+    Object /* ValueEventListener stub */ valueEventListener;
     private void methodUpdatedriverlatlng() {
         Functions.logDMsg("driverId : " + parcelHistoryModel.rider.id + " : "+parcelHistoryModel.rider.vehicle.ride_type_id);
 

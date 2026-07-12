@@ -495,7 +495,7 @@ public class TrackFoodActivity extends AppCompatLocaleActivity implements View.O
             driverMarker = mapWorker.addMarker(driverLatlng, driverMarkerBitmap);
         }
     }
-    ValueEventListener valueEventListener;
+    Object /* ValueEventListener stub */ valueEventListener;
     // [AWS] DatabaseReference mGetReference replaced — use AWSManager REST API
         Object mGetReference = null;
     private void methodUpdatedriverlatlng() {
