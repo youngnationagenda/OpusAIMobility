@@ -55,7 +55,7 @@ on:
           - actions
 
 concurrency:
-  group: codeql-${{ github.ref }}-${{ matrix.language }}
+  group: codeql-${{ github.ref }}
   cancel-in-progress: true
 
 env:
