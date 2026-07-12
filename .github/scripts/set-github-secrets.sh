@@ -114,8 +114,8 @@ set_secret "TERRA_HEALTH_URL" \
 # =============================================================================
 header "── Group 3: Frontend Deploy ──"
 
-set_secret "S3_FRONTEND_BUCKET"         "omniride-assets-prod"
-set_secret "CLOUDFRONT_DISTRIBUTION_ID" "E1TIJJKJ2UEIO7"
+set_secret "S3_FRONTEND_BUCKET"         "opusaimobility-assets-prod"
+set_secret "CLOUDFRONT_DISTRIBUTION_ID" "E18GJ5VKHBIJAI"
 
 # =============================================================================
 # GROUP 4 — APK Distribution

@@ -42,10 +42,10 @@
 
 | Secret Name | Value |
 |---|---|
-| `S3_FRONTEND_BUCKET` | `omniride-assets-prod` |
-| `CLOUDFRONT_DISTRIBUTION_ID` | `E1TIJJKJ2UEIO7` |
+| `S3_FRONTEND_BUCKET` | `opusaimobility-assets-prod` |
+| `CLOUDFRONT_DISTRIBUTION_ID` | `E18GJ5VKHBIJAI` |
 
-> **CloudFront Distribution `E1TIJJKJ2UEIO7`** → `d2rofh106fep8b.cloudfront.net`
+> **CloudFront Distribution `E18GJ5VKHBIJAI`** → `d22up4o3zhu9gf.cloudfront.net`
 > Origin: `opusaimobility-assets-prod.s3.us-east-1.amazonaws.com` (Status: Deployed)
 
 ---
@@ -105,8 +105,8 @@ completeness. They are already hardcoded in `deploy.yml` from `.env.local`.
 If you only want CI + Lambda + Frontend deploys working now:
 
 ```
-S3_FRONTEND_BUCKET         = omniride-assets-prod
-CLOUDFRONT_DISTRIBUTION_ID = E1TIJJKJ2UEIO7
+S3_FRONTEND_BUCKET         = opusaimobility-assets-prod
+CLOUDFRONT_DISTRIBUTION_ID = E18GJ5VKHBIJAI
 S3_APK_BUCKET              = opusaimobility-assets-prod
 ```
 
