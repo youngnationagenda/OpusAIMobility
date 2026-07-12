@@ -1,0 +1,109 @@
+name: Blockchain Contracts (Celo)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'MobilityAIapp/blockchain/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'MobilityAIapp/blockchain/**'
+  workflow_dispatch:
+    inputs:
+      network:
+        description: "Deploy network"
+        required: false
+        default: "alfajores"
+        type: choice
+        options: ["alfajores", "mainnet"]
+
+concurrency:
+  group: contracts-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  NODE_VERSION: "20"
+  AWS_REGION: us-east-1
+  AWS_DEPLOY_ROLE: arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+
+jobs:
+  compile-and-test:
+    name: Compile & Test Contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: MobilityAIapp/blockchain/package-lock.json
+
+      - name: Install dependencies
+        working-directory: MobilityAIapp/blockchain
+        run: npm ci
+
+      - name: Compile contracts
+        working-directory: MobilityAIapp/blockchain
+        run: npx hardhat compile
+
+      - name: Run contract tests
+        working-directory: MobilityAIapp/blockchain
+        run: npx hardhat test
+
+      - name: Upload compilation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: contract-artifacts-${{ github.run_number }}
+          path: MobilityAIapp/blockchain/artifacts/
+          retention-days: 30
+
+  deploy-testnet:
+    name: Deploy to Alfajores Testnet
+    runs-on: ubuntu-latest
+    needs: compile-and-test
+    if: github.ref == 'refs/heads/main' || github.event.inputs.network == 'alfajores'
+    timeout-minutes: 10
+    environment: testnet
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: MobilityAIapp/blockchain/package-lock.json
+
+      - name: Install dependencies
+        working-directory: MobilityAIapp/blockchain
+        run: npm ci
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: contracts-deploy-testnet-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get deployer private key
+        run: |
+          DEPLOYER_KEY=$(aws secretsmanager get-secret-value \
+            --secret-id "opusaimobility/celo-deployer-key" \
+            --query SecretString --output text 2>/dev/null || echo "")
+          if [ -n "$DEPLOYER_KEY" ]; then
+            echo "DEPLOYER_PRIVATE_KEY=$DEPLOYER_KEY" >> $GITHUB_ENV
+          else
+            echo "::warning::Celo deployer key not found in Secrets Manager — skipping deploy"
+            echo "SKIP_DEPLOY=true" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy TerraCarbon to Alfajores
+        if: env.SKIP_DEPLOY != 'true'
+        working-directory: MobilityAIapp/blockchain
+        run: npx hardhat run scripts/deploy.js --network alfajores

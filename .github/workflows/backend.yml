@@ -1,0 +1,164 @@
+name: Backend (Lambda)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'MobilityAIapp/backend/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'MobilityAIapp/backend/**'
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: "Force deploy all lambdas"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  NODE_VERSION: "20"
+  AWS_DEPLOY_ROLE: arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+
+jobs:
+  # ─── Changes detection ──────────────────────────────────────────────────────
+  changes:
+    name: Detect Lambda Changes
+    runs-on: ubuntu-latest
+    outputs:
+      main_api: ${{ steps.filter.outputs.main_api }}
+      push_lambda: ${{ steps.filter.outputs.push_lambda }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            main_api:
+              - 'MobilityAIapp/backend/lambda/terraaimobility-api/**'
+            push_lambda:
+              - 'MobilityAIapp/backend/lambda/push-notification/**'
+
+  # ─── Audit ──────────────────────────────────────────────────────────────────
+  audit:
+    name: Lambda Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: MobilityAIapp/backend/lambda/terraaimobility-api/package-lock.json
+      - name: Audit main API
+        working-directory: MobilityAIapp/backend/lambda/terraaimobility-api
+        run: npm audit --audit-level=high
+
+  # ─── Deploy main API Lambda ──────────────────────────────────────────────────
+  deploy-main-api:
+    name: Deploy terraaimobility-api Lambda
+    runs-on: ubuntu-latest
+    needs: [changes, audit]
+    if: >-
+      needs.changes.outputs.main_api == 'true' ||
+      github.event.inputs.force_deploy == 'true'
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: MobilityAIapp/backend/lambda/terraaimobility-api/package-lock.json
+
+      - name: Install dependencies
+        working-directory: MobilityAIapp/backend/lambda/terraaimobility-api
+        run: npm ci --omit=dev
+
+      - name: Package Lambda
+        working-directory: MobilityAIapp/backend/lambda/terraaimobility-api
+        run: zip -r ../lambda-main-api.zip index.js auth.js db.js notify.js seed-config.js package.json node_modules
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: backend-main-api-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy Lambda
+        run: |
+          aws lambda update-function-code \
+            --function-name terraaimobility-api \
+            --zip-file fileb://MobilityAIapp/backend/lambda/lambda-main-api.zip \
+            --region ${{ env.AWS_REGION }}
+          aws lambda wait function-updated \
+            --function-name terraaimobility-api \
+            --region ${{ env.AWS_REGION }}
+          echo "Deployed: terraaimobility-api"
+
+      - name: Smoke test
+        run: |
+          HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod/health")
+          [ "$HTTP" = "200" ] || { echo "::error::Health check failed: $HTTP"; exit 1; }
+          echo "Lambda API health check passed: HTTP 200"
+
+  # ─── Deploy push notification Lambda ─────────────────────────────────────────
+  deploy-push-lambda:
+    name: Deploy push-notification Lambda
+    runs-on: ubuntu-latest
+    needs: [changes, audit]
+    if: >-
+      needs.changes.outputs.push_lambda == 'true' ||
+      github.event.inputs.force_deploy == 'true'
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: MobilityAIapp/backend/lambda/push-notification/package-lock.json
+
+      - name: Install dependencies
+        working-directory: MobilityAIapp/backend/lambda/push-notification
+        run: npm ci --omit=dev
+
+      - name: Package Lambda
+        working-directory: MobilityAIapp/backend/lambda/push-notification
+        run: |
+          zip -r ../push-notification.zip . \
+            -x "node_modules/.cache/*" \
+            -x "*-service-account.json"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: backend-push-lambda-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy Lambda
+        run: |
+          aws lambda update-function-code \
+            --function-name opusaimobility-push-notification \
+            --zip-file fileb://MobilityAIapp/backend/lambda/push-notification.zip \
+            --region ${{ env.AWS_REGION }}
+          aws lambda wait function-updated \
+            --function-name opusaimobility-push-notification \
+            --region ${{ env.AWS_REGION }}
+          echo "Deployed: opusaimobility-push-notification"

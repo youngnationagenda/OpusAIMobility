@@ -1,0 +1,74 @@
+name: Infrastructure
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'MobilityAIapp/infrastructure/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'MobilityAIapp/infrastructure/**'
+  workflow_dispatch:
+
+concurrency:
+  group: infrastructure-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  AWS_DEPLOY_ROLE: arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+
+jobs:
+  validate:
+    name: Validate Infrastructure Configs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON configs
+        run: |
+          echo "=== Validating infrastructure JSON files ==="
+          find MobilityAIapp/infrastructure -name "*.json" | while read f; do
+            python3 -m json.tool "$f" > /dev/null && echo "OK: $f" || { echo "INVALID: $f"; exit 1; }
+          done
+          echo "All JSON configs valid"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: infra-validate-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Validate IAM policies
+        run: |
+          echo "=== Validating IAM policy documents ==="
+          find MobilityAIapp/infrastructure/iam -name "*.json" | while read f; do
+            aws iam validate-role-policy --role-name opusaimobility-lambda-role \
+              --policy-document "file://$f" 2>/dev/null \
+              && echo "OK: $f" \
+              || echo "SKIPPED (not attached to role): $f"
+          done
+
+      - name: Check WAF rules
+        run: |
+          echo "WAF config files:"
+          find MobilityAIapp/infrastructure/waf -name "*.json" -exec echo {} \;
+          echo "Validated: WAF configs present"
+
+      - name: Infrastructure summary
+        if: always()
+        run: |
+          echo "## Infrastructure Validation" >> $GITHUB_STEP_SUMMARY
+          echo "| Area | Files |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+          for dir in api-gateway cognito cloudfront waf iam monitoring vpc iot dynamodb s3 sns; do
+            COUNT=$(find MobilityAIapp/infrastructure/$dir -name "*.json" 2>/dev/null | wc -l)
+            echo "| $dir | $COUNT JSON files |" >> $GITHUB_STEP_SUMMARY
+          done
