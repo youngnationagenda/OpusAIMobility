@@ -56,10 +56,25 @@ phases:
       - echo "Building Frontend..."
       - cd MobilityAIapp && npm run build
       - cd ..
-      # Build Android APK (non-blocking)
-      - echo "Building Android APK..."
+      # Fetch Android signing secrets from SSM Parameter Store
+      - echo "Fetching Android signing secrets from SSM..."
+      - KEYSTORE_B64=$(aws ssm get-parameter --name "/opusaimobility/keystore-file" --with-decryption --query "Parameter.Value" --output text --region $AWS_REGION)
+      - KEYSTORE_PASSWORD=$(aws ssm get-parameter --name "/opusaimobility/keystore-password" --with-decryption --query "Parameter.Value" --output text --region $AWS_REGION)
+      - KEY_ALIAS=$(aws ssm get-parameter --name "/opusaimobility/key-alias" --with-decryption --query "Parameter.Value" --output text --region $AWS_REGION)
+      - KEY_PASSWORD=$(aws ssm get-parameter --name "/opusaimobility/key-password" --with-decryption --query "Parameter.Value" --output text --region $AWS_REGION)
+      - echo "$KEYSTORE_B64" | base64 --decode > MobilityAIapp/apps/customer/release.keystore
+      - echo "Keystore decoded successfully"
+      # Build Android Release APK (signed)
+      - echo "Building Android Release APK..."
       - cd MobilityAIapp/apps/customer
-      - ./gradlew assembleDebug --no-daemon --warning-mode all || echo "WARNING - Android build failed (known dependency issues)"
+      - |
+        ./gradlew assembleRelease \
+          -Pandroid.injected.signing.store.file=release.keystore \
+          -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+          -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+          -Pandroid.injected.signing.key.password="$KEY_PASSWORD" \
+          --no-daemon --warning-mode all || echo "WARNING - Android release build failed"
+      - rm -f release.keystore
       - cd ../../..
       # Package Lambda v3.1 (terraaimobility-api only — excludes _*.js scratch files)
       - echo "Packaging Lambda v3.1..."
@@ -101,17 +116,20 @@ phases:
             --region $AWS_REGION
           echo "Lambda deployed: $LAMBDA_FUNCTION_NAME"
         fi
-      # Upload APK to S3
+      # Upload APK to S3 (release preferred, debug fallback)
       - |
         if [ -n "$S3_APK_BUCKET" ]; then
-          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk -name "*.apk" 2>/dev/null | head -1 || true)
+          RELEASE_APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1 || true)
+          DEBUG_APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/debug -name "*.apk" 2>/dev/null | head -1 || true)
+          APK="${RELEASE_APK:-$DEBUG_APK}"
           if [ -n "$APK" ]; then
             VERSION="${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}"
-            aws s3 cp "$APK" "s3://$S3_APK_BUCKET/apks/OpusAIMobility-${VERSION}.apk"
-            aws s3 cp "$APK" "s3://$S3_APK_BUCKET/apks/OpusAIMobility-latest.apk"
-            echo "APK uploaded: OpusAIMobility-${VERSION}.apk"
+            APK_TYPE=$(echo "$APK" | grep -q "release" && echo "release" || echo "debug")
+            aws s3 cp "$APK" "s3://$S3_APK_BUCKET/apks/${APK_TYPE}/OpusAIMobility-${VERSION}.apk"
+            aws s3 cp "$APK" "s3://$S3_APK_BUCKET/apks/${APK_TYPE}/OpusAIMobility-latest.apk"
+            echo "APK uploaded (${APK_TYPE}): OpusAIMobility-${VERSION}.apk"
           else
-            echo "No APK found — skipping"
+            echo "No APK found -- skipping"
           fi
         fi
       - echo "Post-build complete"

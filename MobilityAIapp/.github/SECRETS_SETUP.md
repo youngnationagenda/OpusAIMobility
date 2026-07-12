@@ -42,44 +42,53 @@
 
 | Secret Name | Value |
 |---|---|
-| `S3_FRONTEND_BUCKET` | `omniride-assets-prod` |
+| `S3_FRONTEND_BUCKET` | `opusaimobility-assets-prod` |
 | `CLOUDFRONT_DISTRIBUTION_ID` | `E1TIJJKJ2UEIO7` |
 
 > **CloudFront Distribution `E1TIJJKJ2UEIO7`** → `d2rofh106fep8b.cloudfront.net`
-> Origin: `opusaimobility-assets-prod.s3.us-east-1.amazonaws.com` (Status: Deployed)
+> Custom domain: **`https://app.opusaimobility.yna.co.ke`** ✅ LIVE
+> Origin: `opusaimobility-assets-prod.s3.us-east-1.amazonaws.com`
+> ACM cert: `*.opusaimobility.yna.co.ke` (ISSUED, valid until 2027-01-22)
 
 ---
 
-## Group 4 — APK Distribution (Required for `deploy-customer-apk`)
+## Group 4 — APK Distribution (Required for `deploy-customer-apk` and `deploy-customer-release`)
 
 | Secret Name | Value |
 |---|---|
-| `S3_APK_BUCKET` | `opusaimobility-assets-prod` |
+| `S3_APK_BUCKET` | `opusaimobility-apk-distribution` |
 
-> Debug APKs land at:
-> `s3://opusaimobility-assets-prod/apks/customer/debug/<name>-debug-<build>.apk`
-> Stable URL: `s3://opusaimobility-assets-prod/apks/customer/debug/latest.apk`
+> Debug APKs: `s3://opusaimobility-apk-distribution/apks/debug/OpusAIMobility-latest.apk`
+> Release APKs: `s3://opusaimobility-apk-distribution/apks/release/OpusAIMobility-latest.apk`
+> Public download URL: `https://opusaimobility-apk-distribution.s3.amazonaws.com/apks/release/OpusAIMobility-latest.apk`
 
 ---
 
-## Group 5 — Android Signing (Release builds only — tags `v*` or manual dispatch)
+## Group 5 — Android Signing (Release builds — tags `v*` or manual dispatch)
 
-The keystore is already stored in AWS Secrets Manager at
-`opusaimobility/android-keystore` (ARN: `arn:aws:secretsmanager:us-east-1:683541453923:secret:opusaimobility/android-keystore-UR6QHg`).
+> ✅ **Signing secrets are already stored in AWS SSM Parameter Store.**
+> CodeBuild pulls them automatically — you only need to add these to GitHub for
+> the GitHub Actions `deploy-customer-release` job.
 
 | Secret Name | Value |
 |---|---|
-| `KEYSTORE_FILE` | *(base64 string from `keystore.b64` — see note below)* |
+| `KEYSTORE_FILE` | *(full contents of `keystore.b64` in the repo root — copy/paste the base64 string)* |
 | `KEYSTORE_PASSWORD` | `OpusAI2026@Keystore!` |
 | `KEY_ALIAS` | `opusaimobility` |
 | `KEY_PASSWORD` | `OpusAI2026@Key!` |
 
 > **`KEYSTORE_FILE` value** — copy the full contents of `keystore.b64` in the project root.
-> It is the base64-encoded `.jks` file. The workflow decodes it with:
+> It is the base64-encoded `.jks` keystore. The workflow decodes it with:
 > `echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > release.keystore`
 >
 > Valid until: **2053-11-24** | Algorithm: RSA-2048 / SHA256withRSA
 > CN=OpusAIMobility, OU=Mobile, O=YNA, L=Nairobi, C=KE
+>
+> **SSM params** (already live — CodeBuild uses these directly, no GitHub Secret needed for CodeBuild):
+> - `/opusaimobility/keystore-file` — base64 keystore (SecureString)
+> - `/opusaimobility/keystore-password` — `OpusAI2026@Keystore!` (SecureString)
+> - `/opusaimobility/key-alias` — `opusaimobility` (SecureString)
+> - `/opusaimobility/key-password` — `OpusAI2026@Key!` (SecureString)
 
 ---
 
@@ -87,7 +96,7 @@ The keystore is already stored in AWS Secrets Manager at
 
 These are injected as `VITE_*` env vars during `npm run build` — they are
 **not secret** (they end up in the browser bundle) but are included here for
-completeness. They are already hardcoded in `deploy.yml` from `.env.local`.
+completeness. They are already hardcoded in `deploy.yml`.
 
 | Variable | Value |
 |---|---|
@@ -105,13 +114,42 @@ completeness. They are already hardcoded in `deploy.yml` from `.env.local`.
 If you only want CI + Lambda + Frontend deploys working now:
 
 ```
-S3_FRONTEND_BUCKET         = omniride-assets-prod
+S3_FRONTEND_BUCKET         = opusaimobility-assets-prod
 CLOUDFRONT_DISTRIBUTION_ID = E1TIJJKJ2UEIO7
-S3_APK_BUCKET              = opusaimobility-assets-prod
+S3_APK_BUCKET              = opusaimobility-apk-distribution
 ```
 
 The `deploy-terra-api` job will be skipped if `ECR_REPOSITORY` / `ECS_CLUSTER` /
 `ECS_SERVICE` are not set — that is safe.
+
+---
+
+## Live Domains (as of 2026-07-12)
+
+| URL | Description |
+|---|---|
+| `https://opusaimobility.yna.co.ke` | API + WAF (CloudFront `E18GJ5VKHBIJAI`) |
+| `https://app.opusaimobility.yna.co.ke` | Frontend PWA (CloudFront `E1TIJJKJ2UEIO7`) ✅ NEW |
+| `wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod` | WebSocket (driver location) |
+
+---
+
+## Triggering a Release Build (Play Store)
+
+```bash
+# 1. Ensure all 4 keystore secrets are set in GitHub (see Group 5 above)
+# 2. Tag and push — this triggers deploy-customer-release automatically:
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The `deploy-customer-release` job will:
+1. Validate all 4 signing secrets are present
+2. Decode `KEYSTORE_FILE` → `release.keystore`
+3. Build `assembleRelease` with Gradle signing flags
+4. Verify APK signature with `apksigner`
+5. Upload to `s3://opusaimobility-apk-distribution/apks/release/opusaimobility-customer-v1.0.0.apk`
+6. Clean up keystore from runner
 
 ---
 
@@ -140,3 +178,5 @@ The `validate-aws` job will:
 | Amazon Q Role | `arn:aws:iam::683541453923:role/AmazonQDeveloperGitHubRole` |
 | Connection ARN | `arn:aws:codeconnections:us-east-1:683541453923:connection/106cbfc4-0ec6-492a-bf08-43ba86575ea1` |
 | Connection Status | `AVAILABLE` |
+| CodeBuild Role | `arn:aws:iam::683541453923:role/OpusAIMobility-CodeBuild-Role` |
+| SSM Keystore Params | `/opusaimobility/keystore-*` (4 SecureString params, all live) |

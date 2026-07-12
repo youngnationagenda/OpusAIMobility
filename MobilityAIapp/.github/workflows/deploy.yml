@@ -17,8 +17,8 @@
 #   ECS_CLUSTER                — e.g. opusaimobility
 #   ECS_SERVICE                — e.g. opusaimobility-terra-api
 #   TERRA_HEALTH_URL           — https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod/terra/health
-#   S3_APK_BUCKET              — e.g. opusaimobility-assets-prod
-#   S3_FRONTEND_BUCKET         — e.g. omniride-assets-prod
+#   S3_APK_BUCKET              — opusaimobility-apk-distribution
+#   S3_FRONTEND_BUCKET         — opusaimobility-assets-prod  (serves app.opusaimobility.yna.co.ke)
 #   CLOUDFRONT_DISTRIBUTION_ID — e.g. E1TIJJKJ2UEIO7
 #   KEYSTORE_FILE              — base64-encoded .jks  (release builds only)
 #   KEYSTORE_PASSWORD          — keystore password    (release builds only)
@@ -408,9 +408,9 @@ jobs:
           APK_PATH=$(find apps/customer/app/build/outputs/apk/release -name "*.apk" | head -1)
           VERSION_TAG=${GITHUB_REF#refs/tags/}
           aws s3 cp "$APK_PATH" \
-            "s3://${{ secrets.S3_APK_BUCKET }}/apks/customer/release/opusaimobility-customer-${VERSION_TAG}.apk"
+            "s3://${{ secrets.S3_APK_BUCKET }}/apks/release/opusaimobility-customer-${VERSION_TAG}.apk"
           aws s3 cp "$APK_PATH" \
-            "s3://${{ secrets.S3_APK_BUCKET }}/apks/customer/release/latest-release.apk"
+            "s3://${{ secrets.S3_APK_BUCKET }}/apks/release/OpusAIMobility-latest.apk"
           echo "Release APK uploaded: opusaimobility-customer-${VERSION_TAG}.apk"
 
       - name: Clean up keystore
@@ -543,6 +543,7 @@ jobs:
         env:
           # ── API & Region ─────────────────────────────────────────────────
           VITE_API_BASE_URL:              https://opusaimobility.yna.co.ke
+          VITE_APP_URL:                  https://app.opusaimobility.yna.co.ke
           VITE_AWS_REGION:               us-east-1
           # ── Amazon Cognito ───────────────────────────────────────────────
           VITE_COGNITO_USER_POOL_ID:     us-east-1_LKa4ElQem
@@ -572,7 +573,10 @@ jobs:
           aws s3 sync dist/ s3://${{ secrets.S3_FRONTEND_BUCKET }}/ \
             --delete \
             --region ${{ env.AWS_REGION }}
-          echo "Frontend synced to s3://${{ secrets.S3_FRONTEND_BUCKET }}"
+          aws s3 cp dist/index.html s3://${{ secrets.S3_FRONTEND_BUCKET }}/index.html \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --region ${{ env.AWS_REGION }}
+          echo "Frontend deployed to s3://${{ secrets.S3_FRONTEND_BUCKET }} (app.opusaimobility.yna.co.ke)"
 
       - name: Invalidate CloudFront cache (Production — E1TIJJKJ2UEIO7)
         run: |
