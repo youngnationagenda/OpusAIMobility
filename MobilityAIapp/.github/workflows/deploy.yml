@@ -446,7 +446,8 @@ jobs:
       - name: Package and deploy Lambda
         working-directory: MobilityAIapp/aws/lambda
         run: |
-          zip -r lambda.zip . -x "node_modules/.cache/*" -x "*.test.*"
+          zip -r lambda.zip index.js package.json node_modules \
+            -x "node_modules/.cache/*" -x "*.test.*"
           aws lambda update-function-code \
             --function-name terraaimobility-api \
             --zip-file fileb://lambda.zip \
