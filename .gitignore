@@ -38,6 +38,14 @@ out.json
 *.zip
 aws/lambda/*.zip
 aws/*.zip
+MobilityAIapp/backend/lambda/*.zip
+MobilityAIapp/aws/*.zip
+
+# ── Blockchain ────────────────────────────────────────────────────
+MobilityAIapp/blockchain/artifacts/
+MobilityAIapp/blockchain/cache/
+contracts/artifacts/
+contracts/cache/
 
 # ── Build outputs ─────────────────────────────────────────────────
 dist/
@@ -91,4 +99,5 @@ npm-debug.log*
 # ── Package locks (keep only root) ────────────────────────────────
 # package-lock.json is tracked at root; ignore nested ones from Lambda deploys
 aws/lambda/*/package-lock.json
+MobilityAIapp/backend/lambda/*/package-lock.json
 server/package-lock.json
