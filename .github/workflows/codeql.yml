@@ -18,20 +18,24 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "MobilityAIapp/apps/customer/**/*.java"
-      - "MobilityAIapp/apps/customer/**/*.gradle"
-      - "MobilityAIapp/src/**"
-      - "MobilityAIapp/aws/lambda/**"
+      - "MobilityAIapp/android/customer/**/*.java"
+      - "MobilityAIapp/android/customer/**/*.gradle"
+      - "MobilityAIapp/android/driver/**/*.java"
+      - "MobilityAIapp/android/driver/**/*.gradle"
+      - "MobilityAIapp/frontend/**"
+      - "MobilityAIapp/backend/lambda/**"
       - "MobilityAIapp/server/**"
       - "MobilityAIapp/scripts/**"
       - ".github/workflows/**"
   pull_request:
     branches: ["main"]
     paths:
-      - "MobilityAIapp/apps/customer/**/*.java"
-      - "MobilityAIapp/apps/customer/**/*.gradle"
-      - "MobilityAIapp/src/**"
-      - "MobilityAIapp/aws/lambda/**"
+      - "MobilityAIapp/android/customer/**/*.java"
+      - "MobilityAIapp/android/customer/**/*.gradle"
+      - "MobilityAIapp/android/driver/**/*.java"
+      - "MobilityAIapp/android/driver/**/*.gradle"
+      - "MobilityAIapp/frontend/**"
+      - "MobilityAIapp/backend/lambda/**"
       - "MobilityAIapp/server/**"
       - "MobilityAIapp/scripts/**"
       - ".github/workflows/**"
@@ -146,7 +150,7 @@ jobs:
       # The step below is a fallback only if autobuild is disabled.
       - name: Gradle build (manual fallback — disabled by default)
         if: matrix.language == 'java-kotlin' && false
-        working-directory: MobilityAIapp/apps/customer
+        working-directory: MobilityAIapp/android/customer
         run: |
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon -x test -x lint
