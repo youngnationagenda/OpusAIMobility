@@ -1,7 +1,8 @@
-# ═══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 # OpusAIMobility — Frontend-Only Build Specification
-# For faster deploys when only frontend code changes
-# ═══════════════════════════════════════════════════════════════════════════════
+# Source: MobilityAIapp/src/ (Vite root)
+# Output: MobilityAIapp/dist/ (deployed to S3/CloudFront)
+# ==============================================================================
 version: 0.2
 
 phases:
@@ -9,36 +10,61 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
+      - echo "=== Install Phase ==="
       - node --version
       - npm --version
 
   pre_build:
     commands:
-      - cd MobilityAIapp && npm ci
+      - echo "=== Pre-Build Phase ==="
+      - echo "Working directory: $CODEBUILD_SRC_DIR"
+      - ls -la MobilityAIapp/package.json
+      - cd $CODEBUILD_SRC_DIR/MobilityAIapp && npm ci
+      - echo "Dependencies installed ($(ls node_modules | wc -l) packages)"
 
   build:
     commands:
-      - cd MobilityAIapp && npm run build
+      - echo "=== Build Phase ==="
+      - cd $CODEBUILD_SRC_DIR/MobilityAIapp && npm run build
+      - echo "Build output:"
+      - ls -la $CODEBUILD_SRC_DIR/MobilityAIapp/dist/
+      - echo "Total files: $(find $CODEBUILD_SRC_DIR/MobilityAIapp/dist -type f | wc -l)"
 
   post_build:
     commands:
+      - echo "=== Post-Build Phase ==="
+      # Deploy to S3
       - |
         if [ -n "$S3_FRONTEND_BUCKET" ]; then
-          aws s3 sync MobilityAIapp/dist/ s3://$S3_FRONTEND_BUCKET/ --delete
+          echo "Deploying to s3://$S3_FRONTEND_BUCKET ..."
+          aws s3 sync $CODEBUILD_SRC_DIR/MobilityAIapp/dist/ s3://$S3_FRONTEND_BUCKET/ \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html"
+          aws s3 cp $CODEBUILD_SRC_DIR/MobilityAIapp/dist/index.html s3://$S3_FRONTEND_BUCKET/index.html \
+            --cache-control "no-cache, no-store, must-revalidate"
+          echo "Frontend deployed to S3"
+        else
+          echo "SKIPPED — S3_FRONTEND_BUCKET not set"
         fi
+      # Invalidate CloudFront cache
       - |
         if [ -n "$CLOUDFRONT_DISTRIBUTION_ID" ]; then
           aws cloudfront create-invalidation \
             --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
             --paths "/*"
+          echo "CloudFront cache invalidated"
+        else
+          echo "SKIPPED — CLOUDFRONT_DISTRIBUTION_ID not set"
         fi
+      - echo "=== Deployment Complete ==="
 
 artifacts:
   base-directory: MobilityAIapp/dist
   files:
     - "**/*"
+  name: frontend-$(date +%Y%m%d-%H%M%S)
 
 cache:
   paths:
-    - "/root/.npm/**/*"
     - "MobilityAIapp/node_modules/**/*"
