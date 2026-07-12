@@ -58,7 +58,7 @@ if [ -f "lambda-main.zip" ]; then
 
     echo "  Waiting for Lambda to become active..."
     aws lambda wait function-updated --function-name terraaimobility-api --region "$REGION"
-    echo -e "  ${GREEN}Lambda omniride-api is ACTIVE${NC}"
+    echo -e "  ${GREEN}Lambda terraaimobility-api is ACTIVE${NC}"
 else
     echo -e "  ${YELLOW}SKIPPED — zip creation failed. Lambda will deploy via CodeBuild.${NC}"
 fi
@@ -147,7 +147,7 @@ LAMBDA_STATE=$(aws lambda get-function \
     --function-name terraaimobility-api \
     --region "$REGION" \
     --query 'Configuration.State' --output text 2>/dev/null || echo "NOT FOUND")
-echo "  Lambda omniride-api: $LAMBDA_STATE"
+echo "  Lambda terraaimobility-api: $LAMBDA_STATE"
 
 PUSH_STATE=$(aws lambda get-function \
     --function-name opusaimobility-push-notification \
@@ -181,7 +181,7 @@ echo -e "${GREEN}              APP IS LIVE${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════════════════════════${NC}"
 echo ""
 echo "  Services:"
-echo "    Lambda API:    omniride-api ($LAMBDA_STATE)"
+echo "    Lambda API:    terraaimobility-api ($LAMBDA_STATE)"
 echo "    Lambda Push:   opusaimobility-push-notification ($PUSH_STATE)"
 echo "    Frontend:      s3://$S3_FRONTEND_BUCKET → CloudFront"
 echo ""

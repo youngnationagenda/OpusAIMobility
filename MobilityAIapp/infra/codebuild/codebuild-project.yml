@@ -28,7 +28,7 @@ Parameters:
 
   CloudFrontDistributionId:
     Type: String
-    Default: ""
+    Default: "E18GJ5VKHBIJAI"
     Description: CloudFront distribution ID for cache invalidation
 
   LambdaFunctionName:

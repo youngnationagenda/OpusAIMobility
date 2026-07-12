@@ -125,7 +125,7 @@ LAMBDA_STATE=$(aws lambda get-function \
     --function-name terraaimobility-api \
     --region "$REGION" \
     --query 'Configuration.State' --output text)
-echo "  Lambda omniride-api: $LAMBDA_STATE"
+echo "  Lambda terraaimobility-api: $LAMBDA_STATE"
 
 PUSH_STATE=$(aws lambda get-function \
     --function-name opusaimobility-push-notification \
@@ -160,7 +160,7 @@ echo -e "${GREEN}       APP IS LIVE${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════════════════════════${NC}"
 echo ""
 echo "  Services deployed:"
-echo "    - Lambda API:         omniride-api ($LAMBDA_STATE)"
+echo "    - Lambda API:         terraaimobility-api ($LAMBDA_STATE)"
 echo "    - Lambda Push:        opusaimobility-push-notification ($PUSH_STATE)"
 echo "    - Frontend:           s3://$S3_FRONTEND_BUCKET → CloudFront"
 if [ -n "$APK" ]; then
