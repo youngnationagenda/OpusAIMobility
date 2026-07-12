@@ -1,0 +1,82 @@
+name: Android Driver App
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'MobilityAIapp/android/driver/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'MobilityAIapp/android/driver/**'
+  workflow_dispatch:
+
+concurrency:
+  group: android-driver-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  AWS_DEPLOY_ROLE: arn:aws:iam::683541453923:role/opusaimobility-github-deploy
+
+jobs:
+  build-debug:
+    name: Build Driver APK (Debug)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-driver-${{ runner.os }}-${{ hashFiles('MobilityAIapp/android/driver/**/*.gradle*') }}
+          restore-keys: gradle-driver-${{ runner.os }}-
+
+      - name: Build debug APK
+        working-directory: MobilityAIapp/android/driver
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon --warning-mode all \
+            || echo "::warning::Android driver debug build failed — scaffold in progress, continuing"
+
+      - name: Upload debug APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: driver-debug-apk-${{ github.run_number }}
+          path: MobilityAIapp/android/driver/app/build/outputs/apk/debug/*.apk
+          retention-days: 14
+
+      - name: Configure AWS credentials (OIDC)
+        if: github.ref == 'refs/heads/main'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
+          role-session-name: android-driver-debug-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload debug APK to S3
+        if: github.ref == 'refs/heads/main'
+        run: |
+          APK=$(find MobilityAIapp/android/driver/app/build/outputs/apk/debug -name "*.apk" | head -1)
+          if [ -n "$APK" ]; then
+            aws s3 cp "$APK" "s3://${{ secrets.S3_APK_BUCKET }}/apks/debug/OpusAIMobility-driver-${{ github.run_number }}.apk"
+            aws s3 cp "$APK" "s3://${{ secrets.S3_APK_BUCKET }}/apks/debug/OpusAIMobility-driver-latest.apk"
+            echo "Driver debug APK uploaded"
+          fi

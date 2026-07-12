@@ -17,7 +17,7 @@ import {
   handler,
   type TerraAIUser,
   type CognitoUserMigrationEvent,
-} from '../../aws/lambda/user-migration/index.js';
+} from '../../backend/lambda/user-migration/index.ts';
 
 describe('User Migration Lambda Trigger', () => {
   describe('validatePassword', () => {

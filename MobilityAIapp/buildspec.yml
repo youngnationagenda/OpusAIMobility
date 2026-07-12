@@ -51,7 +51,7 @@ phases:
       - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && npm run build
       - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && npm run server:check
       - echo "--- Lambda ZIP ---"
-      - cd "$CODEBUILD_SRC_DIR/$APP_DIR/aws/lambda/terraaimobility-api" && zip -r ../../../lambda-latest.zip .
+      - cd "$CODEBUILD_SRC_DIR/$APP_DIR/backend/lambda/terraaimobility-api" && zip -r ../../../lambda-latest.zip .
 
   post_build:
     commands:

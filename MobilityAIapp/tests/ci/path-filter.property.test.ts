@@ -4,16 +4,16 @@
  */
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
-import { getTriggeredJobs, BUILD_JOBS, ALL_BUILD_JOBS } from '../../packages/common/src/ci-path-filter';
+import { getTriggeredJobs, BUILD_JOBS, ALL_BUILD_JOBS } from '../../shared/src/ci-path-filter';
 
 describe('CI Path Filter — Property Tests', () => {
-  // Property 18: /apps/customer/** always triggers customer-apk
-  it('Property 18: paths under /apps/customer/ always trigger customer-apk', () => {
+  // Property 18: /android/customer/** always triggers customer-apk
+  it('Property 18: paths under /android/customer/ always trigger customer-apk', () => {
     fc.assert(
       fc.property(
         fc.stringMatching(/^[a-z0-9_\-\/\.]+$/),
         (suffix) => {
-          const path = `apps/customer/${suffix}`;
+          const path = `android/customer/${suffix}`;
           const triggered = getTriggeredJobs([path]);
           expect(triggered.has('customer-apk')).toBe(true);
         }
@@ -22,13 +22,13 @@ describe('CI Path Filter — Property Tests', () => {
     );
   });
 
-  // Property 19: /aws/lambda/** always triggers lambda-deploy
-  it('Property 19: paths under /aws/lambda/ always trigger lambda-deploy', () => {
+  // Property 19: /backend/lambda/** always triggers lambda-deploy
+  it('Property 19: paths under /backend/lambda/ always trigger lambda-deploy', () => {
     fc.assert(
       fc.property(
         fc.stringMatching(/^[a-z0-9_\-\/\.]+$/),
         (suffix) => {
-          const path = `aws/lambda/${suffix}`;
+          const path = `backend/lambda/${suffix}`;
           const triggered = getTriggeredJobs([path]);
           expect(triggered.has('lambda-deploy')).toBe(true);
         }
@@ -37,13 +37,13 @@ describe('CI Path Filter — Property Tests', () => {
     );
   });
 
-  // Property: /packages/** triggers ALL jobs
-  it('paths under /packages/ trigger all build jobs', () => {
+  // Property: /shared/** triggers ALL jobs
+  it('paths under /shared/ trigger all build jobs', () => {
     fc.assert(
       fc.property(
         fc.stringMatching(/^[a-z0-9_\-\/\.]+$/),
         (suffix) => {
-          const path = `packages/${suffix}`;
+          const path = `shared/${suffix}`;
           const triggered = getTriggeredJobs([path]);
           for (const job of BUILD_JOBS) {
             expect(triggered.has(job)).toBe(true);
@@ -97,14 +97,13 @@ describe('CI Path Filter — Property Tests', () => {
     fc.assert(
       fc.property(
         fc.tuple(
-          fc.constantFrom('apps/customer/MainActivity.java', 'aws/lambda/index.js'),
-          fc.constantFrom('apps/terra-api/src/health.php', 'src/App.tsx'),
+          fc.constantFrom('android/customer/MainActivity.java', 'backend/lambda/index.js'),
+          fc.constantFrom('frontend/src/App.tsx', 'android/driver/MainActivity.java'),
         ),
         ([path1, path2]) => {
           const combined = getTriggeredJobs([path1, path2]);
           const jobs1 = getTriggeredJobs([path1]);
           const jobs2 = getTriggeredJobs([path2]);
-          // combined must contain everything from jobs1 and jobs2
           for (const job of jobs1) expect(combined.has(job)).toBe(true);
           for (const job of jobs2) expect(combined.has(job)).toBe(true);
         }
@@ -113,25 +112,23 @@ describe('CI Path Filter — Property Tests', () => {
     );
   });
 
-  // Property: /infra/docker/terra-api/** and /apps/terra-api/** trigger terra-container
-  it('terra-api paths trigger terra-container', () => {
-    const terraPaths = [
-      'infra/docker/terra-api/Dockerfile',
-      'infra/docker/terra-api/nginx.conf',
-      'apps/terra-api/src/health.php',
-      'apps/terra-api/composer.json',
+  // Property: /android/driver/** triggers driver-apk
+  it('android/driver paths trigger driver-apk', () => {
+    const driverPaths = [
+      'android/driver/app/src/main/java/com/opusaimobility/driver/MainActivity.java',
+      'android/driver/app/build.gradle',
     ];
-    for (const path of terraPaths) {
+    for (const path of driverPaths) {
       const triggered = getTriggeredJobs([path]);
-      expect(triggered.has('terra-container')).toBe(true);
+      expect(triggered.has('driver-apk')).toBe(true);
     }
   });
 
-  // Property: /src/** and /public/** trigger frontend
-  it('src and public paths trigger frontend job', () => {
+  // Property: /frontend/** and /public/** trigger frontend
+  it('frontend and public paths trigger frontend job', () => {
     const frontendPaths = [
-      'src/App.tsx',
-      'src/components/MapView.tsx',
+      'frontend/src/App.tsx',
+      'frontend/src/components/MapView.tsx',
       'public/manifest.json',
       'public/index.html',
     ];

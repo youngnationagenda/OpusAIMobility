@@ -1,0 +1,15 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      "Resource": [
+        "arn:aws:lambda:us-east-1:683541453923:function:terraai-reporting",
+        "arn:aws:lambda:us-east-1:683541453923:function:terraai-mpesa",
+        "arn:aws:lambda:us-east-1:683541453923:function:terraai-stripe",
+        "arn:aws:lambda:us-east-1:683541453923:function:terraai-airtel"
+      ]
+    }
+  ]
+}

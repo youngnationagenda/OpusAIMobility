@@ -11,7 +11,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import bcrypt from 'bcryptjs';
-import { validatePassword } from '../../aws/lambda/user-migration/index.js';
+import { validatePassword } from '../../backend/lambda/user-migration/index.ts';
 
 /**
  * Arbitrary password generator: printable ASCII strings of length 4–64.

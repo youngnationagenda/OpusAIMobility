@@ -126,25 +126,30 @@ jobs:
         with:
           filters: |
             customer_app:
-              - 'MobilityAIapp/apps/customer/**'
+              - 'MobilityAIapp/android/customer/**'
+            driver_app:
+              - 'MobilityAIapp/android/driver/**'
             lambda:
-              - 'MobilityAIapp/aws/lambda/index.js'
-              - 'MobilityAIapp/aws/lambda/package.json'
-              - 'MobilityAIapp/aws/lambda/package-lock.json'
+              - 'MobilityAIapp/backend/lambda/terraaimobility-api/**'
+              - 'MobilityAIapp/backend/lambda/package.json'
+              - 'MobilityAIapp/backend/lambda/package-lock.json'
             push_lambda:
-              - 'MobilityAIapp/aws/lambda/push-notification/**'
+              - 'MobilityAIapp/backend/lambda/push-notification/**'
             terra_api:
-              - 'MobilityAIapp/infra/docker/terra-api/**'
-              - 'MobilityAIapp/apps/terra-api/**'
+              - 'MobilityAIapp/infrastructure/docker/terra-api/**'
             frontend:
-              - 'MobilityAIapp/src/**'
+              - 'MobilityAIapp/frontend/**'
               - 'MobilityAIapp/public/**'
             shared:
-              - 'MobilityAIapp/packages/**'
+              - 'MobilityAIapp/shared/**'
               - 'MobilityAIapp/package.json'
               - 'MobilityAIapp/package-lock.json'
               - 'MobilityAIapp/tsconfig.json'
               - 'MobilityAIapp/vitest.config.ts'
+            blockchain:
+              - 'MobilityAIapp/blockchain/**'
+            infrastructure:
+              - 'MobilityAIapp/infrastructure/**'
 
   # ===========================================================================
   # 3. AMAZON Q DEVELOPER
@@ -294,7 +299,7 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Build Customer APK (debug)
-        working-directory: MobilityAIapp/apps/customer
+        working-directory: MobilityAIapp/android/customer
         run: |
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon --warning-mode all \
@@ -320,7 +325,7 @@ jobs:
 
       - name: Upload debug APK to S3
         run: |
-          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/debug -name "*.apk" 2>/dev/null | head -1 || true)
+          APK=$(find MobilityAIapp/android/customer/app/build/outputs/apk/debug -name "*.apk" 2>/dev/null | head -1 || true)
           if [ -z "$APK" ]; then
             echo "::warning::No debug APK found — skipping S3 upload"
             exit 0
@@ -370,16 +375,16 @@ jobs:
 
       - name: Decode keystore
         run: |
-          mkdir -p MobilityAIapp/apps/customer/app
+          mkdir -p MobilityAIapp/android/customer/app
           echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode \
-            > MobilityAIapp/apps/customer/app/release.keystore
-          echo "KEYSTORE_FILE=${{ github.workspace }}/MobilityAIapp/apps/customer/app/release.keystore" >> $GITHUB_ENV
+            > MobilityAIapp/android/customer/app/release.keystore
+          echo "KEYSTORE_FILE=${{ github.workspace }}/MobilityAIapp/android/customer/app/release.keystore" >> $GITHUB_ENV
           echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
           echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Build signed release APK
-        working-directory: MobilityAIapp/apps/customer
+        working-directory: MobilityAIapp/android/customer
         run: |
           chmod +x ./gradlew
           ./gradlew assembleRelease --no-daemon --warning-mode all \
@@ -387,7 +392,7 @@ jobs:
 
       - name: Verify APK signature
         run: |
-          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1 || true)
+          APK=$(find MobilityAIapp/android/customer/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1 || true)
           if [ -z "$APK" ]; then
             echo "::warning::No release APK found — skipping signature verification"
             exit 0
@@ -405,7 +410,7 @@ jobs:
 
       - name: Upload release APK to S3
         run: |
-          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1 || true)
+          APK=$(find MobilityAIapp/android/customer/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1 || true)
           if [ -z "$APK" ]; then
             echo "::warning::No release APK found — skipping S3 upload"
             exit 0
@@ -419,7 +424,7 @@ jobs:
 
       - name: Clean up keystore
         if: always()
-        run: rm -f MobilityAIapp/apps/customer/app/release.keystore
+        run: rm -f MobilityAIapp/android/customer/app/release.keystore
 
   # ===========================================================================
   # 7. DEPLOY — Main Lambda (terraaimobility-api)
@@ -441,10 +446,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: MobilityAIapp/aws/lambda/package-lock.json
+          cache-dependency-path: MobilityAIapp/backend/lambda/package-lock.json
 
       - name: Install Lambda dependencies
-        working-directory: MobilityAIapp/aws/lambda
+        working-directory: MobilityAIapp/backend/lambda
         run: npm ci --omit=dev
 
       - name: Configure AWS credentials (OIDC)
@@ -455,7 +460,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Package and deploy Lambda
-        working-directory: MobilityAIapp/aws/lambda
+        working-directory: MobilityAIapp/backend/lambda
         run: |
           zip -r lambda.zip index.js package.json node_modules \
             -x "node_modules/.cache/*" -x "*.test.*"
@@ -488,10 +493,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: MobilityAIapp/aws/lambda/push-notification/package-lock.json
+          cache-dependency-path: MobilityAIapp/backend/lambda/push-notification/package-lock.json
 
       - name: Install push Lambda dependencies
-        working-directory: MobilityAIapp/aws/lambda/push-notification
+        working-directory: MobilityAIapp/backend/lambda/push-notification
         run: npm ci --omit=dev
 
       - name: Configure AWS credentials (OIDC)
@@ -502,7 +507,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Package and deploy Push Lambda
-        working-directory: MobilityAIapp/aws/lambda/push-notification
+        working-directory: MobilityAIapp/backend/lambda/push-notification
         run: |
           zip -r push-lambda.zip . \
             -x "node_modules/.cache/*" \
