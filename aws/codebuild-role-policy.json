@@ -1,0 +1,106 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-east-1:683541453923:log-group:/aws/codebuild/OpusAIMobility*"
+      ]
+    },
+    {
+      "Sid": "S3Artifacts",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:GetBucketLocation",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::opusaimobility-codebuild-artifacts-683541453923",
+        "arn:aws:s3:::opusaimobility-codebuild-artifacts-683541453923/*",
+        "arn:aws:s3:::opusaimobility-assets-prod",
+        "arn:aws:s3:::opusaimobility-assets-prod/*",
+        "arn:aws:s3:::opusaimobility-apk-distribution",
+        "arn:aws:s3:::opusaimobility-apk-distribution/*",
+        "arn:aws:s3:::codepipeline-us-east-1-*"
+      ]
+    },
+    {
+      "Sid": "Lambda",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:UpdateFunctionCode",
+        "lambda:GetFunction",
+        "lambda:UpdateFunctionConfiguration",
+        "lambda:GetFunctionConfiguration"
+      ],
+      "Resource": [
+        "arn:aws:lambda:us-east-1:683541453923:function:terraaimobility-api",
+        "arn:aws:lambda:us-east-1:683541453923:function:opusaimobility-push-notification",
+        "arn:aws:lambda:us-east-1:683541453923:function:omniride-api"
+      ]
+    },
+    {
+      "Sid": "CloudFront",
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:CreateInvalidation"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "SSM",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameters",
+        "ssm:GetParameter"
+      ],
+      "Resource": [
+        "arn:aws:ssm:us-east-1:683541453923:parameter/opusaimobility/*"
+      ]
+    },
+    {
+      "Sid": "SecretsManager",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:683541453923:secret:opusaimobility/*"
+      ]
+    },
+    {
+      "Sid": "KMS",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:683541453923:alias/aws/s3"
+      ]
+    },
+    {
+      "Sid": "CodeConnections",
+      "Effect": "Allow",
+      "Action": [
+        "codeconnections:UseConnection",
+        "codeconnections:GetConnection",
+        "codestar-connections:UseConnection",
+        "codestar-connections:GetConnection"
+      ],
+      "Resource": [
+        "arn:aws:codeconnections:us-east-1:683541453923:connection/*",
+        "arn:aws:codestar-connections:us-east-1:683541453923:connection/*"
+      ]
+    }
+  ]
+}

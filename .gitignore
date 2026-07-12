@@ -60,6 +60,16 @@ TerraAI/.claude/
 *.tfstate.backup
 .terraform/
 
+# ── Test & debug response files ───────────────────────────────────
+response_*.json
+celo_logs_raw.json
+test-*.json
+health-response.json
+
+# ── Scratch / one-off scripts ──────────────────────────────────────
+_*.js
+_*.sh
+
 # ── Logs ──────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
@@ -68,7 +78,3 @@ npm-debug.log*
 # package-lock.json is tracked at root; ignore nested ones from Lambda deploys
 aws/lambda/*/package-lock.json
 server/package-lock.json
-
-TerraAI/.claude/
-
-TerraAI/.claude/
