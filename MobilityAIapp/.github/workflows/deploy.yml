@@ -603,13 +603,14 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: TerraAI health check
-        if: needs.deploy-terra-api.result == 'success' && secrets.TERRA_HEALTH_URL != ''
+        if: needs.deploy-terra-api.result == 'success'
         run: |
-          if [ -z "${{ secrets.TERRA_HEALTH_URL }}" ]; then
+          HEALTH_URL="${{ secrets.TERRA_HEALTH_URL }}"
+          if [ -z "$HEALTH_URL" ]; then
             echo "::warning::TERRA_HEALTH_URL not set — skipping TerraAI health check"
             exit 0
           fi
-          HTTP=$(curl -s -o /dev/null -w "%{http_code}" "${{ secrets.TERRA_HEALTH_URL }}")
+          HTTP=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL")
           [ "$HTTP" = "200" ] || { echo "::error::TerraAI health check failed: $HTTP"; exit 1; }
           echo "TerraAI health check passed: HTTP 200"
 
