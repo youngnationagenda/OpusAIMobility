@@ -20,6 +20,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     signingConfigs {
@@ -206,4 +207,17 @@ dependencies {
 
     // ── Charts — TERRA-081 Telemetry Screen ───────────────────────────────────
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // ── Google Maps Java Client (DirectionsResult / DirectionsRoute / TravelMode) ──
+    implementation 'com.google.maps:google-maps-services:2.1.2'
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
+
+    // ── OverScroll decorator (ChatA.java) ─────────────────────────────────────
+    implementation 'io.github.everythingme:overscroll-decor-android:1.1.1'
+
+    // ── Single Date & Time Picker (PlaceOrdersFragment, RideOrRentFragment) ───
+    implementation 'com.github.florent37:singledateandtimepicker:1.2.7'
+
+    // ── iText7 (OrderDetailsFragment — PDF generation) ───────────────────────
+    implementation 'com.itextpdf:itext7-core:7.2.5'
 }
