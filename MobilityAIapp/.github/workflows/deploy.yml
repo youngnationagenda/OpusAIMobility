@@ -199,6 +199,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push TerraAI container image
+        continue-on-error: true
         env:
           ECR_REGISTRY:   ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
