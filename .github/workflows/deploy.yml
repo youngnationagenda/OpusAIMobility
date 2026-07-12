@@ -337,21 +337,16 @@ jobs:
           mkdir -p MobilityAIapp/apps/customer/app
           echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode \
             > MobilityAIapp/apps/customer/app/release.keystore
+          echo "KEYSTORE_FILE=${{ github.workspace }}/MobilityAIapp/apps/customer/app/release.keystore" >> $GITHUB_ENV
+          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Build signed release APK
         working-directory: MobilityAIapp/apps/customer
-        env:
-          KEYSTORE_PATH:     app/release.keystore
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS:         ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleRelease --no-daemon \
-            -Pandroid.injected.signing.store.file=$KEYSTORE_PATH \
-            -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
-            -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
-            -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+          ./gradlew assembleRelease --no-daemon
 
       - name: Verify APK signature
         run: |
