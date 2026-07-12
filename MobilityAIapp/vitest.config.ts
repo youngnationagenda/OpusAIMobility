@@ -13,9 +13,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@':                        path.resolve(__dirname, 'src'),
-      '@opusaimobility/common':   path.resolve(__dirname, 'packages/common/src'),
-      '@packages/common':         path.resolve(__dirname, 'packages/common/src'),
+      '@':                        path.resolve(__dirname, 'frontend/src'),
+      '@opusaimobility/common':   path.resolve(__dirname, 'shared/src'),
+      '@packages/common':         path.resolve(__dirname, 'shared/src'),
       '@scripts/migrate':         path.resolve(__dirname, 'scripts/migrate/src'),
       '@scripts/ci':              path.resolve(__dirname, 'scripts/ci'),
     },

@@ -5,7 +5,7 @@
   "description": "OpusAIMobility: 100% Zero-Emission Mobility Platform — AI-powered ride-hailing aggregating electric-only services with carbon tracking, blockchain, DeFi and AWS backend.",
   "type": "module",
   "workspaces": [
-    "packages/*",
+    "shared",
     "scripts/*"
   ],
   "scripts": {
@@ -18,8 +18,8 @@
     "server": "npm run server:check && node server/server.js",
     "server:dev": "npm run server:check && nodemon server/server.js",
     "server:unsafe": "node server/server.js",
-    "deploy": "node aws/deploy-frontend.cjs",
-    "deploy:restart": "node aws/deploy-frontend.cjs --restart-server"
+    "deploy": "node backend/lambda/deploy-frontend.cjs",
+    "deploy:restart": "node backend/lambda/deploy-frontend.cjs --restart-server"
   },
   "dependencies": {
     "leaflet": "1.9.4",
