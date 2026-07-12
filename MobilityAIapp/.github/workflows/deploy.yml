@@ -185,9 +185,21 @@ jobs:
       github.event.inputs.force_deploy == 'true'
     timeout-minutes: 20
     steps:
+      - name: Check required ECS secrets
+        id: check-secrets
+        run: |
+          if [ -z "${{ secrets.ECR_REPOSITORY }}" ] || [ -z "${{ secrets.ECS_CLUSTER }}" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "::warning::ECR_REPOSITORY or ECS_CLUSTER secrets not set — skipping TerraAI API deployment"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.check-secrets.outputs.skip == 'false'
 
       - name: Configure AWS credentials (OIDC)
+        if: steps.check-secrets.outputs.skip == 'false'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
@@ -196,10 +208,11 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
+        if: steps.check-secrets.outputs.skip == 'false'
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push TerraAI container image
-        continue-on-error: true
+        if: steps.check-secrets.outputs.skip == 'false'
         env:
           ECR_REGISTRY:   ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
@@ -218,6 +231,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
       - name: Update and stabilise ECS service
+        if: steps.check-secrets.outputs.skip == 'false'
         env:
           ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
           ECS_SERVICE:  ${{ secrets.ECS_SERVICE }}
@@ -228,6 +242,7 @@ jobs:
             --region ${{ env.AWS_REGION }}
 
       - name: Health check
+        if: steps.check-secrets.outputs.skip == 'false'
         env:
           TERRA_HEALTH_URL: ${{ secrets.TERRA_HEALTH_URL }}
         run: |
