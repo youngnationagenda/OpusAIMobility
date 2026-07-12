@@ -1,0 +1,30 @@
+# ==============================================================================
+# OpusAIMobility — AWS CodeDeploy Application Specification
+# Deploys: Lambda functions, Frontend (S3/CloudFront), APK distribution
+# ==============================================================================
+version: 0.0
+os: linux
+
+files:
+  - source: MobilityAIapp/dist/
+    destination: /tmp/deploy/frontend/
+  - source: MobilityAIapp/aws/lambda/lambda-main.zip
+    destination: /tmp/deploy/lambda/
+  - source: MobilityAIapp/aws/lambda/push-notification/push-lambda.zip
+    destination: /tmp/deploy/lambda-push/
+
+hooks:
+  BeforeInstall:
+    - location: scripts/deploy/before-install.sh
+      timeout: 60
+      runas: root
+
+  AfterInstall:
+    - location: scripts/deploy/after-install.sh
+      timeout: 300
+      runas: root
+
+  ValidateService:
+    - location: scripts/deploy/validate-service.sh
+      timeout: 120
+      runas: root
