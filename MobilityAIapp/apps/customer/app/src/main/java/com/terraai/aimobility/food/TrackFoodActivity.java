@@ -66,6 +66,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.Query;
 import java.util.concurrent.TimeUnit;
 
 
@@ -82,7 +84,7 @@ public class TrackFoodActivity extends AppCompatLocaleActivity implements View.O
     BottomSheetBehavior btsBehavior;
     MapWorker mapWorker;
     // [AWS] DatabaseReference rootRef replaced — use AWSManager REST API
-        Object rootRef = null;
+        DatabaseReference rootRef = null;
     Boolean mapCheck = false;
     Double vehcileLat, vehcileLong, pickLat, pickLong, dropLat, dropLong;
     Boolean trafficCheck = false;
@@ -495,9 +497,9 @@ public class TrackFoodActivity extends AppCompatLocaleActivity implements View.O
             driverMarker = mapWorker.addMarker(driverLatlng, driverMarkerBitmap);
         }
     }
-    Object /* ValueEventListener stub */ valueEventListener;
+    ValueEventListener valueEventListener;
     // [AWS] DatabaseReference mGetReference replaced — use AWSManager REST API
-        Object mGetReference = null;
+        DatabaseReference mGetReference = null;
     private void methodUpdatedriverlatlng() {
         if (driverId != null && !driverId.equalsIgnoreCase("")) {
 

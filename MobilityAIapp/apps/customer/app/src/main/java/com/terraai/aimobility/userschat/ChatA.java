@@ -73,7 +73,7 @@ public class ChatA extends AppCompatLocaleActivity {
         Object receiveTypingIndication = null;
      List<Chat_GetSet> mChats = new ArrayList<>();
      ChatAdapter mAdapter;
-     Object /* Query stub */ queryGetchat;
+     Query queryGetchat;
      BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -83,8 +83,8 @@ public class ChatA extends AppCompatLocaleActivity {
             }
         }
     };
-     Object /* ValueEventListener stub */ valueEventListener;
-     Object /* ChildEventListener stub */ eventListener;
+     ValueEventListener valueEventListener;
+     ChildEventListener eventListener;
 
 
 
@@ -418,7 +418,7 @@ public class ChatA extends AppCompatLocaleActivity {
         final String currentUserRef = "chat" + "/" + requestId;
 
         // [AWS-MIGRATED] DatabaseReference reference = rootref.child("chat").child(requestId).push(); → use AWSManager REST API
-        Object reference = null; // [AWS] placeholder — use AWSManager
+        // [stub-fix] Object reference = null; // [AWS] placeholder ? use AWSManager
         final String pushid = reference.getKey();
         final HashMap messageUserMap = new HashMap<>();
         messageUserMap.put("receiver_id", receiverid);

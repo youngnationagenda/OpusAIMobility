@@ -73,6 +73,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.Query;
 import java.util.concurrent.TimeUnit;
 
 
@@ -91,7 +93,7 @@ public class TrackParcelActivity extends AppCompatLocaleActivity implements View
     BottomSheetBehavior btsBehavior;
     MapWorker mapWorker;
     // [AWS] DatabaseReference rootRef replaced — use AWSManager REST API
-        Object rootRef = null;
+        DatabaseReference rootRef = null;
     boolean moveToCurrent = false;
     Boolean mapCheck = false;
 
@@ -579,8 +581,8 @@ public class TrackParcelActivity extends AppCompatLocaleActivity implements View
 
 
     // [AWS] DatabaseReference mGetReference replaced — use AWSManager REST API
-        Object mGetReference = null;
-    Object /* ValueEventListener stub */ valueEventListener;
+        DatabaseReference mGetReference = null;
+    ValueEventListener valueEventListener;
     private void methodUpdatedriverlatlng() {
         Functions.logDMsg("driverId : " + parcelHistoryModel.rider.id + " : "+parcelHistoryModel.rider.vehicle.ride_type_id);
 

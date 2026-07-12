@@ -87,6 +87,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.Query;
 import java.util.Map;
 
 
@@ -99,7 +103,7 @@ public class RideOrRentFragment extends RootFragment implements OnMapReadyCallba
     String username, fname, lname, image, email, userImage;
     Bitmap carMarker;
     MapWorker mapWorker;
-    Object /* GeoFire stub */ geoFire;
+    GeoFire geoFire;
     // [AWS-MIGRATED] GeoFire → /getNearbyDrivers Lambda endpoint
     // Original: GeoQuery geoQuery;
     GeoQueryEventListener geoQueryEventListener;
@@ -599,9 +603,9 @@ public class RideOrRentFragment extends RootFragment implements OnMapReadyCallba
 
     private void nearbyDrivers() {
         // [AWS-MIGRATED] DatabaseReference ref = /* AWS-MIGRATED: was FirebaseDatabase — use AWSManager.getInstance(context).post() for real-time updates */ → use AWSManager REST API
-        Object ref = null; // [AWS] placeholder — use AWSManager
-        geoFire = /* AWS-MIGRATED: Object /* GeoFire stub */ removed — driver location via Lambda API /getNearbyDrivers */
-        geoObject /* Query stub */ = null; // [AWS] Object /* GeoFire stub */ call removed
+        // [stub-fix] Object ref = null; // [AWS] placeholder ? use AWSManager
+        geoFire = null; // [stub] AWS-migrated
+        geoQuery = null; // [AWS] Object /* GeoFire stub */ call removed
 
         geoQueryEventListener = new GeoQueryEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)

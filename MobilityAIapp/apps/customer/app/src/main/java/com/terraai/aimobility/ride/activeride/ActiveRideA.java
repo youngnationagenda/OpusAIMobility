@@ -75,6 +75,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.Query;
 import java.util.List;
 
 
@@ -90,7 +92,7 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
     BottomSheetBehavior btsBehavior;
     MapWorker mapWorker;
     // [AWS] DatabaseReference rootRef replaced — use AWSManager REST API
-        Object rootRef = null;
+        DatabaseReference rootRef = null;
     Boolean mapCheck = false;
     Double vehcileLat, vehcileLong, pickLat, pickLong, dropLat, dropLong;
     Boolean trafficCheck = false;
@@ -781,8 +783,8 @@ public class ActiveRideA extends AppCompatLocaleActivity implements View.OnClick
     }
 
     // [AWS-MIGRATED] DatabaseReference mGetReference ; → use AWSManager REST API
-    Object mGetReference = null; // [AWS] placeholder — use AWSManager
-    Object /* ValueEventListener stub */ valueEventListener;
+    // [stub-fix] DatabaseReference mGetReference = null; // [AWS] placeholder ? use AWSManager
+    ValueEventListener valueEventListener;
     private void methodUpdatedriverlatlng() {
         if (driverId != null && !driverId.equalsIgnoreCase("") && requestId != null) {
             mGetReference = rootRef.child("DriversTrips").child(requestId + "_" + driverId);

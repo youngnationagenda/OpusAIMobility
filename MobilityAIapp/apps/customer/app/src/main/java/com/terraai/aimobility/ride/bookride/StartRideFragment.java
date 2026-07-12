@@ -71,6 +71,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.Query;
 import java.util.List;
 
 public class StartRideFragment extends RootFragment implements OnMapReadyCallback, View.OnClickListener, GoogleMap.OnCameraMoveListener {
@@ -113,7 +117,7 @@ public class StartRideFragment extends RootFragment implements OnMapReadyCallbac
     LocationModel locationModel;
     double dropLat, dropLong, pickLat, pickLong;
 
-    Object /* GeoFire stub */ geoFire;
+    GeoFire geoFire;
     // [AWS-MIGRATED] GeoFire → /getNearbyDrivers Lambda endpoint
     // Original: GeoQuery geoQuery;
     GeoQueryEventListener geoQueryEventListener;
@@ -399,9 +403,9 @@ public class StartRideFragment extends RootFragment implements OnMapReadyCallbac
 
     private void nearbyDrivers() {
         // [AWS-MIGRATED] DatabaseReference ref = /* AWS-MIGRATED: was FirebaseDatabase — use AWSManager.getInstance(context).post() for real-time updates */ → use AWSManager REST API
-        Object ref = null; // [AWS] placeholder — use AWSManager
-        geoFire = /* AWS-MIGRATED: Object /* GeoFire stub */ removed — driver location via Lambda API /getNearbyDrivers */
-        geoObject /* Query stub */ = null; // [AWS] Object /* GeoFire stub */ call removed
+        // [stub-fix] Object ref = null; // [AWS] placeholder ? use AWSManager
+        geoFire = null; // [stub] AWS-migrated
+        geoQuery = null; // [AWS] Object /* GeoFire stub */ call removed
 
         geoQueryEventListener = new GeoQueryEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
