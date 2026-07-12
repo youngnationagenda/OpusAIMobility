@@ -1,8 +1,8 @@
-# ═══════════════════════════════════════════════════════════════════════════════
-# OpusAIMobility — AWS CodeBuild Build Specification
+# ==============================================================================
+# OpusAIMobility - AWS CodeBuild Build Specification
 # Builds: Android APK, Frontend (React/Vite), Lambda packages
 # Runtime: Amazon Linux 2023 (AL2023)
-# ═══════════════════════════════════════════════════════════════════════════════
+# ==============================================================================
 version: 0.2
 
 env:
@@ -10,12 +10,6 @@ env:
     AWS_REGION: us-east-1
     NODE_VERSION: "20"
     JAVA_VERSION: "17"
-  parameter-store:
-    KEYSTORE_PASSWORD: /opusaimobility/keystore-password
-    KEY_ALIAS: /opusaimobility/key-alias
-    KEY_PASSWORD: /opusaimobility/key-password
-  secrets-manager:
-    KEYSTORE_FILE: opusaimobility/keystore:base64
 
 phases:
   install:
@@ -39,12 +33,7 @@ phases:
       - cd ../../..
       # Android setup
       - chmod +x MobilityAIapp/apps/customer/gradlew
-      # Decode keystore if available
-      - |
-        if [ -n "$KEYSTORE_FILE" ]; then
-          echo "$KEYSTORE_FILE" | base64 --decode > MobilityAIapp/apps/customer/app/release.keystore
-          echo "Keystore decoded successfully"
-        fi
+      - echo "Pre-build complete"
 
   build:
     commands:
@@ -56,12 +45,7 @@ phases:
       # Build Android APK
       - echo "Building Android APK..."
       - cd MobilityAIapp/apps/customer
-      - |
-        if [ -f "app/release.keystore" ]; then
-          ./gradlew assembleRelease --no-daemon --warning-mode all
-        else
-          ./gradlew assembleDebug --no-daemon --warning-mode all
-        fi
+      - ./gradlew assembleDebug --no-daemon --warning-mode all
       - cd ../../..
       # Package Lambda
       - echo "Packaging Lambda functions..."
@@ -113,8 +97,7 @@ phases:
             echo "APK uploaded to S3"
           fi
         fi
-      # Cleanup
-      - rm -f MobilityAIapp/apps/customer/app/release.keystore
+      - echo "Post-build complete"
 
 artifacts:
   files:
