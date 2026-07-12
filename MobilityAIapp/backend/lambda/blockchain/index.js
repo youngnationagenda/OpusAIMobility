@@ -26,6 +26,7 @@ const { DynamoDBDocumentClient,
 const { SecretsManagerClient,
         GetSecretValueCommand }      = require('@aws-sdk/client-secrets-manager');
 const https  = require('https');
+const crypto = require('crypto');
 
 const REGION         = process.env.AWS_REGION || 'us-east-1';
 const TABLE_CHAIN    = process.env.TABLE_BLOCKCHAIN   || 'omniride-blockchain';
@@ -377,7 +378,7 @@ async function validateCarbon(body) {
   }
 
   // Verra VCS certification
-  const certId    = `CER-VCS-${Math.random().toString(36).substr(2,6).toUpperCase()}`;
+  const certId    = `CER-VCS-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
   const credits   = tripRecord?.creditsEarned || (distanceKm ? (distanceKm * 0.5).toFixed(2) : '0');
   const usdValue  = (parseFloat(credits) * 0.52).toFixed(4);
 
