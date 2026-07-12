@@ -40,9 +40,9 @@ phases:
       # Frontend dependencies
       - cd MobilityAIapp && npm ci
       - cd ..
-      # Lambda dependencies
-      - cd MobilityAIapp/aws/lambda && npm ci --omit=dev
-      - cd ../../..
+      # Lambda v3.1 dependencies (terraaimobility-api)
+      - cd MobilityAIapp/aws/lambda/terraaimobility-api && npm ci --omit=dev
+      - cd ../../../..
       # Android setup
       - chmod +x MobilityAIapp/apps/customer/gradlew
       - echo "Pre-build complete"
@@ -56,24 +56,17 @@ phases:
       - echo "Building Frontend..."
       - cd MobilityAIapp && npm run build
       - cd ..
-      # Build Android APK (non-blocking - source has unresolved dependencies)
+      # Build Android APK (non-blocking)
       - echo "Building Android APK..."
       - cd MobilityAIapp/apps/customer
       - ./gradlew assembleDebug --no-daemon --warning-mode all || echo "WARNING - Android build failed (known dependency issues)"
       - cd ../../..
-      # Package Lambda
-      - echo "Packaging Lambda functions..."
-      - cd MobilityAIapp/aws/lambda
-      - zip -r lambda-main.zip . -x "node_modules/.cache/*" -x "*.test.*"
-      - cd ../../..
-      # Package Push Lambda
-      - |
-        if [ -d "MobilityAIapp/aws/lambda/push-notification" ]; then
-          cd MobilityAIapp/aws/lambda/push-notification
-          npm ci --omit=dev
-          zip -r push-lambda.zip . -x "node_modules/.cache/*"
-          cd ../../../..
-        fi
+      # Package Lambda v3.1 (terraaimobility-api only — excludes _*.js scratch files)
+      - echo "Packaging Lambda v3.1..."
+      - cd MobilityAIapp/aws/lambda/terraaimobility-api
+      - zip -r ../lambda-main.zip index.js auth.js db.js notify.js seed-config.js package.json node_modules
+      - cd ../../../..
+      - echo "Lambda packaged"
 
   post_build:
     commands:
@@ -81,8 +74,12 @@ phases:
       # Deploy Frontend to S3
       - |
         if [ -n "$S3_FRONTEND_BUCKET" ]; then
-          aws s3 sync MobilityAIapp/dist/ s3://$S3_FRONTEND_BUCKET/ --delete
-          echo "Frontend deployed to S3"
+          aws s3 sync MobilityAIapp/dist/ s3://$S3_FRONTEND_BUCKET/ --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html"
+          aws s3 cp MobilityAIapp/dist/index.html s3://$S3_FRONTEND_BUCKET/index.html \
+            --cache-control "no-cache, no-store, must-revalidate"
+          echo "Frontend deployed to s3://$S3_FRONTEND_BUCKET"
         fi
       # Invalidate CloudFront
       - |
@@ -90,25 +87,31 @@ phases:
           aws cloudfront create-invalidation \
             --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
             --paths "/*"
-          echo "CloudFront invalidation triggered"
+          echo "CloudFront invalidation triggered: $CLOUDFRONT_DISTRIBUTION_ID"
         fi
-      # Deploy Lambda
+      # Deploy Lambda v3.1
       - |
         if [ -n "$LAMBDA_FUNCTION_NAME" ]; then
           aws lambda update-function-code \
             --function-name $LAMBDA_FUNCTION_NAME \
-            --zip-file fileb://MobilityAIapp/aws/lambda/lambda-main.zip
-          echo "Main Lambda deployed"
+            --zip-file fileb://MobilityAIapp/aws/lambda/lambda-main.zip \
+            --region $AWS_REGION
+          aws lambda wait function-updated \
+            --function-name $LAMBDA_FUNCTION_NAME \
+            --region $AWS_REGION
+          echo "Lambda deployed: $LAMBDA_FUNCTION_NAME"
         fi
       # Upload APK to S3
       - |
         if [ -n "$S3_APK_BUCKET" ]; then
-          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk -name "*.apk" | head -1)
+          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk -name "*.apk" 2>/dev/null | head -1 || true)
           if [ -n "$APK" ]; then
             VERSION="${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}"
             aws s3 cp "$APK" "s3://$S3_APK_BUCKET/apks/OpusAIMobility-${VERSION}.apk"
             aws s3 cp "$APK" "s3://$S3_APK_BUCKET/apks/OpusAIMobility-latest.apk"
-            echo "APK uploaded to S3"
+            echo "APK uploaded: OpusAIMobility-${VERSION}.apk"
+          else
+            echo "No APK found — skipping"
           fi
         fi
       - echo "Post-build complete"
@@ -131,7 +134,6 @@ artifacts:
     lambda-packages:
       files:
         - MobilityAIapp/aws/lambda/lambda-main.zip
-        - MobilityAIapp/aws/lambda/push-notification/push-lambda.zip
       discard-paths: yes
 
 cache:
@@ -140,3 +142,4 @@ cache:
     - "/root/.gradle/caches/**/*"
     - "/root/.gradle/wrapper/**/*"
     - "MobilityAIapp/node_modules/**/*"
+    - "MobilityAIapp/aws/lambda/terraaimobility-api/node_modules/**/*"
