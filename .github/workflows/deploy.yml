@@ -180,10 +180,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: changes
     if: >-
-      (needs.changes.outputs.terra_api == 'true' ||
-       needs.changes.outputs.shared == 'true' ||
-       github.event.inputs.force_deploy == 'true') &&
-      secrets.ECR_REPOSITORY != ''
+      needs.changes.outputs.terra_api == 'true' ||
+      needs.changes.outputs.shared == 'true' ||
+      github.event.inputs.force_deploy == 'true'
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
