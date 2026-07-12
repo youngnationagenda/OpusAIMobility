@@ -1,0 +1,19 @@
+{
+  "sql": "SELECT *, topic(3) as riderId FROM 'opusaimobility/telemetry/+'",
+  "description": "Ingest EV telemetry from BMS devices into DynamoDB — TERRA-010",
+  "actions": [
+    {
+      "lambda": {
+        "functionArn": "arn:aws:lambda:us-east-1:683541453923:function:terraai-telemetry-ingest"
+      }
+    }
+  ],
+  "errorAction": {
+    "cloudwatchLogs": {
+      "logGroupName": "/aws/iot/telemetry-errors",
+      "roleArn": "arn:aws:iam::683541453923:role/terraai-iot-rule-role"
+    }
+  },
+  "ruleDisabled": false,
+  "awsIotSqlVersion": "2016-03-23"
+}
