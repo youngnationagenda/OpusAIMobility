@@ -6,18 +6,18 @@
  * configuration defined in the design document.
  *
  * Path filter rules:
- * - /apps/customer/** → 'customer-apk'
- * - /aws/lambda/** → 'lambda-deploy'
- * - /infra/docker/terra-api/** or /apps/terra-api/** → 'terra-container'
- * - /src/** or /public/** → 'frontend'
- * - /packages/** or root configs → ALL jobs
+ * - /android/customer/** → 'customer-apk'
+ * - /android/driver/**   → 'driver-apk'
+ * - /backend/lambda/**   → 'lambda-deploy'
+ * - /frontend/** or /public/** → 'frontend'
+ * - /shared/** or root configs → ALL jobs
  */
 
 /** All possible build job identifiers */
 export const BUILD_JOBS = [
   'customer-apk',
+  'driver-apk',
   'lambda-deploy',
-  'terra-container',
   'frontend',
 ] as const;
 
@@ -82,31 +82,28 @@ function getJobsForPath(filePath: string): Set<BuildJob> {
   const normalized = normalizePath(filePath);
   const jobs = new Set<BuildJob>();
 
-  // /apps/customer/** → customer-apk
-  if (normalized.startsWith('/apps/customer/')) {
+  // /android/customer/** → customer-apk
+  if (normalized.startsWith('/android/customer/')) {
     jobs.add('customer-apk');
   }
 
-  // /aws/lambda/** → lambda-deploy
-  if (normalized.startsWith('/aws/lambda/')) {
+  // /android/driver/** → driver-apk
+  if (normalized.startsWith('/android/driver/')) {
+    jobs.add('driver-apk');
+  }
+
+  // /backend/lambda/** → lambda-deploy
+  if (normalized.startsWith('/backend/lambda/')) {
     jobs.add('lambda-deploy');
   }
 
-  // /infra/docker/terra-api/** or /apps/terra-api/** → terra-container
-  if (
-    normalized.startsWith('/infra/docker/terra-api/') ||
-    normalized.startsWith('/apps/terra-api/')
-  ) {
-    jobs.add('terra-container');
-  }
-
-  // /src/** or /public/** → frontend
-  if (normalized.startsWith('/src/') || normalized.startsWith('/public/')) {
+  // /frontend/** or /public/** → frontend
+  if (normalized.startsWith('/frontend/') || normalized.startsWith('/public/')) {
     jobs.add('frontend');
   }
 
-  // /packages/** or root configs → ALL jobs
-  if (normalized.startsWith('/packages/') || isRootConfig(normalized)) {
+  // /shared/** or root configs → ALL jobs
+  if (normalized.startsWith('/shared/') || isRootConfig(normalized)) {
     return new Set(BUILD_JOBS);
   }
 
