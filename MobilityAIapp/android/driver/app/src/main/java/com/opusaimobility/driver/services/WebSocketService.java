@@ -3,16 +3,19 @@ package com.opusaimobility.driver.services;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.neovisionaries.ws.client.WebSocket;
-import com.neovisionaries.ws.client.WebSocketAdapter;
-import com.neovisionaries.ws.client.WebSocketException;
-import com.neovisionaries.ws.client.WebSocketFactory;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import com.opusaimobility.driver.Constants;
 
 import org.json.JSONException;
@@ -41,6 +44,7 @@ public class WebSocketService extends Service {
     public static final String ACTION_NOTIFICATION     = "com.opusaimobility.driver.NOTIFICATION";
 
     private static WebSocket webSocket;
+    private OkHttpClient okClient;
     private String userId;
     private String token;
     private boolean shouldReconnect = true;
@@ -55,6 +59,7 @@ public class WebSocketService extends Service {
         if (userId == null) userId = prefs.getString(Constants.KEY_USER_ID, "");
         token = prefs.getString(Constants.KEY_TOKEN, "");
 
+        okClient = new OkHttpClient();
         connect();
         return START_STICKY;
     }
@@ -68,50 +73,46 @@ public class WebSocketService extends Service {
         try {
             String url = Constants.WS_ENDPOINT + "?token=" + token + "&userId=" + userId + "&role=driver";
 
-            webSocket = new WebSocketFactory()
-                .setConnectionTimeout(15_000)
-                .createSocket(url)
-                .addListener(new WebSocketAdapter() {
-
-                    @Override
-                    public void onConnected(WebSocket ws, java.util.Map<String, java.util.List<String>> headers) {
-                        Log.i(TAG, "WebSocket connected — driver: " + userId);
-                        // Announce driver online
-                        try {
-                            JSONObject msg = new JSONObject();
-                            msg.put("action", Constants.WS_ACTION_DRIVER_ONLINE);
-                            msg.put("userId", userId);
-                            msg.put("role",   Constants.ROLE_DRIVER);
-                            ws.sendText(msg.toString());
-                        } catch (JSONException e) {
-                            Log.e(TAG, "Failed to send online event: " + e.getMessage());
-                        }
+            Request request = new Request.Builder().url(url).build();
+            webSocket = okClient.newWebSocket(request, new WebSocketListener() {
+                @Override
+                public void onOpen(WebSocket ws, Response response) {
+                    Log.i(TAG, "WebSocket connected — driver: " + userId);
+                    try {
+                        JSONObject msg = new JSONObject();
+                        msg.put("action", Constants.WS_ACTION_DRIVER_ONLINE);
+                        msg.put("userId", userId);
+                        msg.put("role",   Constants.ROLE_DRIVER);
+                        ws.send(msg.toString());
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Failed to send online event: " + e.getMessage());
                     }
+                }
 
-                    @Override
-                    public void onTextMessage(WebSocket ws, String text) {
-                        Log.d(TAG, "WS message: " + text);
-                        handleMessage(text);
-                    }
+                @Override
+                public void onMessage(WebSocket ws, String text) {
+                    Log.d(TAG, "WS message: " + text);
+                    handleMessage(text);
+                }
 
-                    @Override
-                    public void onDisconnected(WebSocket ws,
-                        com.neovisionaries.ws.client.WebSocketFrame serverCloseFrame,
-                        com.neovisionaries.ws.client.WebSocketFrame clientCloseFrame,
-                        boolean closedByServer) {
-                        Log.w(TAG, "WebSocket disconnected — closedByServer: " + closedByServer);
-                        if (shouldReconnect) {
-                            new android.os.Handler(android.os.Looper.getMainLooper())
-                                .postDelayed(WebSocketService.this::connect, 5000);
-                        }
+                @Override
+                public void onClosed(WebSocket ws, int code, String reason) {
+                    Log.w(TAG, "WebSocket closed: " + reason);
+                    if (shouldReconnect) {
+                        new Handler(Looper.getMainLooper())
+                            .postDelayed(WebSocketService.this::connect, 5000);
                     }
+                }
 
-                    @Override
-                    public void onError(WebSocket ws, WebSocketException cause) {
-                        Log.e(TAG, "WebSocket error: " + cause.getMessage());
+                @Override
+                public void onFailure(WebSocket ws, Throwable t, @Nullable Response response) {
+                    Log.e(TAG, "WebSocket error: " + t.getMessage());
+                    if (shouldReconnect) {
+                        new Handler(Looper.getMainLooper())
+                            .postDelayed(WebSocketService.this::connect, 5000);
                     }
-                })
-                .connectAsynchronously();
+                }
+            });
 
         } catch (Exception e) {
             Log.e(TAG, "WebSocket connection failed: " + e.getMessage());
@@ -163,7 +164,7 @@ public class WebSocketService extends Service {
 
     /** Called from LocationTrackingService to broadcast driver position */
     public static void broadcastLocation(String userId, double lat, double lng) {
-        if (webSocket == null || !webSocket.isOpen()) return;
+        if (webSocket == null) return;
         try {
             JSONObject msg = new JSONObject();
             msg.put("action", Constants.WS_ACTION_LOCATION_UPDATE);
@@ -171,7 +172,7 @@ public class WebSocketService extends Service {
             msg.put("lat",    lat);
             msg.put("lng",    lng);
             msg.put("ts",     System.currentTimeMillis());
-            webSocket.sendText(msg.toString());
+            webSocket.send(msg.toString());
         } catch (JSONException e) {
             Log.e(TAG, "broadcastLocation JSON error: " + e.getMessage());
         }
@@ -181,8 +182,11 @@ public class WebSocketService extends Service {
     public void onDestroy() {
         super.onDestroy();
         shouldReconnect = false;
-        if (webSocket != null && webSocket.isOpen()) {
-            webSocket.disconnect();
+        if (webSocket != null) {
+            webSocket.close(1000, "Service stopped");
+        }
+        if (okClient != null) {
+            okClient.dispatcher().executorService().shutdown();
         }
         Log.d(TAG, "WebSocketService destroyed");
     }
