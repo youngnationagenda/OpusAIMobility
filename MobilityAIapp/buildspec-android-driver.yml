@@ -1,0 +1,119 @@
+# ==============================================================================
+# OpusAIMobility — Android Driver App Only Build Spec
+#
+# Use this for driver-app-only builds (faster, ~15 minutes vs full 60 min)
+# Trigger: manual or separate CodeBuild project targeting android/driver/** changes
+#
+# Secrets injected by CodeBuild project environment:
+#   KEYSTORE_PASSWORD  ← opusaimobility/android-keystore:storePassword
+#   KEY_ALIAS          ← opusaimobility/android-keystore:keyAlias
+#   KEY_PASSWORD       ← opusaimobility/android-keystore:keyPassword
+#   GOOGLE_MAPS_KEY    ← terraai/google-maps:GOOGLE_MAPS_KEY
+# ==============================================================================
+version: 0.2
+
+env:
+  variables:
+    DRIVER_APP_DIR: "MobilityAIapp/android/driver"
+    S3_APK_BUCKET:  "opusaimobility-apk-distribution"
+  secrets-manager:
+    KEYSTORE_PASSWORD: "opusaimobility/android-keystore:storePassword"
+    KEY_ALIAS:         "opusaimobility/android-keystore:keyAlias"
+    KEY_PASSWORD:      "opusaimobility/android-keystore:keyPassword"
+    GOOGLE_MAPS_KEY:   "terraai/google-maps:GOOGLE_MAPS_KEY"
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+      nodejs: 22
+    commands:
+      - echo "=== Driver App Install Phase ==="
+      - java -version
+      - echo "JAVA_HOME=$JAVA_HOME"
+
+      # Decode keystore
+      - |
+        aws secretsmanager get-secret-value \
+          --secret-id "opusaimobility/android-keystore" \
+          --query "SecretString" --output text --region us-east-1 | \
+        node -e "
+          const s=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+          require('fs').writeFileSync(
+            '$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/opusaimobility-driver.jks',
+            Buffer.from(s.keystoreBase64,'base64')
+          );
+          console.log('Keystore decoded:', Buffer.from(s.keystoreBase64,'base64').length, 'bytes');
+        "
+
+      # Inject Maps key into google-services.json
+      - |
+        node -e "
+          const fs=require('fs');
+          const p='$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/google-services.json';
+          const gsj=JSON.parse(fs.readFileSync(p,'utf8'));
+          if(gsj.client&&gsj.client[0]&&gsj.client[0].api_key){
+            gsj.client[0].api_key[0].current_key=process.env.GOOGLE_MAPS_KEY||'';
+            fs.writeFileSync(p,JSON.stringify(gsj,null,2));
+            console.log('Maps key injected into google-services.json');
+          }
+        "
+
+      - chmod +x "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/gradlew"
+
+  build:
+    commands:
+      - echo "=== Building Driver APK ==="
+      - BUILD_TS=$(date -u +%Y%m%d-%H%M%S)
+      - COMMIT_SHORT=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-8)
+      - |
+        cd "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR"
+        export KEYSTORE_FILE="$(pwd)/app/opusaimobility-driver.jks"
+
+        echo "Building debug APK..."
+        ./gradlew assembleDebug \
+          -PGOOGLE_MAPS_KEY="$GOOGLE_MAPS_KEY" \
+          --no-daemon --build-cache --stacktrace 2>&1 | tail -40
+
+        if [ -f "$KEYSTORE_FILE" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
+          echo "Building release APK..."
+          ./gradlew assembleRelease \
+            -PGOOGLE_MAPS_KEY="$GOOGLE_MAPS_KEY" \
+            --no-daemon --build-cache --stacktrace 2>&1 | tail -40
+        fi
+
+  post_build:
+    commands:
+      - echo "=== Uploading APKs ==="
+      - BUILD_TS=$(date -u +%Y%m%d-%H%M%S)
+      - COMMIT_SHORT=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-8)
+      - APK_DIR="$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/build/outputs/apk"
+      - |
+        if [ -f "$APK_DIR/debug/app-debug.apk" ]; then
+          aws s3 cp "$APK_DIR/debug/app-debug.apk" \
+            "s3://$S3_APK_BUCKET/driver/debug/aimobility-driver-debug-${BUILD_TS}-${COMMIT_SHORT}.apk"
+          aws s3 cp "$APK_DIR/debug/app-debug.apk" \
+            "s3://$S3_APK_BUCKET/driver/debug/aimobility-driver-debug-latest.apk"
+          echo "Debug APK: https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/debug/aimobility-driver-debug-latest.apk"
+        fi
+      - |
+        if [ -f "$APK_DIR/release/app-release.apk" ]; then
+          aws s3 cp "$APK_DIR/release/app-release.apk" \
+            "s3://$S3_APK_BUCKET/driver/release/aimobility-driver-${BUILD_TS}-${COMMIT_SHORT}.apk"
+          aws s3 cp "$APK_DIR/release/app-release.apk" \
+            "s3://$S3_APK_BUCKET/driver/release/aimobility-driver-latest.apk"
+          echo "Release APK: https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/release/aimobility-driver-latest.apk"
+        fi
+      - echo "Driver APK build complete"
+
+artifacts:
+  files:
+    - MobilityAIapp/android/driver/app/build/outputs/apk/**/*
+  discard-paths: no
+  name: driver-apk-$CODEBUILD_BUILD_NUMBER
+
+cache:
+  paths:
+    - /root/.gradle/caches/**/*
+    - /root/.gradle/wrapper/**/*
+    - MobilityAIapp/android/driver/.gradle/**/*
