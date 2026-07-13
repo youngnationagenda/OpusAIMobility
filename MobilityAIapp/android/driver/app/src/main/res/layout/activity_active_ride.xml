@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/colorBackground">
+    <fragment android:id="@+id/mapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent" android:layout_height="@dimen/map_height"/>
+    <androidx.cardview.widget.CardView android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1" android:layout_margin="@dimen/spacing_md"
+        app:cardCornerRadius="@dimen/card_corner_radius" app:cardElevation="4dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="@dimen/spacing_md">
+            <TextView android:id="@+id/tvRideStatus" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="Accepted"
+                android:textSize="@dimen/text_xl" android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/poppins_bold"/>
+            <TextView android:id="@+id/tvRiderName" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="Rider"
+                android:textSize="@dimen/text_lg" android:textColor="@color/colorTextPrimary"/>
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/colorDivider" android:layout_marginVertical="8dp"/>
+            <TextView android:id="@+id/tvPickupAddress" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="Pickup"
+                android:textSize="@dimen/text_md" android:textColor="@color/colorTextPrimary"/>
+            <TextView android:id="@+id/tvDropoffAddress" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="Dropoff"
+                android:textSize="@dimen/text_md" android:textColor="@color/colorTextSecondary"/>
+            <TextView android:id="@+id/tvFare" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="KSh 0.00"
+                android:textSize="@dimen/text_2xl" android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/poppins_bold" android:layout_marginTop="8dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    <ProgressBar android:id="@+id/progressBar" android:layout_width="40dp"
+        android:layout_height="40dp" android:layout_gravity="center"
+        android:visibility="gone" android:indeterminateTint="@color/colorPrimary"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:padding="@dimen/spacing_md">
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnCancel"
+            style="@style/ButtonDanger" android:layout_width="0dp"
+            android:layout_height="52dp" android:layout_weight="1"
+            android:layout_marginEnd="8dp" android:text="Cancel"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnCall"
+            style="@style/ButtonSecondary" android:layout_width="0dp"
+            android:layout_height="52dp" android:layout_weight="1"
+            android:layout_marginHorizontal="8dp" android:text="Call"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnNextStatus"
+            style="@style/ButtonPrimary" android:layout_width="0dp"
+            android:layout_height="52dp" android:layout_weight="2"
+            android:layout_marginStart="8dp" android:text="I've Arrived"/>
+    </LinearLayout>
+</LinearLayout>
