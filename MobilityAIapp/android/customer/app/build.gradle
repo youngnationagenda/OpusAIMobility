@@ -247,11 +247,11 @@ dependencies {
     // Image Cropper (vanniktech — Maven Central)
     implementation 'com.vanniktech:android-image-cropper:4.3.3'
 
-    // Custom crash activity — JitPack (remove if build fails, use Firebase Crashlytics instead)
-    // implementation 'cat.ereza:customactivityoncrash:2.3.0'
+    // Custom crash activity — JitPack (required: activity_custom_error.xml references its resources)
+    implementation 'cat.ereza:customactivityoncrash:2.3.0'
 
-    // Card IO (payment card scan) — bundled in libs/ or skip
-    // implementation 'io.card:android-sdk:5.5.1'
+    // Card IO (payment card scan) — JitPack
+    implementation 'io.card:android-sdk:5.5.1'
 
     // MPAndroidChart (telemetry screen) — JitPack
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
