@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/colorBackground">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="@dimen/spacing_lg">
+        <ImageView android:id="@+id/ivBack" android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" android:src="@drawable/ic_back"
+            android:contentDescription="Back"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/support_title" android:textSize="24sp"
+            android:textColor="@color/colorTextPrimary" android:fontFamily="@font/poppins_bold"
+            android:layout_marginTop="@dimen/spacing_lg"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnCallSupport"
+            style="@style/ButtonSecondary" android:layout_width="match_parent"
+            android:layout_height="52dp" android:layout_marginTop="@dimen/spacing_lg"
+            android:text="Call Support"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnEmailSupport"
+            style="@style/ButtonSecondary" android:layout_width="match_parent"
+            android:layout_height="52dp" android:layout_marginTop="@dimen/spacing_sm"
+            android:text="Email Support"/>
+        <com.google.android.material.textfield.TextInputLayout style="@style/TextInputDriver"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lg" android:hint="Describe your issue">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etMessage"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:minLines="4" android:gravity="top" android:inputType="textMultiLine"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnSendMessage"
+            style="@style/ButtonPrimary" android:layout_width="match_parent"
+            android:layout_height="52dp" android:layout_marginTop="@dimen/spacing_md"
+            android:text="Send Message"/>
+    </LinearLayout>
+</ScrollView>
