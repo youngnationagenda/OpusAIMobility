@@ -1,18 +1,41 @@
 # ==============================================================================
 # OpusAIMobility — Full Build Spec (lives inside MobilityAIapp/)
 #
-# IMPORTANT: This buildspec assumes CodeBuild checks out the REPO ROOT.
-# $CODEBUILD_SRC_DIR will be the repo root (OpusAIMobility/).
-# All paths use $CODEBUILD_SRC_DIR/MobilityAIapp/ as the app directory.
+# Builds:
+#  1. React frontend  → S3 opusaimobility-assets-prod + CloudFront invalidation
+#  2. Lambda packages → terraaimobility-api + terraaimobility-admin deployed
+#  3. Android Customer APK → S3 opusaimobility-apk-distribution/customer/
+#  4. Android Driver APK   → S3 opusaimobility-apk-distribution/driver/
+#
+# Triggered by: push to main branch (GitHub webhook → CodeBuild)
+# CodeBuild project: OpusAIMobility  (arn:aws:codebuild:us-east-1:683541453923:project/OpusAIMobility)
+# Service role:      OpusAIMobility-CodeBuild-Role
+#
+# Env vars injected from Secrets Manager by CodeBuild:
+#   KEYSTORE_PASSWORD  ← opusaimobility/android-keystore:storePassword
+#   KEY_ALIAS          ← opusaimobility/android-keystore:keyAlias
+#   KEY_PASSWORD       ← opusaimobility/android-keystore:keyPassword
+#   GOOGLE_MAPS_KEY    ← terraai/google-maps:GOOGLE_MAPS_KEY
 # ==============================================================================
 version: 0.2
 
 env:
   variables:
-    NODE_ENV: production
-    APP_DIR: "MobilityAIapp"
+    NODE_ENV:                    production
+    APP_DIR:                     "MobilityAIapp"
+    GOGRAB_LAMBDA_FUNCTION_NAME: "gograb-handler"
+    DRIVER_APP_DIR:              "MobilityAIapp/android/driver"
+    CUSTOMER_APP_DIR:            "MobilityAIapp/android/customer"
+    FIREBASE_PROJECT_ID:         "opusaimobility"
+    COGNITO_USER_POOL_ID:        "us-east-1_LKa4ElQem"
+    COGNITO_CLIENT_ID:           "2am01r4fmsp0s08991ftgub887"
+    API_BASE_URL:                "https://opusaimobility.yna.co.ke/"
   secrets-manager:
-    GEMINI_API_KEY: "opusaimobility/gemini-api-key:key"
+    GEMINI_API_KEY:    "omniride/gemini-api-key:SecretString"
+    KEYSTORE_PASSWORD: "opusaimobility/android-keystore:storePassword"
+    KEY_ALIAS:         "opusaimobility/android-keystore:keyAlias"
+    KEY_PASSWORD:      "opusaimobility/android-keystore:keyPassword"
+    GOOGLE_MAPS_KEY:   "terraai/google-maps:GOOGLE_MAPS_KEY"
 
 phases:
   install:
@@ -22,56 +45,362 @@ phases:
     commands:
       - echo "=== Install Phase ==="
       - echo "CODEBUILD_SRC_DIR=$CODEBUILD_SRC_DIR"
-      - echo "PWD=$(pwd)"
-      - ls "$CODEBUILD_SRC_DIR/$APP_DIR/package.json" || { echo "ERROR - $APP_DIR not found at repo root"; ls -la "$CODEBUILD_SRC_DIR"; exit 1; }
+      - echo "Build number $CODEBUILD_BUILD_NUMBER"
+      - echo "Commit $CODEBUILD_RESOLVED_SOURCE_VERSION"
+
+      # ── Node deps ────────────────────────────────────────────────────────────
+      - ls "$CODEBUILD_SRC_DIR/$APP_DIR/package.json" || { echo "ERROR - $APP_DIR not found"; exit 1; }
       - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && npm ci --prefer-offline
       - cd "$CODEBUILD_SRC_DIR/$APP_DIR/server" && npm ci --prefer-offline
       - echo "Node $(node -v) | npm $(npm -v)"
 
+      # ── Android SDK setup (already available on amazonlinux-x86_64-standard:5.0) ──
+      - echo "Android SDK - checking environment"
+      - java -version
+      - echo "JAVA_HOME=$JAVA_HOME"
+      - which gradle || echo "Gradle not in PATH - using wrapper"
+
+      # ── Decode keystore from Secrets Manager (already in env vars) ───────────
+      - echo "=== Decoding release keystore ==="
+      - |
+        aws secretsmanager get-secret-value \
+          --secret-id "opusaimobility/android-keystore" \
+          --query "SecretString" --output text \
+          --region us-east-1 | \
+        node -e "
+          const s = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+          require('fs').writeFileSync(
+            '$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/opusaimobility-driver.jks',
+            Buffer.from(s.keystoreBase64, 'base64')
+          );
+          require('fs').writeFileSync(
+            '$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/terraai-release.jks',
+            Buffer.from(s.keystoreBase64, 'base64')
+          );
+          console.log('Keystores decoded successfully');
+        "
+
+      # ── Decode Firebase google-services.json for driver app ──────────────────
+      - echo "=== Setting up google-services.json ==="
+      - |
+        # Driver app: inject real Google Maps key into google-services.json
+        node -e "
+          const fs = require('fs');
+          const path = '$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/google-services.json';
+          const gsjRaw = fs.readFileSync(path, 'utf8');
+          const gsj = JSON.parse(gsjRaw);
+          const mapsKey = process.env.GOOGLE_MAPS_KEY || '';
+          if (gsj.client && gsj.client[0] && gsj.client[0].api_key) {
+            gsj.client[0].api_key[0].current_key = mapsKey;
+            fs.writeFileSync(path, JSON.stringify(gsj, null, 2));
+            console.log('Driver google-services.json: Maps key injected (' + (mapsKey ? 'real key' : 'empty') + ')');
+          }
+        "
+      - |
+        # Customer app: also inject maps key if google-services.json exists
+        if [ -f "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/google-services.json" ]; then
+          node -e "
+            const fs = require('fs');
+            const path = '$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/google-services.json';
+            try {
+              const gsj = JSON.parse(fs.readFileSync(path,'utf8'));
+              if (gsj.client && gsj.client[0] && gsj.client[0].api_key) {
+                gsj.client[0].api_key[0].current_key = process.env.GOOGLE_MAPS_KEY || '';
+                fs.writeFileSync(path, JSON.stringify(gsj, null, 2));
+                console.log('Customer google-services.json: Maps key injected');
+              }
+            } catch(e) { console.warn('Customer gsj patch skipped:', e.message); }
+          "
+        fi
+
   pre_build:
     commands:
       - echo "=== Pre-Build Phase ==="
+
+      # ── Frontend checks ───────────────────────────────────────────────────────
       - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && npm run type:check
       - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && npm test -- --silent
-      - echo "--- Server pre-flight ---"
-      - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && node -e "
+
+      # ── Validate server.js path ───────────────────────────────────────────────
+      - |
+        cd "$CODEBUILD_SRC_DIR/$APP_DIR" && node -e "
           const fs = require('fs');
           const src = fs.readFileSync('server/server.js', 'utf8');
-          const correct = /path\.join\(__dirname\s*,\s*['\"]\.\.['\"]\s*,\s*['\"]dist['\"]\)/.test(src);
-          if (!correct) {
-            console.error('FAIL: server/server.js staticPath does not point to ../dist');
-            process.exit(1);
-          }
+          const correct = /path\.join\(__dirname\s*,\s*['\"]\.\.['\"]\s*,\s*['\"]dist['\"]/.test(src);
+          if (!correct) { console.error('FAIL: server/server.js staticPath wrong'); process.exit(1); }
           console.log('PASS: staticPath correctly set to ../dist');
         "
+
+      # ── Lambda install ────────────────────────────────────────────────────────
+      - echo "--- Lambda deps ---"
+      - cd "$CODEBUILD_SRC_DIR/$APP_DIR/backend/lambda/terraaimobility-api" && npm install --omit=dev
+      - echo "Lambda deps installed"
+
+      # ── Android Gradle wrapper permissions ───────────────────────────────────
+      - chmod +x "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/gradlew"
+      - chmod +x "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/gradlew" 2>/dev/null || true
+      - echo "Gradle wrappers made executable"
 
   build:
     commands:
       - echo "=== Build Phase ==="
+      - echo "Build timestamp $(date -u +%Y%m%d-%H%M%S)"
+      - BUILD_TS=$(date -u +%Y%m%d-%H%M%S)
+
+      # ── 1. React frontend ─────────────────────────────────────────────────────
+      - echo "--- Building React frontend ---"
       - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && npm run build
       - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && npm run server:check
-      - echo "--- Lambda ZIP ---"
-      - cd "$CODEBUILD_SRC_DIR/$APP_DIR/backend/lambda/terraaimobility-api" && zip -r ../../../lambda-latest.zip .
+      - echo "Frontend build complete"
+
+      # ── 2. Lambda ZIPs ───────────────────────────────────────────────────────
+      - echo "--- Building Lambda ZIP ---"
+      - cd "$CODEBUILD_SRC_DIR/$APP_DIR/backend/lambda/terraaimobility-api" && zip -r "$CODEBUILD_SRC_DIR/$APP_DIR/lambda-latest.zip" . --exclude "*.zip" --exclude "node_modules/adm-zip/**"
+      - echo "Lambda ZIP complete: $(du -sh $CODEBUILD_SRC_DIR/$APP_DIR/lambda-latest.zip)"
+
+      # GoGrab Lambda (optional)
+      - |
+        if [ -d "$CODEBUILD_SRC_DIR/$APP_DIR/backend/lambda/gograb-api" ]; then
+          cd "$CODEBUILD_SRC_DIR/$APP_DIR/backend/lambda/gograb-api" && \
+          zip -r "$CODEBUILD_SRC_DIR/$APP_DIR/gograb-lambda-latest.zip" .
+          echo "GoGrab Lambda ZIP complete"
+        else
+          echo "GoGrab Lambda dir not found — skipping"
+        fi
+
+      # ── 3. Android Driver App ─────────────────────────────────────────────────
+      - echo "--- Building Android Driver APK ---"
+      - |
+        cd "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR"
+
+        # Set keystore path for signing config
+        export KEYSTORE_FILE="$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/opusaimobility-driver.jks"
+
+        # Build debug APK (always)
+        echo "Building Driver debug APK..."
+        ./gradlew assembleDebug \
+          -PGOOGLE_MAPS_KEY="$GOOGLE_MAPS_KEY" \
+          --no-daemon \
+          --stacktrace \
+          --build-cache \
+          2>&1 | tail -50
+
+        # Build release APK (only if keystore available)
+        if [ -f "$KEYSTORE_FILE" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
+          echo "Building Driver release APK..."
+          ./gradlew assembleRelease \
+            -PGOOGLE_MAPS_KEY="$GOOGLE_MAPS_KEY" \
+            --no-daemon \
+            --stacktrace \
+            --build-cache \
+            2>&1 | tail -50
+          echo "Driver release APK built successfully"
+        else
+          echo "WARNING: Keystore not available — skipping release build"
+        fi
+
+        echo "Driver APK builds complete"
+
+      # ── 4. Android Customer App ───────────────────────────────────────────────
+      - echo "--- Building Android Customer APK ---"
+      - |
+        if [ -d "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR" ] && [ -f "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/gradlew" ]; then
+          cd "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR"
+          export KEYSTORE_FILE="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/terraai-release.jks"
+
+          # Debug APK (always)
+          ./gradlew assembleDebug \
+            -PGOOGLE_MAPS_KEY="$GOOGLE_MAPS_KEY" \
+            --no-daemon \
+            --stacktrace \
+            --build-cache \
+            2>&1 | tail -30 || echo "Customer debug build failed — continuing"
+
+          # Release APK
+          if [ -f "$KEYSTORE_FILE" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
+            ./gradlew assembleRelease \
+              -PGOOGLE_MAPS_KEY="$GOOGLE_MAPS_KEY" \
+              --no-daemon \
+              --stacktrace \
+              --build-cache \
+              2>&1 | tail -30 || echo "Customer release build failed — continuing"
+          fi
+          echo "Customer APK builds complete"
+        else
+          echo "Customer app directory not found or no gradlew — skipping"
+        fi
 
   post_build:
     commands:
       - echo "=== Post-Build Deploy ==="
-      - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && aws s3 sync dist/assets "s3://$S3_FRONTEND_BUCKET/assets/" --delete --cache-control "public, max-age=31536000, immutable" --region us-east-1
-      - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && aws s3 cp dist/index.html "s3://$S3_FRONTEND_BUCKET/index.html" --cache-control "no-cache, no-store, must-revalidate" --content-type "text/html" --region us-east-1
-      - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && aws s3 sync dist "s3://$S3_FRONTEND_BUCKET/" --exclude "assets/*" --exclude "index.html" --cache-control "public, max-age=86400" --region us-east-1
-      - cd "$CODEBUILD_SRC_DIR/$APP_DIR" && aws lambda update-function-code --function-name "$LAMBDA_FUNCTION_NAME" --zip-file fileb://lambda-latest.zip --region us-east-1
+      - BUILD_TS=$(date -u +%Y%m%d-%H%M%S)
+      - COMMIT_SHORT=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-8)
+
+      # ── Deploy frontend to S3 + CloudFront ───────────────────────────────────
+      - echo "--- Deploying frontend ---"
+      - |
+        cd "$CODEBUILD_SRC_DIR/$APP_DIR"
+        aws s3 sync dist/assets "s3://$S3_FRONTEND_BUCKET/assets/" \
+          --delete \
+          --cache-control "public, max-age=31536000, immutable" \
+          --region us-east-1
+        aws s3 cp dist/index.html "s3://$S3_FRONTEND_BUCKET/index.html" \
+          --cache-control "no-cache, no-store, must-revalidate" \
+          --content-type "text/html" \
+          --region us-east-1
+        aws s3 sync dist "s3://$S3_FRONTEND_BUCKET/" \
+          --exclude "assets/*" \
+          --exclude "index.html" \
+          --cache-control "public, max-age=86400" \
+          --region us-east-1
       - aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" --region us-east-1
-      - echo "=== Deploy complete ==="
+      - echo "Frontend deployed to S3 + CloudFront invalidated"
+
+      # ── Deploy Lambda ─────────────────────────────────────────────────────────
+      - echo "--- Deploying Lambda ---"
+      - |
+        cd "$CODEBUILD_SRC_DIR/$APP_DIR"
+        aws lambda update-function-code \
+          --function-name "$LAMBDA_FUNCTION_NAME" \
+          --zip-file fileb://lambda-latest.zip \
+          --region us-east-1
+        echo "terraaimobility-api Lambda deployed"
+
+        # Also deploy admin Lambda with same code
+        aws lambda update-function-code \
+          --function-name "terraaimobility-admin" \
+          --zip-file fileb://lambda-latest.zip \
+          --region us-east-1 || echo "Admin Lambda deploy failed — continuing"
+        echo "terraaimobility-admin Lambda deployed"
+
+      # GoGrab Lambda (optional)
+      - |
+        if [ -n "$GOGRAB_LAMBDA_FUNCTION_NAME" ] && [ -f "$CODEBUILD_SRC_DIR/$APP_DIR/gograb-lambda-latest.zip" ]; then
+          aws lambda update-function-code \
+            --function-name "$GOGRAB_LAMBDA_FUNCTION_NAME" \
+            --zip-file fileb://"$CODEBUILD_SRC_DIR/$APP_DIR/gograb-lambda-latest.zip" \
+            --region us-east-1 && \
+          echo "GoGrab Lambda deployed: $GOGRAB_LAMBDA_FUNCTION_NAME" || \
+          echo "GoGrab Lambda deploy failed — continuing"
+        fi
+
+      # ── Upload Driver APKs to S3 ─────────────────────────────────────────────
+      - echo "--- Uploading Driver APKs to S3 ---"
+      - |
+        DRIVER_APK_DIR="$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/build/outputs/apk"
+
+        # Debug APK
+        DEBUG_APK="$DRIVER_APK_DIR/debug/app-debug.apk"
+        if [ -f "$DEBUG_APK" ]; then
+          aws s3 cp "$DEBUG_APK" \
+            "s3://$S3_APK_BUCKET/driver/debug/aimobility-driver-debug-${BUILD_TS}-${COMMIT_SHORT}.apk" \
+            --region us-east-1
+          aws s3 cp "$DEBUG_APK" \
+            "s3://$S3_APK_BUCKET/driver/debug/aimobility-driver-debug-latest.apk" \
+            --region us-east-1
+          echo "Driver debug APK uploaded"
+          DRIVER_DEBUG_URL="https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/debug/aimobility-driver-debug-latest.apk"
+          echo "Driver debug APK URL: $DRIVER_DEBUG_URL"
+        else
+          echo "WARNING: Driver debug APK not found at $DEBUG_APK"
+        fi
+
+        # Release APK
+        RELEASE_APK="$DRIVER_APK_DIR/release/app-release.apk"
+        if [ -f "$RELEASE_APK" ]; then
+          aws s3 cp "$RELEASE_APK" \
+            "s3://$S3_APK_BUCKET/driver/release/aimobility-driver-${BUILD_TS}-${COMMIT_SHORT}.apk" \
+            --region us-east-1
+          aws s3 cp "$RELEASE_APK" \
+            "s3://$S3_APK_BUCKET/driver/release/aimobility-driver-latest.apk" \
+            --region us-east-1
+          echo "Driver release APK uploaded"
+          DRIVER_RELEASE_URL="https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/release/aimobility-driver-latest.apk"
+          echo "Driver release APK URL: $DRIVER_RELEASE_URL"
+        else
+          echo "Driver release APK not built (no keystore) — skipping"
+        fi
+
+      # ── Upload Customer APKs to S3 ───────────────────────────────────────────
+      - echo "--- Uploading Customer APKs to S3 ---"
+      - |
+        CUSTOMER_APK_DIR="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build/outputs/apk"
+
+        CUSTOMER_DEBUG="$CUSTOMER_APK_DIR/debug/app-debug.apk"
+        if [ -f "$CUSTOMER_DEBUG" ]; then
+          aws s3 cp "$CUSTOMER_DEBUG" \
+            "s3://$S3_APK_BUCKET/customer/debug/aimobility-customer-debug-${BUILD_TS}-${COMMIT_SHORT}.apk" \
+            --region us-east-1
+          aws s3 cp "$CUSTOMER_DEBUG" \
+            "s3://$S3_APK_BUCKET/customer/debug/aimobility-customer-debug-latest.apk" \
+            --region us-east-1
+          echo "Customer debug APK uploaded"
+        fi
+
+        CUSTOMER_RELEASE="$CUSTOMER_APK_DIR/release/app-release.apk"
+        if [ -f "$CUSTOMER_RELEASE" ]; then
+          aws s3 cp "$CUSTOMER_RELEASE" \
+            "s3://$S3_APK_BUCKET/customer/release/aimobility-customer-${BUILD_TS}-${COMMIT_SHORT}.apk" \
+            --region us-east-1
+          aws s3 cp "$CUSTOMER_RELEASE" \
+            "s3://$S3_APK_BUCKET/customer/release/aimobility-customer-latest.apk" \
+            --region us-east-1
+          echo "Customer release APK uploaded"
+        fi
+
+      # ── Write build manifest ──────────────────────────────────────────────────
+      - echo "--- Writing build manifest ---"
+      - |
+        node -e "
+          const manifest = {
+            buildNumber: '$CODEBUILD_BUILD_NUMBER',
+            buildId: '$CODEBUILD_BUILD_ID',
+            commit: '$CODEBUILD_RESOLVED_SOURCE_VERSION',
+            commitShort: '$COMMIT_SHORT',
+            timestamp: '$BUILD_TS',
+            builtAt: new Date().toISOString(),
+            artifacts: {
+              driverDebug:    'https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/debug/aimobility-driver-debug-latest.apk',
+              driverRelease:  'https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/release/aimobility-driver-latest.apk',
+              customerDebug:  'https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/customer/debug/aimobility-customer-debug-latest.apk',
+              customerRelease:'https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/customer/release/aimobility-customer-latest.apk',
+            },
+            lambdas: {
+              api:   'terraaimobility-api',
+              admin: 'terraaimobility-admin',
+            },
+            frontend: {
+              bucket:      'opusaimobility-assets-prod',
+              cloudfront:  'https://d22up4o3zhu9gf.cloudfront.net',
+              customDomain:'https://opusaimobility.yna.co.ke',
+            },
+          };
+          require('fs').writeFileSync('build-manifest.json', JSON.stringify(manifest, null, 2));
+          console.log('Build manifest written');
+        "
+      - aws s3 cp build-manifest.json "s3://$S3_APK_BUCKET/build-manifest.json" --region us-east-1
+      - aws s3 cp build-manifest.json "s3://$S3_FRONTEND_BUCKET/build-manifest.json" --region us-east-1
+      - cat build-manifest.json
+
+      - echo "=== Full deploy complete: $BUILD_TS ==="
 
 artifacts:
   files:
     - MobilityAIapp/lambda-latest.zip
+    - MobilityAIapp/gograb-lambda-latest.zip
     - MobilityAIapp/dist/**/*
+    - MobilityAIapp/android/driver/app/build/outputs/apk/**/*
+    - MobilityAIapp/android/customer/app/build/outputs/apk/**/*
+    - build-manifest.json
+  discard-paths: no
   name: opusaimobility-build-$CODEBUILD_BUILD_NUMBER
 
 cache:
   paths:
     - MobilityAIapp/node_modules/**/*
     - MobilityAIapp/server/node_modules/**/*
-    - .gradle/caches/**/*
-    - ~/.gradle/caches/**/*
+    - MobilityAIapp/backend/lambda/terraaimobility-api/node_modules/**/*
+    - /root/.gradle/caches/**/*
+    - /root/.gradle/wrapper/**/*
+    - MobilityAIapp/android/driver/.gradle/**/*
+    - MobilityAIapp/android/customer/.gradle/**/*
