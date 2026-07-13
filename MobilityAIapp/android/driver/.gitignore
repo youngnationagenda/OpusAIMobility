@@ -8,3 +8,19 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Keystore — NEVER commit
+*.jks
+*.keystore
+keystore.properties
+
+# Google services — contains API keys
+google-services.json
+
+# APK / AAB outputs
+*.apk
+*.aab
+
+# Amplify
+amplifyconfiguration.json
+awsconfiguration.json
