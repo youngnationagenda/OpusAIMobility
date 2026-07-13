@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:gravity="center"
+    android:padding="@dimen/spacing_xl" android:background="@color/colorBackground">
+    <ImageView android:layout_width="96dp" android:layout_height="96dp"
+        android:src="@drawable/ic_check_circle" android:contentDescription="Complete"/>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Trip Complete!" android:textSize="28sp"
+        android:textColor="@color/colorPrimary" android:fontFamily="@font/poppins_bold"
+        android:layout_marginTop="@dimen/spacing_lg"/>
+    <TextView android:id="@+id/tvFareAmount" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:text="KSh 0.00"
+        android:textSize="40sp" android:textColor="@color/colorTextPrimary"
+        android:fontFamily="@font/poppins_bold" android:layout_marginTop="@dimen/spacing_md"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center"
+        android:layout_marginTop="@dimen/spacing_md">
+        <TextView android:id="@+id/tvDistance" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="— km"
+            android:textSize="@dimen/text_lg" android:textColor="@color/colorTextSecondary"
+            android:layout_marginEnd="@dimen/spacing_lg"/>
+        <TextView android:id="@+id/tvDuration" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="— min"
+            android:textSize="@dimen/text_lg" android:textColor="@color/colorTextSecondary"/>
+    </LinearLayout>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Rate your rider" android:textSize="@dimen/text_lg"
+        android:textColor="@color/colorTextPrimary" android:layout_marginTop="@dimen/spacing_xl"/>
+    <me.zhanghai.android.materialratingbar.MaterialRatingBar android:id="@+id/ratingBar"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:numStars="5" android:stepSize="1" android:rating="5"
+        android:layout_marginTop="@dimen/spacing_sm"/>
+    <com.google.android.material.button.MaterialButton android:id="@+id/btnDone"
+        style="@style/ButtonPrimary" android:layout_width="match_parent"
+        android:layout_height="56dp" android:layout_marginTop="@dimen/spacing_xl"
+        android:text="Done"/>
+</LinearLayout>
