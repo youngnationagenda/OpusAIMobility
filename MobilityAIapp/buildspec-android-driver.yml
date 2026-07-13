@@ -32,6 +32,41 @@ phases:
       - java -version
       - echo "JAVA_HOME=$JAVA_HOME"
 
+      # ── Android SDK setup ────────────────────────────────────────────────────
+      - echo "=== Setting up Android SDK ==="
+      - |
+        # Check if Android SDK is already available
+        if [ -d "/usr/local/android-sdk" ]; then
+          export ANDROID_HOME=/usr/local/android-sdk
+        elif [ -d "$HOME/android-sdk" ]; then
+          export ANDROID_HOME=$HOME/android-sdk
+        elif [ -n "$ANDROID_HOME" ]; then
+          echo "ANDROID_HOME already set: $ANDROID_HOME"
+        else
+          # Install Android SDK command-line tools
+          echo "Installing Android SDK command-line tools..."
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd /tmp
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+          unzip -q cmdline-tools.zip -d /tmp/cmdline-tools-extract
+          mv /tmp/cmdline-tools-extract/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          cd -
+        fi
+        export ANDROID_SDK_ROOT=$ANDROID_HOME
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/34.0.0
+        echo "ANDROID_HOME=$ANDROID_HOME"
+
+        # Accept licenses and install required SDK components
+        yes | sdkmanager --licenses > /dev/null 2>&1 || true
+        sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" > /dev/null 2>&1 || true
+        echo "Android SDK setup complete"
+
+      # Write local.properties with SDK path
+      - echo "sdk.dir=$ANDROID_HOME" > "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/local.properties"
+      - echo "local.properties written: $(cat $CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/local.properties)"
+
       # Decode keystore
       - |
         aws secretsmanager get-secret-value \
