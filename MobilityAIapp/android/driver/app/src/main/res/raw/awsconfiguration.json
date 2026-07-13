@@ -1,0 +1,31 @@
+{
+  "Version": "1.0",
+  "IdentityManager": {
+    "Default": {}
+  },
+  "CognitoUserPool": {
+    "Default": {
+      "PoolId": "us-east-1_LKa4ElQem",
+      "AppClientId": "2am01r4fmsp0s08991ftgub887",
+      "Region": "us-east-1"
+    }
+  },
+  "CognitoIdentityPool": {
+    "Default": {
+      "PoolId": "us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38",
+      "Region": "us-east-1"
+    }
+  },
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "opusaimobility-assets-prod",
+      "Region": "us-east-1"
+    }
+  },
+  "SNS": {
+    "Default": {
+      "Region": "us-east-1",
+      "TopicARN": "arn:aws:sns:us-east-1:683541453923:opusaimobility-notifications"
+    }
+  }
+}
