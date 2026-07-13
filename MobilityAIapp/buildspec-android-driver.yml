@@ -89,7 +89,8 @@ phases:
 
   build:
     commands:
-      - echo "=== Build Phase ==="
+      - echo BUILD_PHASE_START
+      - echo SRC_DIR_IS=$CODEBUILD_SRC_DIR
       - |
         # Read persisted SDK path
         SDK=$(cat /tmp/android-sdk-path.txt 2>/dev/null || echo "$HOME/android-sdk")
