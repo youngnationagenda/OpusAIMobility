@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <!-- AWS API Gateway - HTTPS only -->
+        <domain includeSubdomains="true">execute-api.us-east-1.amazonaws.com</domain>
+        <domain includeSubdomains="true">opusaimobility.yna.co.ke</domain>
+        <domain includeSubdomains="true">d22up4o3zhu9gf.cloudfront.net</domain>
+        <domain includeSubdomains="true">amazonaws.com</domain>
+        <domain includeSubdomains="true">amazoncognito.com</domain>
+        <domain includeSubdomains="true">google.com</domain>
+        <domain includeSubdomains="true">googleapis.com</domain>
+        <domain includeSubdomains="true">firebase.google.com</domain>
+    </domain-config>
+</network-security-config>
