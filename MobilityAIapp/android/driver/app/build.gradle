@@ -175,8 +175,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
 
-    // ── WebSocket (real-time AWS API Gateway) ─────────────────────────────────
-    implementation 'com.neovisionaries:nv-websocket-client:2.14'
+    // ── WebSocket (OkHttp WebSocket — replaces nv-websocket-client) ───────────
+    // nv-websocket-client removed: use OkHttp WebSocket (already included above)
 
     // ── JSON ──────────────────────────────────────────────────────────────────
     implementation 'com.google.code.gson:gson:2.10.1'
@@ -195,14 +195,11 @@ dependencies {
     // ── Rating bar ────────────────────────────────────────────────────────────
     implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
 
-    // ── MPAndroidChart (earnings graph) ──────────────────────────────────────
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    // ── Charts (earnings graph) ───────────────────────────────────────────────
+    // MPAndroidChart removed (JitPack). Use a Maven-hosted alternative if needed.
 
-    // ── Custom crash activity ────────────────────────────────────────────────
-    implementation 'cat.ereza:customactivityoncrash:2.4.0'
-
-    // ── PaperDB (lightweight local key-value) ────────────────────────────────
-    implementation 'io.paperdb:paperdb:2.7.1'
+    // ── Custom crash activity ─────────────────────────────────────────────────
+    // cat.ereza:customactivityoncrash removed (JitPack). Using Firebase Crashlytics instead.
 
     // ── Joda Time ────────────────────────────────────────────────────────────
     implementation 'joda-time:joda-time:2.12.5'
