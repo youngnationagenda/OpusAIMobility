@@ -1,7 +1,7 @@
 package com.terraai.aimobility.model;
 
 
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;

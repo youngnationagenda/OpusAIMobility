@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.terraai.aimobility.codeclasses.DateOperations;
 import com.terraai.aimobility.model.TimeModel;
-import com.terraai.aimobility.databinding.ItemTimeListBinding;
+import com.yna.opusaimobilityapp.databinding.ItemTimeListBinding;
 
 import java.util.ArrayList;
 

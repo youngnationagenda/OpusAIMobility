@@ -13,7 +13,7 @@ import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.CalculationModel;
-import com.terraai.aimobility.databinding.ItemViewBucketBinding;
+import com.yna.opusaimobilityapp.databinding.ItemViewBucketBinding;
 
 import java.util.ArrayList;
 import java.util.HashMap;

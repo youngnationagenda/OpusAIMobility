@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.widget.ImageView; // AWS-MIGRATED: was ImageView (Fresco)
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.userschat.ChatAdapter;
 import com.terraai.aimobility.userschat.Chat_GetSet;
 

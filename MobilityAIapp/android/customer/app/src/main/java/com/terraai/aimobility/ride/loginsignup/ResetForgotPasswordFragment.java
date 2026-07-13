@@ -18,8 +18,8 @@ import androidx.fragment.app.FragmentManager;
 import com.terraai.aimobility.api.Singleton;
 import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.RootFragment;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentResetforgotPasswordBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentResetforgotPasswordBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

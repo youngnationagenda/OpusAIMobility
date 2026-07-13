@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.codeclasses.SingleClickListener;
-import com.terraai.aimobility.databinding.RideRentItemviewBinding;
+import com.yna.opusaimobilityapp.databinding.RideRentItemviewBinding;
 import com.terraai.aimobility.model.NearbyModelClass;
 
 import java.util.ArrayList;

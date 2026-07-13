@@ -28,8 +28,8 @@ import com.terraai.aimobility.model.FoodListModel;
 import com.terraai.aimobility.model.NearbyModelClass;
 import com.terraai.aimobility.model.ResturantModel;
 import com.terraai.aimobility.model.YourOrdersModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentOrdersBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentOrdersBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

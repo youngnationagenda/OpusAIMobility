@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.MyPreferences;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.codeclasses.Variables;
 import com.terraai.aimobility.ride.loginsignup.LoginOrSignupFragment;
 

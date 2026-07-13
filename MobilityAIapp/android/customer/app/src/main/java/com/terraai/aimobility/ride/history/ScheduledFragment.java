@@ -20,8 +20,8 @@ import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.Interface.FragmentCallBack;
 import com.terraai.aimobility.model.HistoryModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentScheduledBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentScheduledBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

@@ -21,7 +21,7 @@ import android.view.View;
 import androidx.core.content.ContextCompat;
 
 import com.terraai.aimobility.codeclasses.Functions;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 import java.util.Iterator;
 import java.util.LinkedList;

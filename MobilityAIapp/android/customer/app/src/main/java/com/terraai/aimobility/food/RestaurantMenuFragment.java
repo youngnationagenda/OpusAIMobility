@@ -50,9 +50,9 @@ import com.terraai.aimobility.model.MenuDetailsModel;
 import com.terraai.aimobility.model.MenuModel;
 import com.terraai.aimobility.model.ParentExpandListModel;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.bottomsheet.AnchorSheetBehavior;
-import com.terraai.aimobility.databinding.FragmentRestaurantMenuBinding;
+import com.yna.opusaimobilityapp.databinding.FragmentRestaurantMenuBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

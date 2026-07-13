@@ -9,10 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.terraai.aimobility.Constants;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Interface.AdapterClickListener;
-import com.terraai.aimobility.databinding.ItemHistoryListBinding;
+import com.yna.opusaimobilityapp.databinding.ItemHistoryListBinding;
 import com.terraai.aimobility.parcel.model.ParcelHistoryModel;
 
 import java.util.ArrayList;

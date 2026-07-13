@@ -13,9 +13,9 @@ import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Interface.AdapterClickListener;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.codeclasses.Variables;
-import com.terraai.aimobility.databinding.FragmentSelectLanguageBinding;
+import com.yna.opusaimobilityapp.databinding.FragmentSelectLanguageBinding;
 import com.terraai.aimobility.model.LanguageModel;
 
 import java.util.ArrayList;

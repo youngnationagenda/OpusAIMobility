@@ -21,7 +21,7 @@ import com.terraai.aimobility.food.ResturantAgainstCatFragment;
 import com.terraai.aimobility.food.SearchFragmentResturant;
 import com.terraai.aimobility.model.CalculationModel;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 import java.util.ArrayList;
 

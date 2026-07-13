@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.bumptech.glide.Glide;
 import com.terraai.aimobility.activitiesandfragment.CustomErrorActivity;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.aws.AWSManager;
 import com.terraai.aimobility.aws.AWSPushService;
 

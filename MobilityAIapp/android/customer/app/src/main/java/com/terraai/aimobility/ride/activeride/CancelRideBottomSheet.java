@@ -18,10 +18,10 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.CancelRideDialogueBinding;
-import com.terraai.aimobility.databinding.FragmentCancelRideBottomSheetBinding;
-import com.terraai.aimobility.databinding.GiveReasonDialogueBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.CancelRideDialogueBinding;
+import com.yna.opusaimobilityapp.databinding.FragmentCancelRideBottomSheetBinding;
+import com.yna.opusaimobilityapp.databinding.GiveReasonDialogueBinding;
 
 
 public class CancelRideBottomSheet extends BottomSheetDialogFragment implements View.OnClickListener {

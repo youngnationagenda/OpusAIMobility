@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.terraai.aimobility.Constants;
 import com.terraai.aimobility.Interface.AdapterClickListener;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.codeclasses.Variables;
-import com.terraai.aimobility.databinding.ItemDropoffListBinding;
-import com.terraai.aimobility.databinding.ItemRecipientListBinding;
+import com.yna.opusaimobilityapp.databinding.ItemDropoffListBinding;
+import com.yna.opusaimobilityapp.databinding.ItemRecipientListBinding;
 import com.terraai.aimobility.parcel.model.RecipientModel;
 import com.terraai.aimobility.parcel.model.RiderOrderMultiStop;
 

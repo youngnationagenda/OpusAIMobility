@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentCancelRideBottomSheetBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentCancelRideBottomSheetBinding;
 
 
 public class CancelScheduleRide extends BottomSheetDialogFragment implements View.OnClickListener {

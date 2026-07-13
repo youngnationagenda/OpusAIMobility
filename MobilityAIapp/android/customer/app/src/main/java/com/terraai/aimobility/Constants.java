@@ -5,7 +5,7 @@ public class Constants {
     // ─── API Configuration ────────────────────────────────────────────────────
     // Auth is Cognito JWT only (TERRA-002: API key fallback removed server-side)
     // WAF-protected CloudFront proxy — all client traffic must go through here (REQ-001)
-    public static final String BASE_URL = "https://d22up4o3zhu9gf.cloudfront.net/";
+    public static final String BASE_URL = "https://opusaimobility.yna.co.ke/";
 
     // ─── API Base Link ────────────────────────────────────────────────────────
     public static final String APILINK = Constants.BASE_URL + "api/";

@@ -35,13 +35,13 @@ import com.google.android.gms.tasks.Task;
 // AWS-MIGRATED: import com.google.firebase.database.FirebaseDatabase;
 // AWS-MIGRATED: import com.google.firebase.database.Query;
 // AWS-MIGRATED: import com.google.firebase.database.ValueEventListener;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.api.Singleton;
 import com.terraai.aimobility.codeclasses.AppCompatLocaleActivity;
 import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.codeclasses.Variables;
-import com.terraai.aimobility.databinding.FragmentChatBinding;
+import com.yna.opusaimobilityapp.databinding.FragmentChatBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

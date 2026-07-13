@@ -15,8 +15,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.navigation.NavigationBarView;
 import com.terraai.aimobility.Interface.FirstPageFragmentListener;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentFoodMainBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentFoodMainBinding;
 
 
 public class FoodMainFragment extends Fragment {

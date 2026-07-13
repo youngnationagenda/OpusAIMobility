@@ -18,8 +18,8 @@ import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.ride.loginsignup.ConfirmYourEmalFragment;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentUpdateEmailBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentUpdateEmailBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

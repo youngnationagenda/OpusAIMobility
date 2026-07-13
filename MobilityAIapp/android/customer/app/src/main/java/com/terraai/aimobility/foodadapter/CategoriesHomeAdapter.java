@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.terraai.aimobility.Constants;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.CategoriesModel;
-import com.terraai.aimobility.databinding.ItemCategoriesListBinding;
+import com.yna.opusaimobilityapp.databinding.ItemCategoriesListBinding;
 
 import java.util.ArrayList;
 

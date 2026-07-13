@@ -15,7 +15,7 @@ import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.model.ChildExpandListModel;
 import com.terraai.aimobility.model.ParentExpandListModel;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 import java.util.ArrayList;
 

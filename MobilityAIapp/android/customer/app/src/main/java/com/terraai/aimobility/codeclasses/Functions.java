@@ -56,12 +56,12 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.gms.maps.model.LatLng;
-import com.terraai.aimobility.BuildConfig;
+import com.yna.opusaimobilityapp.BuildConfig;
 import com.terraai.aimobility.Constants;
 import com.terraai.aimobility.Interface.Callback;
 import com.terraai.aimobility.Interface.CallbackResponse;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.model.ResturantModel;
 
 import java.io.ByteArrayOutputStream;

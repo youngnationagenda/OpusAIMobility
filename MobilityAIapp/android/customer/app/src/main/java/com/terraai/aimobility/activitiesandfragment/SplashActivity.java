@@ -17,7 +17,7 @@ import com.terraai.aimobility.codeclasses.Variables;
 import com.terraai.aimobility.food.NoInternetDialog;
 import com.terraai.aimobility.Interface.APICallBack;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.model.ActiveRequestModel;
 import com.terraai.aimobility.ride.activeride.ActiveRideA;
 import com.squareup.retrofitplus.api.RetrofitRequest;

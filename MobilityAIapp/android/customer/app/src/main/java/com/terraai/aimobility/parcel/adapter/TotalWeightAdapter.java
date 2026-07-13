@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.terraai.aimobility.Interface.AdapterClickListener;
-import com.terraai.aimobility.databinding.ItemTotalWeightListBinding;
+import com.yna.opusaimobilityapp.databinding.ItemTotalWeightListBinding;
 import com.terraai.aimobility.parcel.model.PackagesSizeSelectionModel;
 
 import java.util.ArrayList;

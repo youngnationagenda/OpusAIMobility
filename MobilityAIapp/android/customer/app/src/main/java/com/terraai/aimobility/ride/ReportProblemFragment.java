@@ -10,8 +10,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.adapter.ReportAdapter;
 import com.terraai.aimobility.codeclasses.RootFragment;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentReportPromblemBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentReportPromblemBinding;
 
 import java.util.ArrayList;
 

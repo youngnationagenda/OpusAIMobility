@@ -16,10 +16,10 @@ import android.widget.Toast;
 
 import com.terraai.aimobility.Constants;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.MyPreferences;
-import com.terraai.aimobility.databinding.FragmentDeliveryRecipientBinding;
+import com.yna.opusaimobilityapp.databinding.FragmentDeliveryRecipientBinding;
 import com.terraai.aimobility.model.LocationModel;
 import com.terraai.aimobility.parcel.adapter.ParcelChangeAddress;
 import com.terraai.aimobility.parcel.model.RecipientModel;

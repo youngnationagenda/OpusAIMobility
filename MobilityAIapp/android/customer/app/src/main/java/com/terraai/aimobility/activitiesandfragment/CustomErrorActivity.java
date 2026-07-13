@@ -16,7 +16,7 @@ import com.terraai.aimobility.api.ApiInterface;
 import com.terraai.aimobility.api.Singleton;
 import com.terraai.aimobility.codeclasses.AppCompatLocaleActivity;
 import com.terraai.aimobility.codeclasses.Functions;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.codeclasses.Variables;
 import com.squareup.retrofitplus.api.RetrofitRequest;
@@ -46,7 +46,7 @@ public class CustomErrorActivity extends AppCompatLocaleActivity implements View
         RelativeLayout restartButton = findViewById(R.id.restart_button);
         RelativeLayout sendReposrt = findViewById(R.id.send_reposrt);
 
-        if (pacakgeName.contains("qboxus")) {
+        if (pacakgeName.contains("yna")) {
             sendReposrt.setVisibility(View.VISIBLE);
         } else {
             sendReposrt.setVisibility(View.GONE);
