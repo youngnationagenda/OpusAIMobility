@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/colorBackground">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/spacing_md" android:background="@color/colorSurface">
+        <ImageView android:id="@+id/ivBack" android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" android:src="@drawable/ic_back"
+            android:contentDescription="Back"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/earnings_title" android:textSize="@dimen/text_xl"
+            android:textColor="@color/colorTextPrimary" android:fontFamily="@font/poppins_semibold"
+            android:layout_marginStart="@dimen/spacing_md"/>
+    </LinearLayout>
+    <ProgressBar android:id="@+id/progressBar" android:layout_width="40dp"
+        android:layout_height="40dp" android:layout_gravity="center"
+        android:visibility="gone" android:indeterminateTint="@color/colorPrimary"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:padding="@dimen/spacing_md">
+        <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginEnd="6dp"
+            app:cardCornerRadius="12dp" app:cardElevation="2dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="@dimen/spacing_md" android:gravity="center">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/today_label" android:textSize="@dimen/text_sm"
+                    android:textColor="@color/colorTextSecondary"/>
+                <TextView android:id="@+id/tvTodayEarnings" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:text="KSh 0.00"
+                    android:textSize="@dimen/text_2xl" android:textColor="@color/colorPrimary"
+                    android:fontFamily="@font/poppins_bold"/>
+                <TextView android:id="@+id/tvTodayTrips" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:text="0 today"
+                    android:textSize="@dimen/text_sm" android:textColor="@color/colorTextSecondary"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginStart="6dp"
+            app:cardCornerRadius="12dp" app:cardElevation="2dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="@dimen/spacing_md" android:gravity="center">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/total_label" android:textSize="@dimen/text_sm"
+                    android:textColor="@color/colorTextSecondary"/>
+                <TextView android:id="@+id/tvTotalEarnings" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:text="KSh 0.00"
+                    android:textSize="@dimen/text_2xl" android:textColor="@color/colorTextPrimary"
+                    android:fontFamily="@font/poppins_bold"/>
+                <TextView android:id="@+id/tvTotalTrips" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:text="0 total"
+                    android:textSize="@dimen/text_sm" android:textColor="@color/colorTextSecondary"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+    <TextView android:id="@+id/tvWalletBalance" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_gravity="center"
+        android:layout_marginTop="@dimen/spacing_md" android:text="Wallet: KSh 0.00"
+        android:textSize="@dimen/text_lg" android:textColor="@color/colorTextPrimary"
+        android:fontFamily="@font/poppins_medium"/>
+</LinearLayout>
