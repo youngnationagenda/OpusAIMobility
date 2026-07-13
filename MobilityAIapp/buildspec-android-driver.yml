@@ -1,14 +1,11 @@
 # ==============================================================================
-# OpusAIMobility — Android Driver App Only Build Spec
+# OpusAIMobility — Android Driver App Build Spec  (driver-only, ~20 minutes)
 #
-# Use this for driver-app-only builds (faster, ~15 minutes vs full 60 min)
-# Trigger: manual or separate CodeBuild project targeting android/driver/** changes
-#
-# Secrets injected by CodeBuild project environment:
-#   KEYSTORE_PASSWORD  ← opusaimobility/android-keystore:storePassword
-#   KEY_ALIAS          ← opusaimobility/android-keystore:keyAlias
-#   KEY_PASSWORD       ← opusaimobility/android-keystore:keyPassword
-#   GOOGLE_MAPS_KEY    ← terraai/google-maps:GOOGLE_MAPS_KEY
+# Env vars injected from Secrets Manager by CodeBuild project:
+#   KEYSTORE_PASSWORD  <- opusaimobility/android-keystore:storePassword
+#   KEY_ALIAS          <- opusaimobility/android-keystore:keyAlias
+#   KEY_PASSWORD       <- opusaimobility/android-keystore:keyPassword
+#   GOOGLE_MAPS_KEY    <- terraai/google-maps:GOOGLE_MAPS_KEY
 # ==============================================================================
 version: 0.2
 
@@ -28,46 +25,36 @@ phases:
       java: corretto17
       nodejs: 22
     commands:
-      - echo "=== Driver App Install Phase ==="
+      - echo "=== Install Phase ==="
       - java -version
       - echo "JAVA_HOME=$JAVA_HOME"
 
-      # ── Android SDK setup ────────────────────────────────────────────────────
-      - echo "=== Setting up Android SDK ==="
+      # ── Android SDK ────────────────────────────────────────────────────────
+      - echo "Locating Android SDK..."
       - |
-        # Check if Android SDK is already available
-        if [ -d "/usr/local/android-sdk" ]; then
+        # CodeBuild amazonlinux-x86_64-standard:5.0 has Android SDK at $ANDROID_HOME
+        if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME" ]; then
+          echo "SDK found at ANDROID_HOME=$ANDROID_HOME"
+        elif [ -d "/usr/local/android-sdk" ]; then
           export ANDROID_HOME=/usr/local/android-sdk
-        elif [ -d "$HOME/android-sdk" ]; then
-          export ANDROID_HOME=$HOME/android-sdk
-        elif [ -n "$ANDROID_HOME" ]; then
-          echo "ANDROID_HOME already set: $ANDROID_HOME"
+          echo "SDK found at /usr/local/android-sdk"
         else
-          # Install Android SDK command-line tools
           echo "Installing Android SDK command-line tools..."
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd /tmp
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
-          unzip -q cmdline-tools.zip -d /tmp/cmdline-tools-extract
-          mv /tmp/cmdline-tools-extract/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          unzip -q cmdline-tools.zip -d /tmp/clt
+          mv /tmp/clt/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
           export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
-          cd -
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+          cd $CODEBUILD_SRC_DIR
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" 2>&1 | tail -5 || true
         fi
-        export ANDROID_SDK_ROOT=$ANDROID_HOME
-        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/34.0.0
         echo "ANDROID_HOME=$ANDROID_HOME"
 
-        # Accept licenses and install required SDK components
-        yes | sdkmanager --licenses > /dev/null 2>&1 || true
-        sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" > /dev/null 2>&1 || true
-        echo "Android SDK setup complete"
-
-      # Write local.properties with SDK path
-      - echo "sdk.dir=$ANDROID_HOME" > "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/local.properties"
-      - echo "local.properties written: $(cat $CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/local.properties)"
-
-      # Decode keystore
+      # ── Keystore ───────────────────────────────────────────────────────────
+      - echo "Decoding keystore..."
       - |
         aws secretsmanager get-secret-value \
           --secret-id "opusaimobility/android-keystore" \
@@ -75,51 +62,78 @@ phases:
         node -e "
           const s=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
           require('fs').writeFileSync(
-            '$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/opusaimobility-driver.jks',
+            process.env.CODEBUILD_SRC_DIR+'/'+process.env.DRIVER_APP_DIR+'/app/opusaimobility-driver.jks',
             Buffer.from(s.keystoreBase64,'base64')
           );
-          console.log('Keystore decoded:', Buffer.from(s.keystoreBase64,'base64').length, 'bytes');
+          console.log('Keystore decoded:',Buffer.from(s.keystoreBase64,'base64').length,'bytes');
         "
 
-      # Inject Maps key into google-services.json
+      # ── Google services ────────────────────────────────────────────────────
       - |
         node -e "
           const fs=require('fs');
-          const p='$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/google-services.json';
-          const gsj=JSON.parse(fs.readFileSync(p,'utf8'));
-          if(gsj.client&&gsj.client[0]&&gsj.client[0].api_key){
-            gsj.client[0].api_key[0].current_key=process.env.GOOGLE_MAPS_KEY||'';
-            fs.writeFileSync(p,JSON.stringify(gsj,null,2));
-            console.log('Maps key injected into google-services.json');
-          }
+          const p=process.env.CODEBUILD_SRC_DIR+'/'+process.env.DRIVER_APP_DIR+'/app/google-services.json';
+          try {
+            const gsj=JSON.parse(fs.readFileSync(p,'utf8'));
+            if(gsj.client&&gsj.client[0]&&gsj.client[0].api_key){
+              gsj.client[0].api_key[0].current_key=process.env.GOOGLE_MAPS_KEY||'';
+              fs.writeFileSync(p,JSON.stringify(gsj,null,2));
+              console.log('Maps key injected');
+            }
+          } catch(e){console.warn('gsj patch skipped:',e.message);}
         "
 
+      # ── gradlew permissions ────────────────────────────────────────────────
       - chmod +x "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/gradlew"
 
   build:
     commands:
-      - echo "=== Building Driver APK ==="
+      - echo "=== Build Phase ==="
       - BUILD_TS=$(date -u +%Y%m%d-%H%M%S)
-      - COMMIT_SHORT=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-8)
       - |
         cd "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR"
+
+        # Re-export ANDROID_HOME inside this subshell
+        if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME" ]; then
+          echo "Using ANDROID_HOME=$ANDROID_HOME"
+        elif [ -d "/usr/local/android-sdk" ]; then
+          export ANDROID_HOME=/usr/local/android-sdk
+        elif [ -d "$HOME/android-sdk" ]; then
+          export ANDROID_HOME=$HOME/android-sdk
+        fi
+        export ANDROID_SDK_ROOT=$ANDROID_HOME
+
+        # Write local.properties
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+        echo "local.properties: sdk.dir=$ANDROID_HOME"
+
         export KEYSTORE_FILE="$(pwd)/app/opusaimobility-driver.jks"
 
-        echo "Building debug APK..."
+        # Build debug APK
+        echo "--- Building debug APK ---"
         ./gradlew assembleDebug \
-          -PGOOGLE_MAPS_KEY="$GOOGLE_MAPS_KEY" \
-          --no-daemon --build-cache --stacktrace 2>&1 | tail -40
+          "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" \
+          --no-daemon \
+          --build-cache \
+          --stacktrace 2>&1
+        echo "Debug build exit: $?"
 
+        # Build release APK
         if [ -f "$KEYSTORE_FILE" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
-          echo "Building release APK..."
+          echo "--- Building release APK ---"
           ./gradlew assembleRelease \
-            -PGOOGLE_MAPS_KEY="$GOOGLE_MAPS_KEY" \
-            --no-daemon --build-cache --stacktrace 2>&1 | tail -40
+            "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" \
+            --no-daemon \
+            --build-cache \
+            --stacktrace 2>&1
+          echo "Release build exit: $?"
         fi
+
+        ls -la app/build/outputs/apk/ 2>/dev/null || echo "No APK output directory found"
 
   post_build:
     commands:
-      - echo "=== Uploading APKs ==="
+      - echo "=== Post-Build Upload ==="
       - BUILD_TS=$(date -u +%Y%m%d-%H%M%S)
       - COMMIT_SHORT=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-8)
       - APK_DIR="$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/build/outputs/apk"
@@ -129,7 +143,10 @@ phases:
             "s3://$S3_APK_BUCKET/driver/debug/aimobility-driver-debug-${BUILD_TS}-${COMMIT_SHORT}.apk"
           aws s3 cp "$APK_DIR/debug/app-debug.apk" \
             "s3://$S3_APK_BUCKET/driver/debug/aimobility-driver-debug-latest.apk"
-          echo "Debug APK: https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/debug/aimobility-driver-debug-latest.apk"
+          echo "DEBUG APK: https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/debug/aimobility-driver-debug-latest.apk"
+        else
+          echo "WARNING: No debug APK found at $APK_DIR/debug/"
+          ls -la "$APK_DIR/" 2>/dev/null || true
         fi
       - |
         if [ -f "$APK_DIR/release/app-release.apk" ]; then
@@ -137,9 +154,9 @@ phases:
             "s3://$S3_APK_BUCKET/driver/release/aimobility-driver-${BUILD_TS}-${COMMIT_SHORT}.apk"
           aws s3 cp "$APK_DIR/release/app-release.apk" \
             "s3://$S3_APK_BUCKET/driver/release/aimobility-driver-latest.apk"
-          echo "Release APK: https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/release/aimobility-driver-latest.apk"
+          echo "RELEASE APK: https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/release/aimobility-driver-latest.apk"
         fi
-      - echo "Driver APK build complete"
+      - echo "Driver build #$CODEBUILD_BUILD_NUMBER complete at $BUILD_TS"
 
 artifacts:
   files:
