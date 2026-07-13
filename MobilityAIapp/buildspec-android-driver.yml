@@ -116,25 +116,11 @@ phases:
 
   post_build:
     commands:
-      - echo "=== Post-Build ==="
-      - echo "CODEBUILD_SRC_DIR=$CODEBUILD_SRC_DIR"
-      - ls "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/build/outputs/apk/" 2>/dev/null || echo "apk dir missing"
-      - find "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR" -name "*.apk" 2>/dev/null | head -5 || echo "no apk found"
-      - |
-        APK_DIR="$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/build/outputs/apk"
-        APK="$APK_DIR/debug/app-debug.apk"
-        echo "Checking for APK at: $APK"
-        if [ -f "$APK" ]; then
-          TS=$(date -u +%Y%m%d-%H%M%S)
-          COMMIT=$(echo "$CODEBUILD_RESOLVED_SOURCE_VERSION" | cut -c1-8)
-          aws s3 cp "$APK" "s3://$S3_APK_BUCKET/driver/debug/aimobility-driver-debug-${TS}-${COMMIT}.apk" --region us-east-1
-          aws s3 cp "$APK" "s3://$S3_APK_BUCKET/driver/debug/aimobility-driver-debug-latest.apk" --region us-east-1
-          echo "SUCCESS: https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/debug/aimobility-driver-debug-latest.apk"
-        else
-          echo "APK not found - checking build outputs..."
-          find "$APK_DIR" -type f 2>/dev/null | head -10 || echo "APK dir empty or missing"
-        fi
-      - echo "Post-build done"
+      - echo POST_BUILD_START
+      - ls "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/build/" 2>&1 || true
+      - find "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/build" -name "*.apk" 2>&1 || true
+      - test -f "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/build/outputs/apk/debug/app-debug.apk" && aws s3 cp "$CODEBUILD_SRC_DIR/$DRIVER_APP_DIR/app/build/outputs/apk/debug/app-debug.apk" "s3://$S3_APK_BUCKET/driver/debug/aimobility-driver-debug-latest.apk" --region us-east-1 && echo APK_UPLOADED || echo APK_NOT_FOUND
+      - echo POST_BUILD_END
 
 artifacts:
   files:
