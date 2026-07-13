@@ -2,32 +2,33 @@
   "project_info": {
     "project_number": "113167999384360995568",
     "project_id": "opusaimobility",
-    "storage_bucket": "opusaimobility.appspot.com"
+    "storage_bucket": "opusaimobility.appspot.com",
+    "firebase_url": "https://opusaimobility-default-rtdb.firebaseio.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:113167999384360995568:android:opusaimobility",
+        "mobilesdk_app_id": "1:113167999384360995568:android:customerapp00000001",
         "android_client_info": {
           "package_name": "com.yna.opusaimobilityapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "113167999384360995568-default.apps.googleusercontent.com",
+          "client_id": "113167999384360995568-web.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "REPLACE_WITH_FIREBASE_WEB_API_KEY_FROM_CONSOLE"
+          "current_key": "GOOGLE_MAPS_KEY_PLACEHOLDER"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "113167999384360995568-default.apps.googleusercontent.com",
+              "client_id": "113167999384360995568-web.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
