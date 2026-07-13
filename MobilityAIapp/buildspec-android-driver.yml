@@ -104,10 +104,12 @@ phases:
 
         export KEYSTORE_FILE="$(pwd)/app/opusaimobility-driver.jks"
 
-        echo "--- Gradle clean assembleDebug ---"
-        ./gradlew clean assembleDebug \
+        echo "--- Gradle assembleDebug (no cache) ---"
+        ./gradlew assembleDebug \
           "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" \
           --no-daemon \
+          --no-build-cache \
+          --rerun-tasks \
           --stacktrace 2>&1
         GRADLE_EXIT=$?
         echo "Gradle debug exit: $GRADLE_EXIT"
@@ -130,6 +132,4 @@ artifacts:
 
 cache:
   paths:
-    - /root/.gradle/caches/**/*
     - /root/.gradle/wrapper/**/*
-    - MobilityAIapp/android/driver/.gradle/**/*
