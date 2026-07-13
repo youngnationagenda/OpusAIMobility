@@ -116,6 +116,12 @@ android {
 configurations.all {
     resolutionStrategy.force 'org.bouncycastle:bcprov-jdk15on:1.70'
     resolutionStrategy.force 'org.bouncycastle:bcpkix-jdk15on:1.70'
+    // Fix: WorkManager duplicate classes conflict
+    resolutionStrategy.force 'androidx.work:work-runtime:2.8.1'
+    resolutionStrategy.force 'androidx.work:work-runtime-ktx:2.8.1'
+    // Fix: AWS SDK SNS Kotlin metadata conflict
+    resolutionStrategy.force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.21'
+    resolutionStrategy.force 'org.jetbrains.kotlin:kotlin-stdlib-common:1.8.21'
 }
 
 dependencies {
