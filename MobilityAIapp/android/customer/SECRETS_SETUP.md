@@ -82,3 +82,36 @@ it degrades gracefully.
 - Any file containing raw keystore passwords
 
 They are already in `.gitignore`. Double-check before pushing.
+
+---
+
+## 3. Firebase `google-services.json` (`GOOGLE_SERVICES_JSON`)
+
+Required for: Firebase Crashlytics, Analytics, Realtime Database, GeoFire.
+The `com.google.gms.google-services` Gradle plugin reads this file at build time.
+
+**How to get it:**
+1. Go to https://console.firebase.google.com
+2. Open the **OpusAIMobility** project (or create it)
+3. Android app → package name: `com.yna.opusaimobilityapp`
+4. Download `google-services.json`
+
+**Encode and store:**
+```bash
+# macOS / Linux
+base64 -i google-services.json | pbcopy   # copies to clipboard
+
+# Windows (PowerShell)
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("google-services.json")) | clip
+```
+
+Add it as GitHub secret: **`GOOGLE_SERVICES_JSON`**
+
+| Secret Name             | Value                                      |
+|-------------------------|--------------------------------------------|
+| `GOOGLE_SERVICES_JSON` | base64-encoded `google-services.json`     |
+
+**What happens without it?**
+CI will write a stub `google-services.json` with no real credentials.
+The app will compile but Firebase services (Crashlytics, Analytics, GeoFire)
+will not function at runtime until the real file is provided.
