@@ -127,19 +127,16 @@ public class WebSocketService extends Service {
             Intent broadcast = null;
             switch (action) {
                 case "ride_request":
-                case Constants.WS_ACTION_RIDE_REQUEST:
                     broadcast = new Intent(ACTION_RIDE_REQUEST);
                     broadcast.putExtra("data", text);
                     break;
 
                 case "delivery_request":
-                case Constants.WS_ACTION_DELIVERY_REQ:
                     broadcast = new Intent(ACTION_DELIVERY_REQUEST);
                     broadcast.putExtra("data", text);
                     break;
 
                 case "ride_cancel":
-                case Constants.WS_ACTION_RIDE_CANCEL:
                     broadcast = new Intent(ACTION_RIDE_CANCEL);
                     broadcast.putExtra("data", text);
                     break;
@@ -150,7 +147,19 @@ public class WebSocketService extends Service {
                     break;
 
                 default:
-                    Log.d(TAG, "Unknown WS action: " + action);
+                    // Also check constants for non-literal values
+                    if (action.equals(Constants.WS_ACTION_RIDE_REQUEST)) {
+                        broadcast = new Intent(ACTION_RIDE_REQUEST);
+                        broadcast.putExtra("data", text);
+                    } else if (action.equals(Constants.WS_ACTION_DELIVERY_REQ)) {
+                        broadcast = new Intent(ACTION_DELIVERY_REQUEST);
+                        broadcast.putExtra("data", text);
+                    } else if (action.equals(Constants.WS_ACTION_RIDE_CANCEL)) {
+                        broadcast = new Intent(ACTION_RIDE_CANCEL);
+                        broadcast.putExtra("data", text);
+                    } else {
+                        Log.d(TAG, "Unknown WS action: " + action);
+                    }
             }
 
             if (broadcast != null) {
