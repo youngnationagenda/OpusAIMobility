@@ -156,13 +156,13 @@ phases:
             "s3://$S3_APK_BUCKET/driver/release/aimobility-driver-latest.apk"
           echo "RELEASE APK: https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/release/aimobility-driver-latest.apk"
         fi
-      - echo "Driver build complete: build number $CODEBUILD_BUILD_NUMBER"
+      - echo Driver build complete
 
 artifacts:
   files:
     - MobilityAIapp/android/driver/app/build/outputs/apk/**/*
   discard-paths: no
-  name: driver-apk-$CODEBUILD_BUILD_NUMBER
+  name: driver-apk-artifacts
 
 cache:
   paths:
