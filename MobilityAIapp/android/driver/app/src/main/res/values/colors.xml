@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1B5E20</color>
-    <color name="colorPrimaryDark">#003300</color>
+    <!-- Primary brand colours — aimobility deep green -->
+    <color name="colorPrimary">#0D6E31</color>
+    <color name="colorPrimaryDark">#094D22</color>
+    <color name="colorPrimaryLight">#1A9145</color>
     <color name="colorAccent">#00E676</color>
+    <color name="colorAccentDark">#00B248</color>
+
+    <!-- Background -->
+    <color name="colorBackground">#F8F9FA</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorSurfaceVariant">#F1F3F5</color>
+
+    <!-- Text -->
+    <color name="colorTextPrimary">#1A1A2E</color>
+    <color name="colorTextSecondary">#6B7280</color>
+    <color name="colorTextHint">#9CA3AF</color>
+    <color name="colorTextOnPrimary">#FFFFFF</color>
+
+    <!-- Status indicators -->
+    <color name="colorOnline">#0D6E31</color>
+    <color name="colorOffline">#6B7280</color>
+    <color name="colorError">#EF4444</color>
+    <color name="colorWarning">#F59E0B</color>
+    <color name="colorSuccess">#10B981</color>
+
+    <!-- Ride status colours -->
+    <color name="statusPending">#F59E0B</color>
+    <color name="statusAccepted">#3B82F6</color>
+    <color name="statusActive">#0D6E31</color>
+    <color name="statusCompleted">#10B981</color>
+    <color name="statusCancelled">#EF4444</color>
+
+    <!-- Map overlay -->
+    <color name="colorMapRoute">#0D6E31</color>
+    <color name="colorMapPickup">#3B82F6</color>
+    <color name="colorMapDropoff">#EF4444</color>
+
+    <!-- Bottom nav -->
+    <color name="bottomNavSelected">#0D6E31</color>
+    <color name="bottomNavUnselected">#9CA3AF</color>
+
+    <!-- Divider -->
+    <color name="colorDivider">#E5E7EB</color>
+
+    <!-- Card shadow -->
+    <color name="colorCardStroke">#E5E7EB</color>
+
+    <!-- White / Black -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
 </resources>
