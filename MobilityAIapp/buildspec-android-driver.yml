@@ -114,7 +114,7 @@ phases:
         ./gradlew assembleDebug \
           "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" \
           --no-daemon \
-          --build-cache \
+          --rerun-tasks \
           --stacktrace 2>&1
         echo "Debug build exit: $?"
 
@@ -124,12 +124,12 @@ phases:
           ./gradlew assembleRelease \
             "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" \
             --no-daemon \
-            --build-cache \
+            --rerun-tasks \
             --stacktrace 2>&1
           echo "Release build exit: $?"
         fi
 
-        ls -la app/build/outputs/apk/ 2>/dev/null || echo "No APK output directory found"
+        find . -name "*.apk" 2>/dev/null | head -10 || echo "No APK files found in build"
 
   post_build:
     commands:
