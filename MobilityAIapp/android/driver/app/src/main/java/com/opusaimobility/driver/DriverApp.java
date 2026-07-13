@@ -14,7 +14,7 @@ import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-import io.paperdb.Paper;
+// PaperDB removed — using SharedPreferences and Room instead
 
 /**
  * DriverApp — Application class for OpusAIMobility Driver App
@@ -39,7 +39,6 @@ public class DriverApp extends MultiDexApplication {
         initAmplify();
         initFirebase();
         createNotificationChannels();
-        Paper.init(this);
         NetworkSingleton.init(this);
 
         Log.i(TAG, "DriverApp initialised — role: " + Constants.APP_ROLE);
