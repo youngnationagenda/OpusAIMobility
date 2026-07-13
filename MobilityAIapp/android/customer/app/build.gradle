@@ -20,11 +20,25 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        // Explicit package scope ensures connectedAndroidTest discovers
-        // tests under com.yna.opusaimobilityapp after the package rename.
         testInstrumentationRunnerArguments(
             package: "com.yna.opusaimobilityapp"
         )
+
+        // ── AWS & Backend build-time constants ────────────────────────────────
+        buildConfigField "String", "BASE_URL",             '"https://opusaimobility.yna.co.ke/"'
+        buildConfigField "String", "API_URL",              '"https://opusaimobility.yna.co.ke/api/"'
+        buildConfigField "String", "WS_ENDPOINT",          '"wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod"'
+        buildConfigField "String", "COGNITO_USER_POOL_ID", '"us-east-1_LKa4ElQem"'
+        buildConfigField "String", "COGNITO_CLIENT_ID",    '"2am01r4fmsp0s08991ftgub887"'
+        buildConfigField "String", "COGNITO_IDENTITY_POOL",'"us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38"'
+        buildConfigField "String", "S3_BUCKET",            '"opusaimobility-assets-prod"'
+        buildConfigField "String", "CDN_BASE_URL",         '"https://d22up4o3zhu9gf.cloudfront.net"'
+        buildConfigField "String", "SNS_TOPIC",            '"arn:aws:sns:us-east-1:683541453923:opusaimobility-notifications"'
+
+        // ── Google Maps key — injected from GOOGLE_MAPS_KEY env var at build time
+        def mapsKey = project.findProperty("GOOGLE_MAPS_KEY") ?: System.getenv("GOOGLE_MAPS_KEY") ?: ""
+        manifestPlaceholders = [googleMapsKey: mapsKey]
+        resValue "string", "google_map_key", mapsKey
     }
 
     buildFeatures {
@@ -111,6 +125,12 @@ android {
 configurations.all {
     resolutionStrategy.force 'org.bouncycastle:bcprov-jdk15on:1.70'
     resolutionStrategy.force 'org.bouncycastle:bcpkix-jdk15on:1.70'
+    // Fix WorkManager duplicate classes (AWS SDK pulls in older ktx version)
+    resolutionStrategy.force 'androidx.work:work-runtime:2.8.1'
+    resolutionStrategy.force 'androidx.work:work-runtime-ktx:2.8.1'
+    // Fix Kotlin stdlib conflicts from Firebase + AWS SDK
+    resolutionStrategy.force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.21'
+    resolutionStrategy.force 'org.jetbrains.kotlin:kotlin-stdlib-common:1.8.21'
 }
 
 dependencies {
@@ -218,25 +238,26 @@ dependencies {
     // Rating bar
     implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
 
-    // Tree RecyclerView (parcel expandable list)
+    // Tree RecyclerView (parcel expandable list) — JitPack
     implementation 'com.github.TellH:RecyclerTreeView:1.2.0'
 
-    // Page Indicator
+    // Page Indicator — JitPack
     implementation 'com.github.chahine:pageindicator:0.2.8'
 
-    // Image Cropper (vanniktech — upgraded from Edmodo)
+    // Image Cropper (vanniktech — Maven Central)
     implementation 'com.vanniktech:android-image-cropper:4.3.3'
 
-    // Custom crash activity
-    implementation 'cat.ereza:customactivityoncrash:2.3.0'
+    // Custom crash activity — JitPack (remove if build fails, use Firebase Crashlytics instead)
+    // implementation 'cat.ereza:customactivityoncrash:2.3.0'
 
-    // Card IO (payment card scan)
-    implementation 'io.card:android-sdk:5.5.1'
+    // Card IO (payment card scan) — bundled in libs/ or skip
+    // implementation 'io.card:android-sdk:5.5.1'
 
-    // PaperDB (lightweight local storage — bundled AAR from libs/)
-
-    // MPAndroidChart (telemetry screen)
+    // MPAndroidChart (telemetry screen) — JitPack
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // WorkManager (fix duplicate classes from AWS SDK transitive dep)
+    implementation 'androidx.work:work-runtime:2.8.1'
 
     // WorkManager constraint
     constraints {
