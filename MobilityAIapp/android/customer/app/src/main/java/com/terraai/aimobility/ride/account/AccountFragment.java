@@ -35,7 +35,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.terraai.aimobility.Constants;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.activitiesandfragment.LoginActivity;
 import com.terraai.aimobility.activitiesandfragment.SelectLanguageF;
 import com.terraai.aimobility.api.Singleton;
@@ -44,7 +44,7 @@ import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.PermissionUtils;
 import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.codeclasses.MyPreferences;
-import com.terraai.aimobility.databinding.FragmentAccountBinding;
+import com.yna.opusaimobilityapp.databinding.FragmentAccountBinding;
 import com.terraai.aimobility.ride.NotificationFragment;
 import com.terraai.aimobility.ride.ReportProblemFragment;
 import com.terraai.aimobility.ride.WebViewFragment;

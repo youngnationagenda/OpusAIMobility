@@ -9,8 +9,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentPayWithBottomSheetBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentPayWithBottomSheetBinding;
 
 
 public class PayWithBottomSheetFragment extends BottomSheetDialogFragment implements View.OnClickListener {

@@ -15,8 +15,8 @@ import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Constants;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.YourOrdersModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.ItemYourOrdersListBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.ItemYourOrdersListBinding;
 
 import java.util.ArrayList;
 

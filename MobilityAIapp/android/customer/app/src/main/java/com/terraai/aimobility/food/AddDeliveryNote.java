@@ -36,8 +36,8 @@ import com.terraai.aimobility.Interface.FragmentCallBack;
 import com.terraai.aimobility.mapclasses.MapWorker;
 import com.terraai.aimobility.model.ConfirmLocationModel;
 import com.terraai.aimobility.model.NearbyModelClass;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentAddDeliveryNoteBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentAddDeliveryNoteBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 
 import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentThankyouBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentThankyouBinding;
 
 
 public class ThankYouFragment extends RootFragment implements View.OnClickListener {

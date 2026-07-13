@@ -31,9 +31,9 @@ import com.terraai.aimobility.model.ChildExpandListModel;
 import com.terraai.aimobility.model.MenuDetailsModel;
 import com.terraai.aimobility.model.ParentExpandListModel;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.DateSheduleDialogFoodBinding;
-import com.terraai.aimobility.databinding.FragmentAddToCartBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.DateSheduleDialogFoodBinding;
+import com.yna.opusaimobilityapp.databinding.FragmentAddToCartBinding;
 
 import java.util.ArrayList;
 import java.util.Calendar;

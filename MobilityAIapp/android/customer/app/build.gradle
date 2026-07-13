@@ -1,14 +1,18 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
     compileSdk 34
     buildToolsVersion "34.0.0"
-    namespace "com.terraai.aimobility"
+    // namespace aligns with applicationId and the primary Java package root
+    // com.terraai.aimobility lives in the :pdf sub-module with its own namespace
+    namespace "com.yna.opusaimobilityapp"
 
     defaultConfig {
-        applicationId "com.opusaimobility.customer"
+        applicationId "com.yna.opusaimobilityapp"
         minSdk 24
         targetSdk 34
         versionCode 7
@@ -16,6 +20,11 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // Explicit package scope ensures connectedAndroidTest discovers
+        // tests under com.yna.opusaimobilityapp after the package rename.
+        testInstrumentationRunnerArguments(
+            package: "com.yna.opusaimobilityapp"
+        )
     }
 
     buildFeatures {
@@ -25,9 +34,6 @@ android {
 
     signingConfigs {
         release {
-            // Populated at CI time via GITHUB_ENV set by the keystore step.
-            // The null+empty guard prevents file(null) crashing Gradle config phase
-            // when secrets are absent (debug builds, PRs, forks).
             def ksFile = System.getenv("KEYSTORE_FILE")
             if (ksFile != null && !ksFile.isEmpty()) {
                 storeFile     file(ksFile)
@@ -40,15 +46,9 @@ android {
 
     buildTypes {
         release {
-            // ── R8 full-mode shrinking + obfuscation ──────────────────────────
-            // Enables dead-code elimination, resource shrinking, and identifier
-            // obfuscation.  Rules in proguard-rules.pro guard every library that
-            // uses reflection, JNI, or serialisation at runtime.
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            // Use release signing only when keystore env vars are present.
-            // Falls back to debug signing so local + PR builds still work.
             def ksFile = System.getenv("KEYSTORE_FILE")
             if (ksFile != null && !ksFile.isEmpty()) {
                 signingConfig signingConfigs.release
@@ -65,11 +65,8 @@ android {
     lint {
         checkReleaseBuilds  false
         abortOnError        false
-        // Do not re-run lint on :pdf and :libraries:pinview dependency classes —
-        // each library module's own lint block already covers them.
-        // This also prevents prepareLintJarForPublish cascade into :app's
-        // lint task graph.
         checkDependencies   false
+        checkTestSources    true   // also lint androidTest + test source sets
         quiet               true
         disable 'GradleDependency', 'ObsoleteSdkInt'
     }
@@ -112,7 +109,6 @@ android {
 }
 
 configurations.all {
-    // Single BouncyCastle version — prevents AWS SDK vs iText7 daemon thread crash
     resolutionStrategy.force 'org.bouncycastle:bcprov-jdk15on:1.70'
     resolutionStrategy.force 'org.bouncycastle:bcpkix-jdk15on:1.70'
 }
@@ -120,10 +116,10 @@ configurations.all {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
 
-    // ── PDF module (release only — iText7 excluded from debug builds) ─────────
+    // PDF module
     implementation project(':pdf')
 
-    // ── AndroidX ─────────────────────────────────────────────────────────────
+    // AndroidX
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -135,82 +131,115 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.0-alpha02'
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    // ── Room ─────────────────────────────────────────────────────────────────
+    // Room
+    implementation 'androidx.room:room-common:2.4.0'
     implementation 'androidx.room:room-runtime:2.4.0'
     annotationProcessor 'androidx.room:room-compiler:2.4.0'
 
-    // ── Material Design ───────────────────────────────────────────────────────
+    // Material Design
     implementation 'com.google.android.material:material:1.4.0'
 
-    // ── Tests ─────────────────────────────────────────────────────────────────
+    // Tests
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    // ── AWS Amplify ───────────────────────────────────────────────────────────
+    // AWS Amplify
     implementation 'com.amplifyframework:aws-auth-cognito:2.14.0'
     implementation 'com.amplifyframework:aws-storage-s3:2.14.0'
     implementation 'com.amplifyframework:core:2.14.0'
 
-    // ── AWS Android SDK ───────────────────────────────────────────────────────
+    // AWS Android SDK
     implementation 'com.amazonaws:aws-android-sdk-core:2.72.0'
     implementation 'com.amazonaws:aws-android-sdk-sns:2.72.0'
     implementation 'com.amazonaws:aws-android-sdk-s3:2.72.0'
 
-    // ── Image Loading ─────────────────────────────────────────────────────────
-    implementation 'com.github.bumptech.glide:glide:4.15.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
+    // Firebase BOM (from OpusAIMobility source integration)
+    implementation platform('com.google.firebase:firebase-bom:30.3.1')
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-core'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.firebase:geofire-android:3.1.0'
+
+    // Google Auth / GMS
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+    implementation 'com.google.android.gms:play-services-awareness:18.0.2'
+
+    // Google Maps & Location
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.libraries.places:places:2.5.0'
+    implementation 'com.google.maps.android:android-maps-utils:2.3.0'
+    implementation 'com.google.android.gms:play-services-base:18.0.1'
+    implementation 'com.google.maps:google-maps-services:0.1.20'
+
+    // Facebook
+    implementation 'com.facebook.android:facebook-login:15.0.2'
     implementation 'com.facebook.fresco:fresco:2.6.0'
     implementation 'com.facebook.fresco:imagepipeline-okhttp3:2.6.0'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
-    // ── Networking ────────────────────────────────────────────────────────────
+    // Image Loading
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
+
+    // Networking
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
 
-    // ── Google Maps & Location ────────────────────────────────────────────────
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
-    implementation 'com.google.android.libraries.places:places:2.5.0'
-    implementation 'com.google.maps.android:android-maps-utils:2.3.0'
-    implementation 'com.google.android.gms:play-services-base:18.0.1'
-
-    // ── JSON ──────────────────────────────────────────────────────────────────
+    // JSON
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.13.3'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.3'
 
-    // ── UI — Maven Central ────────────────────────────────────────────────────
+    // Sizing helpers
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'joda-time:joda-time:2.10.14'
-    implementation 'com.hbb20:ccp:2.7.0'
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    implementation 'at.blogc:expandabletextview:1.0.5'
-    implementation 'cat.ereza:customactivityoncrash:2.4.0'
-    implementation 'com.vanniktech:android-image-cropper:4.5.0'
 
-    // ── UI — JitPack ──────────────────────────────────────────────────────────
+    // Country Code Picker
+    implementation 'com.hbb20:ccp:2.5.0'
+    implementation 'com.github.joielechong:countrycodepicker:2.4.2'
+
+    // OTP / PIN view (local module + bundled AAR)
+    implementation project(':libraries:pinview')
+
+    // Link builder
+    implementation 'com.klinkerapps:link_builder:2.0.5'
+
+    // Rating bar
+    implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
+
+    // Tree RecyclerView (parcel expandable list)
     implementation 'com.github.TellH:RecyclerTreeView:1.2.0'
 
-    // ── Custom Views ──────────────────────────────────────────────────────────
-    // PinView — local library module, zero external deps, same com.chaos.view API
-    implementation project(':libraries:pinview')
-    // MaterialRatingBar — Maven Central
-    implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
-    // CircleIndicator2 replaces abandoned chahinem/pageindicator (Maven Central)
-    implementation 'me.relex:circleindicator:2.1.6'
-    // RangeSlider from Material Components replaces abandoned appyvet/MaterialRangeBar
-    // (com.google.android.material:material already declared above — no extra dep needed)
+    // Page Indicator
+    implementation 'com.github.chahine:pageindicator:0.2.8'
 
-    // ── Charts — TERRA-081 Telemetry Screen ───────────────────────────────────
+    // Image Cropper (vanniktech — upgraded from Edmodo)
+    implementation 'com.vanniktech:android-image-cropper:4.3.3'
+
+    // Custom crash activity
+    implementation 'cat.ereza:customactivityoncrash:2.3.0'
+
+    // Card IO (payment card scan)
+    implementation 'io.card:android-sdk:5.5.1'
+
+    // PaperDB (lightweight local storage — bundled AAR from libs/)
+
+    // MPAndroidChart (telemetry screen)
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-
-    // ── Single Date & Time Picker (PlaceOrdersFragment, RideOrRentFragment) ───
-
-    // ── iText7 (OrderDetailsFragment — PDF generation) ───────────────────────
-    // iText7 via :pdf module (release only) — already declared as releaseImplementation project(':pdf')
+    // WorkManager constraint
+    constraints {
+        implementation('androidx.work:work-runtime:2.7.0')
+    }
 }

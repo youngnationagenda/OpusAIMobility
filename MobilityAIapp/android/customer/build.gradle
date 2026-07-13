@@ -1,4 +1,4 @@
-// Top-level build file — OpusAIMobility Customer (AWS backend, no Firebase)
+// Top-level build file — OpusAIMobility Customer (AWS + Firebase backend)
 buildscript {
     repositories {
         google()
@@ -7,6 +7,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.1.4'
+        classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
     }
 }
 
@@ -22,6 +24,9 @@ allprojects {
                 credentials { username authToken }
             }
         }
+
+        // JCenter (read-only archive for legacy libraries)
+        maven { url "https://jcenter.bintray.com" }
 
         // AWS Amplify
         maven { url "https://aws-amplify.github.io/amplify-android/releases" }

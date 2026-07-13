@@ -23,8 +23,8 @@ import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.Interface.FragmentCallBack;
 import com.terraai.aimobility.model.UserInfoModelClass;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentLoginOrSignupBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentLoginOrSignupBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

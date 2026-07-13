@@ -13,7 +13,7 @@ import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.FoodListModel;
-import com.terraai.aimobility.databinding.ItemFoodListListBinding;
+import com.yna.opusaimobilityapp.databinding.ItemFoodListListBinding;
 
 import java.util.ArrayList;
 import java.util.HashMap;

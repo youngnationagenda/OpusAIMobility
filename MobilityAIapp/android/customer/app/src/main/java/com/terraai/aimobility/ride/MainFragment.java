@@ -15,7 +15,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.terraai.aimobility.adapter.ViewPagerAdapter;
 import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.codeclasses.CustomViewPager;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 
 public class MainFragment extends RootFragment {

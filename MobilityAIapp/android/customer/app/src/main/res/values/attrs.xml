@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- AnchorBottomSheetBehavior -->
     <declare-styleable name="AnchorBottomSheetBehavior_Layout">
         <attr name="behavior_anchorOffset" format="dimension" />
         <attr name="behavior_defaultState" format="enum">
@@ -13,7 +11,7 @@
         <attr name="behavior_skipAnchored" format="boolean" />
     </declare-styleable>
 
-    <!-- LoadingButton -->
+
     <declare-styleable name="LoadingButton">
         <attr name="text" format="string" localization="suggested" />
         <attr name="textColor" format="color" />
@@ -23,131 +21,26 @@
         <attr name="progressColor" format="color"/>
     </declare-styleable>
 
-    <!-- Fresco SimpleDraweeView stubs -->
-    <declare-styleable name="GenericDraweeHierarchy">
-        <attr name="actualImageScaleType" format="enum">
-            <enum name="center" value="4"/>
-            <enum name="centerCrop" value="5"/>
-            <enum name="centerInside" value="6"/>
-            <enum name="fitCenter" value="7"/>
-            <enum name="fitEnd" value="8"/>
-            <enum name="fitStart" value="9"/>
-            <enum name="fitXY" value="10"/>
-            <enum name="focusCrop" value="11"/>
-        </attr>
-        <attr name="placeholderImageScaleType" format="enum">
-            <enum name="center" value="4"/>
-            <enum name="centerCrop" value="5"/>
-            <enum name="centerInside" value="6"/>
-            <enum name="fitCenter" value="7"/>
-            <enum name="fitEnd" value="8"/>
-            <enum name="fitStart" value="9"/>
-            <enum name="fitXY" value="10"/>
-            <enum name="focusCrop" value="11"/>
-        </attr>
-        <attr name="placeholderImage" format="reference|color" />
-        <attr name="failureImage" format="reference|color" />
-        <attr name="failureImageScaleType" format="enum">
-            <enum name="fitCenter" value="7"/>
-        </attr>
-        <attr name="retryImage" format="reference|color" />
-        <attr name="retryImageScaleType" format="enum">
-            <enum name="fitCenter" value="7"/>
-        </attr>
-        <attr name="progressBarImage" format="reference|color" />
-        <attr name="progressBarImageScaleType" format="enum">
-            <enum name="fitCenter" value="7"/>
-        </attr>
-        <attr name="progressBarAutoRotateInterval" format="integer" />
-        <attr name="backgroundImage" format="reference|color" />
-        <attr name="overlayImage" format="reference|color" />
-        <attr name="pressedStateOverlayImage" format="reference|color" />
-        <attr name="roundAsCircle" format="boolean" />
-        <attr name="roundedCornerRadius" format="dimension" />
-        <attr name="roundTopLeft" format="boolean" />
-        <attr name="roundTopRight" format="boolean" />
-        <attr name="roundBottomLeft" format="boolean" />
-        <attr name="roundBottomRight" format="boolean" />
-        <attr name="roundWithOverlayColor" format="color" />
-        <attr name="roundingBorderWidth" format="dimension" />
-        <attr name="roundingBorderColor" format="color" />
-        <attr name="roundingBorderPadding" format="dimension" />
-        <attr name="fadeDuration" format="integer" />
-        <attr name="viewAspectRatio" format="float" />
-    </declare-styleable>
-
-    <!-- SingleDateAndTimePicker stubs -->
     <declare-styleable name="SingleDateAndTimePicker">
         <attr name="picker_curved" format="boolean" />
         <attr name="picker_cyclic" format="boolean" />
-        <attr name="picker_visibleItemCount" format="integer" />
+        <attr name="picker_textColor" format="color" />
         <attr name="picker_selectedTextColor" format="color" />
+        <attr name="picker_selectorColor" format="color" />
         <attr name="picker_textSize" format="dimension" />
+        <attr name="picker_visibleItemCount" format="integer" />
         <attr name="picker_itemSpacing" format="dimension" />
-        <attr name="picker_displayDays" format="boolean" />
-        <attr name="picker_displayDaysOfMonth" format="boolean" />
-        <attr name="picker_displayMonth" format="boolean" />
         <attr name="picker_displayHours" format="boolean" />
         <attr name="picker_displayMinutes" format="boolean" />
+        <attr name="picker_displayDays" format="boolean" />
+        <attr name="picker_displayMonth" format="boolean" />
         <attr name="picker_displayYears" format="boolean" />
+        <attr name="picker_displayDaysOfMonth" format="boolean" />
+        <attr name="picker_displayMonthNumbers" format="boolean" />
         <attr name="picker_mustBeOnFuture" format="boolean" />
         <attr name="picker_dayCount" format="integer" />
-        <attr name="picker_textColor" format="color" />
-        <attr name="picker_selectorColor" format="color" />
         <attr name="picker_stepSizeMinutes" format="integer" />
         <attr name="picker_stepSizeHours" format="integer" />
-        <attr name="picker_textColorCenter" format="color" />
-        <attr name="picker_backgroundColor" format="color" />
-        <attr name="picker_showOnlyFutureDate" format="boolean" />
-    </declare-styleable>
-
-    <!-- PinView attrs declared in :libraries:pinview module -->
-
-    <!-- CountryCodePicker (hbb20) stubs -->
-    <declare-styleable name="CountryCodePicker">
-        <attr name="ccp_defaultCode" format="integer" />
-        <attr name="ccp_showFlag" format="boolean" />
-        <attr name="ccp_showFullName" format="boolean" />
-        <attr name="ccp_textColor" format="color" />
-        <attr name="ccp_backgroundAlpha" format="float" />
-        <attr name="ccp_hidePhoneCode" format="boolean" />
-        <attr name="ccp_enablePhoneAutoFormatter" format="boolean" />
-        <attr name="ccp_hideNameCode" format="boolean" />
-        <attr name="ccp_arrowColor" format="color" />
-        <attr name="ccp_defaultPhoneCode" format="string" />
-        <attr name="ccp_showArrow" format="boolean" />
-        <attr name="ccp_textGravity" format="enum">
-            <enum name="left" value="0" />
-            <enum name="center" value="1" />
-            <enum name="right" value="2" />
-        </attr>
-        <attr name="ccp_codeFontSize" format="dimension" />
-        <attr name="ccp_nameFontSize" format="dimension" />
-        <attr name="ccp_showNameCode" format="boolean" />
-        <attr name="ccp_contentColor" format="color" />
-        <attr name="ccp_flagBorderColor" format="color" />
-        <attr name="ccp_countryPreference" format="string" />
-        <attr name="ccp_enableTint" format="boolean" />
-        <attr name="ccp_tintColor" format="color" />
-        <attr name="ccp_flagSize" format="dimension" />
-        <attr name="ccp_enableDialogInitialScrollToSelection" format="boolean" />
-        <attr name="ccp_setCustomMasterCountries" format="string" />
-        <attr name="ccp_clickable" format="boolean" />
-        <attr name="ccp_excludedCountries" format="string" />
-    </declare-styleable>
-
-    <!-- ReadMoreTextView (borjabravo) stubs -->
-    <declare-styleable name="ReadMoreTextView">
-        <attr name="trimExpandedText" format="string" />
-        <attr name="trimCollapsedText" format="string" />
-        <attr name="trimLength" format="integer" />
-        <attr name="showTrimExpandedText" format="boolean" />
-        <attr name="colorClickableText" format="color" />
-        <attr name="trimMode" format="enum">
-            <enum name="trimModeLines" value="0" />
-            <enum name="trimModeLength" value="1" />
-        </attr>
-        <attr name="trimLines" format="integer" />
     </declare-styleable>
 
 </resources>

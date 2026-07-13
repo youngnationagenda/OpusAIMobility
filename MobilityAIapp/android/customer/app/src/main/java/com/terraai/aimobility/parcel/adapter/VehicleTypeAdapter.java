@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.VehicleTypeModel;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.parcel.fragmentandactivities.VehicleTypeFragment;
 
 import java.util.ArrayList;

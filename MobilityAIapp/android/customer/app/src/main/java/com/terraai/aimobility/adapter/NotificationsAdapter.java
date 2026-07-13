@@ -8,10 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.terraai.aimobility.Interface.AdapterClickListener;
-import com.terraai.aimobility.databinding.FCountryItemListBinding;
-import com.terraai.aimobility.databinding.ItemNotificationsListBinding;
+import com.yna.opusaimobilityapp.databinding.FCountryItemListBinding;
+import com.yna.opusaimobilityapp.databinding.ItemNotificationsListBinding;
 import com.terraai.aimobility.model.NotificationsModel;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 import java.util.ArrayList;
 

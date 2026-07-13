@@ -13,8 +13,8 @@ import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.food.RestaurantMenuFragment;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.MenuModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.ItemRecipemenuListBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.ItemRecipemenuListBinding;
 
 import java.util.ArrayList;
 

@@ -20,8 +20,8 @@ import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.ride.loginsignup.ConfirmYourNumberFragment;
 import com.terraai.aimobility.ride.loginsignup.CountryF;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentAddPhoneNumBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentAddPhoneNumBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

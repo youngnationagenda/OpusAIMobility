@@ -12,7 +12,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.terraai.aimobility.R;
+import com.terraai.aimobility.Constants;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.activitiesandfragment.HomeActivity;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 
@@ -48,7 +49,7 @@ public class AWSPushService {
     private static final AtomicBoolean CHANNEL_CREATED = new AtomicBoolean(false);
 
     private static final String PUSH_LAMBDA_URL =
-            "https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod/notifications/push";
+            Constants.BASE_URL + "api/notifications/push";
 
     private static final MediaType JSON_TYPE = MediaType.get("application/json; charset=utf-8");
     private static final OkHttpClient HTTP   = new OkHttpClient();

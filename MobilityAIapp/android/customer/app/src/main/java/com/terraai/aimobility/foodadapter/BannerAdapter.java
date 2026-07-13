@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.terraai.aimobility.Constants;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.BannerModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.ItemBannerListBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.ItemBannerListBinding;
 
 import java.util.ArrayList;
 

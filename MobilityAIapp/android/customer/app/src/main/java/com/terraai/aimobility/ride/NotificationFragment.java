@@ -19,8 +19,8 @@ import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.NotificationsModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentNotificationBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentNotificationBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

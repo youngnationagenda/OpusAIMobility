@@ -33,8 +33,8 @@ import com.terraai.aimobility.model.CategoriesModel;
 import com.terraai.aimobility.model.RestaurantRatingModel;
 import com.terraai.aimobility.model.ResturantModel;
 import com.terraai.aimobility.model.TimeModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentResturantAgainstBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentResturantAgainstBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

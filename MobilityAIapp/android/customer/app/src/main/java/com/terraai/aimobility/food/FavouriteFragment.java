@@ -26,8 +26,8 @@ import com.terraai.aimobility.Interface.APICallBackList;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.CalculationModel;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentFavouriteBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentFavouriteBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

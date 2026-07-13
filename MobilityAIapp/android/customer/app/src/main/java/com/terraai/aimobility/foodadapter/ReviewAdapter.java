@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.terraai.aimobility.codeclasses.DateOperations;
 import com.terraai.aimobility.Constants;
 import com.terraai.aimobility.model.RestaurantRatingModel;
-import com.terraai.aimobility.databinding.ItemReviewListBinding;
+import com.yna.opusaimobilityapp.databinding.ItemReviewListBinding;
 
 import java.util.ArrayList;
 

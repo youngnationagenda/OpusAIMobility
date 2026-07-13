@@ -2,6 +2,7 @@
 <resources>
 
     <color name="app_color">#00b14f</color>
+    <color name="colorAccent">#00b14f</color>
     <color name="lightest_green">#f0f8ed</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
@@ -36,6 +37,7 @@
     <color name="dark_gray_color">#6e6e6e</color>
 
     <color name="green">#38b44c</color>
+
     <color name="lite_green">#2938B44C</color>
     <color name="orange_color">#FB6D3B</color>
     <color name="light_blue">#55BFD9</color>
@@ -44,10 +46,5 @@
 
     <color name="red_color">#a8304c</color>
     <color name="blue_color">#1853b7</color>
-
-    <!-- Legacy AppCompat / library-required colors -->
-    <color name="colorAccent">#00b14f</color>
-    <color name="colorPrimary">#00b14f</color>
-    <color name="colorPrimaryDark">#009940</color>
 
 </resources>

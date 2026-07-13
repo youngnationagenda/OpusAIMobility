@@ -26,8 +26,8 @@ import com.terraai.aimobility.codeclasses.DateOperations;
 import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.RideReviewLayoutBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.RideReviewLayoutBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 
@@ -110,7 +110,7 @@ public class RatingFragment extends BottomSheetDialogFragment implements View.On
         if (payCollectFromWallet != null && !payCollectFromWallet.equalsIgnoreCase("") && !payCollectFromWallet.equalsIgnoreCase("0")) {
             binding.tvWalletPay.setText(currencySymbol + " " + payCollectFromWallet);
         } else {
-            binding.gograbPayLayout.setVisibility(View.GONE);
+            binding.opusaimobilityPayLayout.setVisibility(View.GONE);
         }
 
         if (walletAdd != null && !walletAdd.equalsIgnoreCase("")) {

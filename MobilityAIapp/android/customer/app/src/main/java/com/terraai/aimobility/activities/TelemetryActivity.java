@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.terraai.aimobility.Constants;
+import com.yna.opusaimobilityapp.R;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -45,7 +48,7 @@ import java.util.concurrent.Executors;
 public class TelemetryActivity extends AppCompatActivity {
 
     private static final String TAG         = "TelemetryActivity";
-    private static final String API_BASE    = "https://0wv2nyk3je.execute-api.us-east-1.amazonaws.com/prod";
+    private static final String API_BASE    = Constants.BASE_URL + "api";
     private static final long   POLL_MS     = 8_000L;
 
     // UI references

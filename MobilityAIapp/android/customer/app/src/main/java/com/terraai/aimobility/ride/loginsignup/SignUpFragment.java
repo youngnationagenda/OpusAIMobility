@@ -32,8 +32,8 @@ import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Constants;
 import com.terraai.aimobility.ride.WebViewFragment;
 import com.terraai.aimobility.model.UserInfoModelClass;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentFinishSigningUpBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentFinishSigningUpBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

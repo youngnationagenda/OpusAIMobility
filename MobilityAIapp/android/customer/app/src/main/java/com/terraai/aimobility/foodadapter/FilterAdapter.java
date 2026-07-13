@@ -19,8 +19,8 @@ import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Constants;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.ItemFilterResturantListBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.ItemFilterResturantListBinding;
 
 import java.util.ArrayList;
 import java.util.Calendar;

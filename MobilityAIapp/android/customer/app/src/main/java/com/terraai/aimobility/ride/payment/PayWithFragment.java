@@ -9,8 +9,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentPayWithBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentPayWithBinding;
 
 public class PayWithFragment extends RootFragment implements View.OnClickListener {
 

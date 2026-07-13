@@ -24,8 +24,8 @@ import com.terraai.aimobility.aws.AWSManager;
 import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.codeclasses.RootFragment;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentLogInBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentLogInBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

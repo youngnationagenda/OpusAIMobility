@@ -36,8 +36,8 @@ import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.Interface.AdapterLongClickListener;
 import com.terraai.aimobility.Interface.FragmentCallBack;
 import com.terraai.aimobility.model.NearbyModelClass;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentEnterNewAddressBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentEnterNewAddressBinding;
 
 import java.util.ArrayList;
 import java.util.Arrays;
