@@ -97,7 +97,6 @@ phases:
       - cd "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR" && echo "sdk.dir=$ANDROID_HOME" > local.properties && echo local.properties_ok
       - export KEYSTORE_FILE="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/terraai-release.jks"
       - cd "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR" && ./gradlew assembleDebug "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" --no-daemon --no-build-cache --rerun-tasks --stacktrace 2>&1
-      - echo "Gradle debug exit: $?"
       - find "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build" -name "*.apk" 2>/dev/null || echo "No APK found"
 
   post_build:
