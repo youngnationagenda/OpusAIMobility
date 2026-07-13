@@ -9,10 +9,10 @@ package com.yna.opusaimobilityapp;
  * ─── AWS Infrastructure ──────────────────────────────────────────────────────
  *  CloudFront endpoint : https://opusaimobility.yna.co.ke/
  *  Cognito User Pool   : us-east-1_LKa4ElQem
- *  Cognito App Client  : 3a207uin5o3p4k1ngk334crntl
+ *  Cognito App Client  : 2am01r4fmsp0s08991ftgub887  (terraaimobility-android)
  *  Identity Pool       : us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38
  *  WebSocket           : wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod
- *  S3 Uploads bucket   : aimobility-uploads-683541453923
+ *  S3 Assets bucket    : opusaimobility-assets-prod
  */
 public class Constants {
 
@@ -32,15 +32,17 @@ public class Constants {
     // ─── AWS Cognito ──────────────────────────────────────────────────────────
     public static final String COGNITO_REGION        = "us-east-1";
     public static final String COGNITO_USER_POOL_ID  = "us-east-1_LKa4ElQem";
-    public static final String COGNITO_APP_CLIENT_ID = "3a207uin5o3p4k1ngk334crntl";
+    public static final String COGNITO_APP_CLIENT_ID = "2am01r4fmsp0s08991ftgub887"; // terraaimobility-android
     public static final String COGNITO_IDENTITY_POOL = "us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38";
 
     // ─── AWS WebSocket (real-time notifications, replaces FCM) ───────────────
     public static final String WS_ENDPOINT = "wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod";
 
-    // ─── AWS S3 Uploads ───────────────────────────────────────────────────────
-    public static final String S3_BUCKET = "aimobility-uploads-683541453923";
-    public static final String S3_REGION = "us-east-1";
+    // ─── AWS S3 Assets (pre-signed PUT for uploads, CloudFront for reads) ────
+    public static final String S3_BUCKET     = "opusaimobility-assets-prod";
+    public static final String S3_REGION     = "us-east-1";
+    public static final String CDN_BASE_URL  = "https://d22up4o3zhu9gf.cloudfront.net";
+    public static final String UPLOAD_URL    = "https://opusaimobility.yna.co.ke/api/upload";
 
     // ─── SNS Notifications ───────────────────────────────────────────────────
     public static final String SNS_TOPIC = "arn:aws:sns:us-east-1:683541453923:opusaimobility-notifications";
@@ -61,10 +63,10 @@ public class Constants {
     public final static String fromPhone  = "fromPhone";
 
     // ─── Map marker ──────────────────────────────────────────────────────────
-    public final static String STATIC_MAP_MARKER_LINK = "https://buyclothesproducts.000webhostapp.com/images/locationp.png";
+    public final static String STATIC_MAP_MARKER_LINK = "https://d22up4o3zhu9gf.cloudfront.net/assets/locationp.png";
 
     // ─── Support ─────────────────────────────────────────────────────────────
-    public final static String SUPPORT_EMAIL = "support@opusaimobility.com";
+    public final static String SUPPORT_EMAIL = "support@opusaimobility.yna.co.ke";
     public static final String PHONE_NO      = "+254700000001";
 
     // ─── Feature flags ───────────────────────────────────────────────────────
