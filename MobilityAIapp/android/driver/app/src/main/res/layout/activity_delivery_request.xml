@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/colorBackground">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:background="@color/colorPrimary" android:padding="@dimen/spacing_lg"
+        android:gravity="center_horizontal" android:orientation="vertical">
+        <TextView android:id="@+id/tvOrderType" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="Delivery Request"
+            android:textColor="@color/white" android:textSize="@dimen/text_xl"
+            android:fontFamily="@font/poppins_bold"/>
+        <TextView android:id="@+id/tvTimer" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="30" android:textColor="@color/white"
+            android:textSize="32sp" android:fontFamily="@font/poppins_bold"/>
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:orientation="vertical" android:padding="@dimen/spacing_lg">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Pickup" android:textSize="@dimen/text_sm" android:textColor="@color/colorTextSecondary"/>
+        <TextView android:id="@+id/tvPickupAddress" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="—" android:textSize="@dimen/text_lg"
+            android:textColor="@color/colorTextPrimary"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Dropoff" android:textSize="@dimen/text_sm" android:textColor="@color/colorTextSecondary"
+            android:layout_marginTop="@dimen/spacing_md"/>
+        <TextView android:id="@+id/tvDropoffAddress" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="—" android:textSize="@dimen/text_lg"
+            android:textColor="@color/colorTextPrimary"/>
+        <TextView android:id="@+id/tvAmount" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="KSh 0.00"
+            android:textSize="@dimen/text_3xl" android:textColor="@color/colorPrimary"
+            android:fontFamily="@font/poppins_bold" android:layout_marginTop="@dimen/spacing_lg"/>
+        <TextView android:id="@+id/tvDistance" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="—" android:textSize="@dimen/text_md"
+            android:textColor="@color/colorTextSecondary"/>
+    </LinearLayout>
+    <ProgressBar android:id="@+id/progressBar" android:layout_width="40dp"
+        android:layout_height="40dp" android:layout_gravity="center"
+        android:visibility="gone" android:indeterminateTint="@color/colorPrimary"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:padding="@dimen/spacing_md">
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnReject"
+            style="@style/ButtonSecondary" android:layout_width="0dp"
+            android:layout_height="56dp" android:layout_weight="1"
+            android:layout_marginEnd="8dp" android:text="@string/btn_reject"/>
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnAccept"
+            style="@style/ButtonPrimary" android:layout_width="0dp"
+            android:layout_height="56dp" android:layout_weight="1"
+            android:layout_marginStart="8dp" android:text="@string/btn_accept"/>
+    </LinearLayout>
+</LinearLayout>
