@@ -8,6 +8,8 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+// ProgressBarDrawable lives in com.terraai.aimobility.codeclasses (legacy package)
+import com.terraai.aimobility.codeclasses.ProgressBarDrawable;
 
 public class CircleProgressBarDrawable extends ProgressBarDrawable {
 
