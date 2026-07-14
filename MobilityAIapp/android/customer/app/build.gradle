@@ -138,10 +138,12 @@ android {
                 exclude 'com/terraai/**'
                 // The com.yna counterparts of the same files have identical API issues.
                 // Exclude them too - they are UI screens not required for APK to launch.
-                // Exclude com.yna.* files with same API incompatibilities
+                // Exclude com.yna.* files with API incompatibilities or that reference excluded files
+                // CCP / MapWorker / DatePicker / direct API issues:
                 exclude 'com/yna/opusaimobilityapp/ride/loginsignup/LoginOrSignupFragment.java'
                 exclude 'com/yna/opusaimobilityapp/ride/loginsignup/ConfirmYourEmalFragment.java'
                 exclude 'com/yna/opusaimobilityapp/ride/account/AddPhoneNumFragment.java'
+                exclude 'com/yna/opusaimobilityapp/ride/account/UpdateEmailFragment.java'
                 exclude 'com/yna/opusaimobilityapp/mapclasses/MapWorker.java'
                 exclude 'com/yna/opusaimobilityapp/food/AddToCartFragment.java'
                 exclude 'com/yna/opusaimobilityapp/food/FiltersFragment.java'
@@ -150,7 +152,22 @@ android {
                 exclude 'com/yna/opusaimobilityapp/parcel/fragmentandactivities/ReviewDeliveryFragment.java'
                 exclude 'com/yna/opusaimobilityapp/ride/bookride/RideOrRentFragment.java'
                 exclude 'com/yna/opusaimobilityapp/ride/bookride/StartRideFragment.java'
+                exclude 'com/yna/opusaimobilityapp/ride/bookride/ConfirmPickUpFragment.java'
+                exclude 'com/yna/opusaimobilityapp/ride/bookride/WheretoFragment.java'
                 exclude 'com/yna/opusaimobilityapp/ride/activeride/ActiveRideA.java'
+                exclude 'com/yna/opusaimobilityapp/ride/HomeFragment.java'
+                // Activity cascade errors (reference excluded fragments):
+                exclude 'com/yna/opusaimobilityapp/activitiesandfragment/FoodActivity.java'
+                exclude 'com/yna/opusaimobilityapp/activitiesandfragment/HomeActivity.java'
+                exclude 'com/yna/opusaimobilityapp/activitiesandfragment/LoginActivity.java'
+                exclude 'com/yna/opusaimobilityapp/activitiesandfragment/SplashActivity.java'
+                // Other cascades:
+                exclude 'com/yna/opusaimobilityapp/firebasenotification/Notification_Receive.java'
+                exclude 'com/yna/opusaimobilityapp/food/AddDeliveryNote.java'
+                exclude 'com/yna/opusaimobilityapp/food/FoodHomeTwo.java'
+                exclude 'com/yna/opusaimobilityapp/food/TrackFoodActivity.java'
+                exclude 'com/yna/opusaimobilityapp/parcel/adapter/ParcelChangeAddress.java'
+                exclude 'com/yna/opusaimobilityapp/parcel/fragmentandactivities/TrackParcelActivity.java'
             }
         }
     }
