@@ -24,7 +24,7 @@ android {
             package: "com.yna.opusaimobilityapp"
         )
 
-        // ── AWS & Backend build-time constants ────────────────────────────────
+        // AWS & Backend build-time constants
         buildConfigField "String", "BASE_URL",             '"https://opusaimobility.yna.co.ke/"'
         buildConfigField "String", "API_URL",              '"https://opusaimobility.yna.co.ke/api/"'
         buildConfigField "String", "WS_ENDPOINT",          '"wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod"'
@@ -33,11 +33,10 @@ android {
         buildConfigField "String", "COGNITO_IDENTITY_POOL",'"us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38"'
         buildConfigField "String", "S3_BUCKET",            '"opusaimobility-assets-prod"'
         buildConfigField "String", "CDN_BASE_URL",         '"https://d22up4o3zhu9gf.cloudfront.net"'
-        // SNS topic — construct ARN at runtime to avoid hardcoding account ID in source
-        // App will construct: "arn:aws:sns:" + region + ":" + accountId + ":opusaimobility-notifications"
+        // SNS topic - construct ARN at runtime to avoid hardcoding account ID in source
         buildConfigField "String", "SNS_TOPIC",            '"arn:aws:sns:us-east-1:<ACCOUNT_ID>:opusaimobility-notifications"'
 
-        // ── Google Maps key — injected from GOOGLE_MAPS_KEY env var at build time
+        // Google Maps key - injected from GOOGLE_MAPS_KEY env var at build time
         def mapsKey = project.findProperty("GOOGLE_MAPS_KEY") ?: System.getenv("GOOGLE_MAPS_KEY") ?: ""
         manifestPlaceholders = [googleMapsKey: mapsKey]
         resValue "string", "google_map_key", mapsKey
@@ -82,7 +81,7 @@ android {
         checkReleaseBuilds  false
         abortOnError        false
         checkDependencies   false
-        checkTestSources    true   // also lint androidTest + test source sets
+        checkTestSources    true
         quiet               true
         disable 'GradleDependency', 'ObsoleteSdkInt'
     }
@@ -240,22 +239,25 @@ dependencies {
     // Rating bar
     implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
 
-    // Tree RecyclerView (parcel expandable list) — JitPack
+    // Tree RecyclerView (parcel expandable list) - JitPack
     implementation 'com.github.TellH:RecyclerTreeView:1.2.0'
 
-    // Circle/Page Indicator — Maven Central (fragment_food_home.xml uses me.relex.circleindicator)
+    // Circle Indicator - Maven Central (me.relex:circleindicator provides ci_* attrs)
     implementation 'me.relex:circleindicator:2.1.6'
 
-    // Image Cropper (vanniktech — Maven Central)
+    // Page Indicator - JitPack (fragment_food_home.xml uses com.chahinem.pageindicator.PageIndicator)
+    implementation 'com.chahinem:pageindicator:0.2.6'
+
+    // Image Cropper (vanniktech - Maven Central)
     implementation 'com.vanniktech:android-image-cropper:4.3.3'
 
-    // Custom crash activity — JitPack (required: activity_custom_error.xml references its resources)
+    // Custom crash activity - JitPack (required: activity_custom_error.xml references its resources)
     implementation 'cat.ereza:customactivityoncrash:2.3.0'
 
-    // Card IO (payment card scan) — JitPack
+    // Card IO (payment card scan) - JitPack
     implementation 'io.card:android-sdk:5.5.1'
 
-    // MPAndroidChart (telemetry screen) — JitPack
+    // MPAndroidChart (telemetry screen) - JitPack
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     // WorkManager (fix duplicate classes from AWS SDK transitive dep)
