@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:gravity="fill_vertical">
 
-        <com.terraai.aimobility.codeclasses.CustomViewPager
+        <com.yna.opusaimobilityapp.codeclasses.CustomViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

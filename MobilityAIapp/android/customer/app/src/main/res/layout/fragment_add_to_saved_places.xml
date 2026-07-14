@@ -75,12 +75,13 @@
                         android:layout_height="wrap_content">
 
 
-                        <ImageView
+                        <com.facebook.drawee.view.SimpleDraweeView
                             android:id="@+id/iv_map"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_80sdp"
                             android:scaleType="centerCrop"
                             app:actualImageScaleType="centerCrop"
+                            app:placeholderImage="@drawable/image_preview"
                             app:placeholderImageScaleType="centerCrop" />
 
                         <LinearLayout
@@ -207,7 +208,7 @@
         </LinearLayout>
 
 
-        <com.terraai.aimobility.codeclasses.LoadingButton
+        <com.yna.opusaimobilityapp.codeclasses.LoadingButton
             android:id="@+id/saveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

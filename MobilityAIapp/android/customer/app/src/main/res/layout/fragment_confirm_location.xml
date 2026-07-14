@@ -91,7 +91,7 @@
                 android:textSize="@dimen/text_Size12" />
 
 
-            <com.terraai.aimobility.codeclasses.LoadingButton
+            <com.yna.opusaimobilityapp.codeclasses.LoadingButton
                 android:id="@+id/confrim_location"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/btn_height"

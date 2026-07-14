@@ -65,11 +65,12 @@
                 android:focusable="true"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/iv_map"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_226sdp"
                     app:actualImageScaleType="centerCrop"
+                    app:placeholderImage="@drawable/imagepreview"
                     app:placeholderImageScaleType="centerCrop" />
 
 
@@ -255,7 +256,7 @@
                 </LinearLayout>
 
                 <RelativeLayout
-                    android:id="@+id/gograbPayLayout"
+                    android:id="@+id/opusaimobilityPayLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_12sdp"
@@ -280,7 +281,7 @@
                         android:layout_marginStart="@dimen/_8sdp"
                         android:layout_toEndOf="@+id/payImage"
                         android:fontFamily="@font/airbnbcerealbook"
-                        android:text="@string/gograb_paid"
+                        android:text="@string/opusaimobility_paid"
                         android:textColor="@color/text_color_black" />
 
 
@@ -368,12 +369,13 @@
                     android:paddingStart="@dimen/horizontal_margin"
                     android:paddingEnd="@dimen/horizontal_margin">
 
-                    <ImageView
+                    <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/iv_driver_pic"
                         android:layout_width="@dimen/_38sdp"
                         android:layout_height="@dimen/_38sdp"
                         android:layout_centerVertical="true"
                         app:actualImageScaleType="centerCrop"
+                        app:placeholderImage="@drawable/ic_profile_avatar"
                         app:roundAsCircle="true"
                         app:roundedCornerRadius="@dimen/_4sdp" />
 

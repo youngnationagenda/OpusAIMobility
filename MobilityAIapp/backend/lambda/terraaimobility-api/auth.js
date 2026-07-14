@@ -49,6 +49,15 @@ const PUBLIC_ROUTES = new Set([
   'placeParcelOrder', 'createParcelOrder',
   'requestRide', 'bookRide',
   'getPaymentMethods', 'topUpWallet',
+  'uploadAsset', 'getUploadUrl', 'requestUploadUrl',
+  'showCategories', 'showCountries', 'showStores', 'showAppSliderImages',
+  'getHtmlPage', 'getSettings', 'addSettings',
+  'getFoodCategories', 'showFoodCategory', 'getFoodCategory',
+  'getGoodTypes', 'showGoodTypes',
+  'getPackageSizes', 'showPackageSize', 'getPackageSize',
+  'getServiceCharges', 'manageServiceFee',
+  'getRestaurants', 'getAllRestaurants', 'showRestaurants',
+  'sendEmail', 'contactUsAdmin',
   'getNotifications', 'showUserNotifications', 'sendMessageNotification',
 ]);
 

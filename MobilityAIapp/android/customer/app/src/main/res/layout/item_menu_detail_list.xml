@@ -34,7 +34,7 @@
                 android:textSize="@dimen/_12sdp" />
 
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/menuImage"
                 android:layout_width="@dimen/_75sdp"
                 android:layout_height="@dimen/_75sdp"
@@ -42,7 +42,8 @@
                 android:scaleType="centerCrop"
                 android:visibility="gone"
                 app:actualImageScaleType="centerCrop"
-                app:placeholderImageScaleType="centerCrop" />
+                app:placeholderImageScaleType="centerCrop"
+                fresco:placeholderImage="@color/white" />
 
             <RelativeLayout
                 android:id="@+id/quantityLayout"

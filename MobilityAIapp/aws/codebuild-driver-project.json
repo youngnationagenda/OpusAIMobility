@@ -1,0 +1,83 @@
+{
+  "name": "OpusAIMobility-Driver-Android",
+  "description": "Android Driver APK build — aimobility Driver App (com.opusaimobility.driver)",
+  "source": {
+    "type": "GITHUB",
+    "location": "https://github.com/youngnationagenda/OpusAIMobility.git",
+    "gitCloneDepth": 1,
+    "buildspec": "buildspec-android-driver.yml",
+    "reportBuildStatus": false
+  },
+  "sourceVersion": "main",
+  "artifacts": {
+    "type": "S3",
+    "location": "opusaimobility-codebuild-artifacts-683541453923",
+    "namespaceType": "BUILD_ID",
+    "name": "driver-apk-artifacts",
+    "packaging": "ZIP",
+    "encryptionDisabled": false
+  },
+  "cache": {
+    "type": "S3",
+    "location": "opusaimobility-codebuild-artifacts-683541453923/cache-driver"
+  },
+  "environment": {
+    "type": "LINUX_CONTAINER",
+    "image": "aws/codebuild/amazonlinux-x86_64-standard:5.0",
+    "computeType": "BUILD_GENERAL1_LARGE",
+    "environmentVariables": [
+      {
+        "name": "S3_APK_BUCKET",
+        "value": "opusaimobility-apk-distribution",
+        "type": "PLAINTEXT"
+      },
+      {
+        "name": "DRIVER_APP_DIR",
+        "value": "MobilityAIapp/android/driver",
+        "type": "PLAINTEXT"
+      },
+      {
+        "name": "FIREBASE_PROJECT_ID",
+        "value": "opusaimobility",
+        "type": "PLAINTEXT"
+      },
+      {
+        "name": "KEYSTORE_PASSWORD",
+        "value": "opusaimobility/android-keystore:storePassword",
+        "type": "SECRETS_MANAGER"
+      },
+      {
+        "name": "KEY_ALIAS",
+        "value": "opusaimobility/android-keystore:keyAlias",
+        "type": "SECRETS_MANAGER"
+      },
+      {
+        "name": "KEY_PASSWORD",
+        "value": "opusaimobility/android-keystore:keyPassword",
+        "type": "SECRETS_MANAGER"
+      },
+      {
+        "name": "GOOGLE_MAPS_KEY",
+        "value": "terraai/google-maps:GOOGLE_MAPS_KEY",
+        "type": "SECRETS_MANAGER"
+      }
+    ],
+    "privilegedMode": false,
+    "imagePullCredentialsType": "CODEBUILD"
+  },
+  "serviceRole": "arn:aws:iam::683541453923:role/OpusAIMobility-CodeBuild-Role",
+  "timeoutInMinutes": 30,
+  "queuedTimeoutInMinutes": 60,
+  "tags": [
+    { "key": "Project", "value": "OpusAIMobility" },
+    { "key": "App", "value": "driver-android" },
+    { "key": "ManagedBy", "value": "Sonie" }
+  ],
+  "logsConfig": {
+    "cloudWatchLogs": {
+      "status": "ENABLED",
+      "groupName": "/aws/codebuild/OpusAIMobility-Driver",
+      "streamName": "driver-build-log"
+    }
+  }
+}

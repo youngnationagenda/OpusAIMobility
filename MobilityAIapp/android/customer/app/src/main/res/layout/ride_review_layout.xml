@@ -14,13 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/driverProfileImage"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_60sdp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/_15sdp"
             app:actualImageScaleType="centerCrop"
+            app:placeholderImage="@drawable/ic_profile_avatar"
             app:placeholderImageScaleType="centerCrop"
             app:roundAsCircle="true" />
 
@@ -254,7 +255,7 @@
 
 
                 <RelativeLayout
-                    android:id="@+id/gograbPayLayout"
+                    android:id="@+id/opusaimobilityPayLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_12sdp"
@@ -278,7 +279,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_toEndOf="@+id/payImage"
-                        android:text="@string/gograb_paid"
+                        android:text="@string/opusaimobility_paid"
                         android:textColor="@color/text_color_black"
                         android:textSize="@dimen/_11sdp" />
 

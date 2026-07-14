@@ -25,12 +25,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_130sdp">
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/menuImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:actualImageScaleType="centerCrop"
-                    app:placeholderImageScaleType="centerCrop" />
+                    app:placeholderImage="@drawable/image_preview"
+                    app:placeholderImageScaleType="centerCrop"
+                    fresco:roundBottomEnd="false"
+                    fresco:roundBottomStart="false"
+                    fresco:roundTopEnd="true"
+                    fresco:roundTopStart="true"
+                    fresco:roundWithOverlayColor="@color/white"
+                    fresco:roundedCornerRadius="@dimen/_6sdp" />
 
 
                 <RelativeLayout

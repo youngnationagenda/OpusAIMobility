@@ -1,6 +1,6 @@
 {
-  "name": "OmniRide — EV Mobility Platform",
-  "short_name": "OmniRide",
+  "name": "OpusAIMobility — 100% Zero-Emission Mobility",
+  "short_name": "OpusAIMobility",
   "description": "Next-generation electric vehicle ride-hailing for East Africa",
   "start_url": "/",
   "display": "standalone",
@@ -21,7 +21,7 @@
     { "src": "/icons/icon-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "screenshots": [
-    { "src": "/screenshots/home.png",  "sizes": "390x844", "type": "image/png", "label": "OmniRide Home" },
+    { "src": "/screenshots/home.png",  "sizes": "390x844", "type": "image/png", "label": "OpusAIMobility Home" },
     { "src": "/screenshots/rider.png", "sizes": "390x844", "type": "image/png", "label": "Rider Dashboard" }
   ],
   "shortcuts": [
@@ -50,8 +50,8 @@
   "related_applications": [
     {
       "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=com.terraai.aimobility",
-      "id": "com.terraai.aimobility"
+      "url": "https://play.google.com/store/apps/details?id=com.opusaimobility.app",
+      "id": "com.opusaimobility.app"
     }
   ],
   "prefer_related_applications": false

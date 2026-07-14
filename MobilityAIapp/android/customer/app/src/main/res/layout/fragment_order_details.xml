@@ -47,14 +47,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/_180sdp">
 
-                        <ImageView
+                        <com.facebook.drawee.view.SimpleDraweeView
                             android:id="@+id/menuImage"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
                             app:actualImageScaleType="centerCrop"
                             app:failureImageScaleType="centerCrop"
-                            app:placeholderImageScaleType="centerCrop" />
+                            app:placeholderImageScaleType="centerCrop"
+                            fresco:placeholderImage="@drawable/imagepreview" />
 
                     </RelativeLayout>
 

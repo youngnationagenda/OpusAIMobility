@@ -128,7 +128,7 @@
                                 android:layout_marginTop="@dimen/_2sdp"
                                 android:visibility="visible" />
 
-                            <com.terraai.aimobility.mapclasses.ArchView
+                            <com.yna.opusaimobilityapp.mapclasses.ArchView
                                 android:id="@+id/archView"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"

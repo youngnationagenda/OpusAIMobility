@@ -1,4 +1,12 @@
 {
+    "_meta": {
+        "description": "SNAPSHOT ONLY — raw CloudFront distribution config captured 2026-07-12.",
+        "status": "LEGACY — distribution E1TIJJKJ2UEIO7 still LIVE at omniride.yna.co.ke.",
+        "liveOrigin": "omniride-assets-prod (serves omniride.yna.co.ke)",
+        "primaryOrigin": "opusaimobility-assets-prod (serves opusaimobility.yna.co.ke via E18GJ5VKHBIJAI)",
+        "action": "DO NOT delete omniride-assets-prod until omniride.yna.co.ke DNS is migrated to opusaimobility-assets-prod.",
+        "doNotDeploy": true
+    },
     "ETag": "ETVPDKIKX0DER",
     "DistributionConfig": {
         "CallerReference": "omniride-prod-2026",

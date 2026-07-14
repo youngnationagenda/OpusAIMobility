@@ -37,9 +37,7 @@
       ],
       "Resource": [
         "arn:aws:s3:::opusaimobility-assets-prod",
-        "arn:aws:s3:::opusaimobility-assets-prod/*",
-        "arn:aws:s3:::omniride-assets-prod",
-        "arn:aws:s3:::omniride-assets-prod/*"
+        "arn:aws:s3:::opusaimobility-assets-prod/*"
       ]
     },
     {

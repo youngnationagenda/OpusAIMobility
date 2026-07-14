@@ -56,7 +56,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:gravity="center"
-                android:text="@string/book_a_gograb"
+                android:text="@string/book_a_opusaimobility"
                 android:textColor="@color/app_color"
                 android:textSize="@dimen/_12sdp" />
 

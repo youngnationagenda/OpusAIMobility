@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>aimobility APK Downloads</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+           background: #f8f9fa; color: #1a1a2e; min-height: 100vh; }
+    header { background: #0D6E31; color: white; padding: 24px;
+             display: flex; align-items: center; gap: 16px; }
+    header h1 { font-size: 24px; font-weight: 700; }
+    header p  { font-size: 14px; opacity: 0.85; margin-top: 4px; }
+    .container { max-width: 800px; margin: 32px auto; padding: 0 16px; }
+    .card { background: white; border-radius: 16px; padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    .card h2 { font-size: 18px; font-weight: 600; color: #0D6E31; margin-bottom: 16px;
+               display: flex; align-items: center; gap: 8px; }
+    .badge { background: #0D6E31; color: white; font-size: 11px; padding: 2px 8px;
+             border-radius: 99px; font-weight: 500; }
+    .badge.debug { background: #6B7280; }
+    .download-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-radius: 12px; text-decoration: none;
+      color: white; background: #0D6E31; margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+    .download-btn:hover { background: #094D22; }
+    .download-btn.secondary { background: #374151; }
+    .download-btn.secondary:hover { background: #1F2937; }
+    .download-btn .label { font-weight: 600; font-size: 15px; }
+    .download-btn .meta  { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+    .download-btn .icon  { font-size: 28px; }
+    .info-table { width: 100%; border-collapse: collapse; }
+    .info-table td { padding: 8px 0; border-bottom: 1px solid #f1f3f5; font-size: 14px; }
+    .info-table td:first-child { color: #6B7280; width: 160px; }
+    .info-table td:last-child { font-weight: 500; }
+    .note { background: #FEF3C7; border-left: 3px solid #F59E0B; padding: 12px 16px;
+            border-radius: 8px; font-size: 13px; color: #92400E; margin-top: 16px; }
+    footer { text-align: center; color: #9CA3AF; font-size: 12px; padding: 32px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>aimobility App Distribution</h1>
+      <p>OpusAI Mobility — Android APK Downloads</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Driver App -->
+    <div class="card">
+      <h2>🚗 Driver App <span class="badge">v1.0.0</span></h2>
+      <a class="download-btn"
+         href="https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/release/aimobility-driver-latest.apk"
+         download>
+        <div>
+          <div class="label">Download Release APK</div>
+          <div class="meta">Signed · minified · production build</div>
+        </div>
+        <div class="icon">⬇️</div>
+      </a>
+      <a class="download-btn secondary"
+         href="https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/driver/debug/aimobility-driver-debug-latest.apk"
+         download>
+        <div>
+          <div class="label">Download Debug APK <span class="badge debug">DEBUG</span></div>
+          <div class="meta">For testing only · expires 30 days after build</div>
+        </div>
+        <div class="icon">⬇️</div>
+      </a>
+      <table class="info-table">
+        <tr><td>Package name</td><td>com.opusaimobility.driver</td></tr>
+        <tr><td>Min SDK</td><td>Android 7.0 (API 24)</td></tr>
+        <tr><td>Target SDK</td><td>Android 14 (API 34)</td></tr>
+        <tr><td>Backend</td><td>https://opusaimobility.yna.co.ke/api/</td></tr>
+        <tr><td>Auth</td><td>AWS Cognito (us-east-1_LKa4ElQem)</td></tr>
+        <tr><td>Real-time</td><td>AWS WebSocket (z4sof7ojdf)</td></tr>
+      </table>
+      <div class="note">
+        ⚠️ Enable "Install unknown apps" in Android settings before installing outside Google Play.
+      </div>
+    </div>
+
+    <!-- Customer App -->
+    <div class="card">
+      <h2>👤 Customer App <span class="badge">v1.7</span></h2>
+      <a class="download-btn"
+         href="https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/customer/release/aimobility-customer-latest.apk"
+         download>
+        <div>
+          <div class="label">Download Release APK</div>
+          <div class="meta">Signed · minified · production build</div>
+        </div>
+        <div class="icon">⬇️</div>
+      </a>
+      <a class="download-btn secondary"
+         href="https://opusaimobility-apk-distribution.s3.us-east-1.amazonaws.com/customer/debug/aimobility-customer-debug-latest.apk"
+         download>
+        <div>
+          <div class="label">Download Debug APK <span class="badge debug">DEBUG</span></div>
+          <div class="meta">For testing only</div>
+        </div>
+        <div class="icon">⬇️</div>
+      </a>
+      <table class="info-table">
+        <tr><td>Package name</td><td>com.yna.opusaimobilityapp</td></tr>
+        <tr><td>Min SDK</td><td>Android 7.0 (API 24)</td></tr>
+        <tr><td>Target SDK</td><td>Android 14 (API 34)</td></tr>
+      </table>
+    </div>
+
+    <!-- Build info -->
+    <div class="card">
+      <h2>⚙️ Build Info</h2>
+      <table class="info-table">
+        <tr><td>CI/CD</td><td>AWS CodeBuild (OpusAIMobility + OpusAIMobility-Driver-Android)</td></tr>
+        <tr><td>Trigger</td><td>Push to main branch → auto-build</td></tr>
+        <tr><td>Keystore</td><td>AWS Secrets Manager: opusaimobility/android-keystore</td></tr>
+        <tr><td>Maps key</td><td>AWS Secrets Manager: terraai/google-maps</td></tr>
+        <tr><td>Artifacts</td><td>s3://opusaimobility-apk-distribution/</td></tr>
+        <tr><td>CloudWatch</td><td>DriverAndroidBuildFailed alarm active</td></tr>
+      </table>
+    </div>
+
+  </div>
+  <footer>aimobility Platform · Account 683541453923 · us-east-1</footer>
+</body>
+</html>

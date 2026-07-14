@@ -46,11 +46,12 @@
             android:paddingStart="@dimen/_12sdp"
             android:paddingEnd="@dimen/_12sdp">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/grabImage"
                 android:layout_width="@dimen/_42sdp"
                 android:layout_height="@dimen/_42sdp"
                 app:actualImageScaleType="centerCrop"
+                app:placeholderImage="@drawable/ic_car_star"
                 app:placeholderImageScaleType="centerCrop" />
 
             <LinearLayout

@@ -61,11 +61,12 @@
             android:orientation="vertical">
 
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/iv_map"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_226sdp"
                 app:actualImageScaleType="fitXY"
+                app:placeholderImage="@drawable/imagepreview"
                 app:placeholderImageScaleType="centerCrop"
                 />
 
@@ -297,12 +298,13 @@
                         android:paddingHorizontal="@dimen/horizontal_margin"
                         android:visibility="gone">
 
-                        <ImageView
+                        <com.facebook.drawee.view.SimpleDraweeView
                             android:id="@+id/iv_driver_pic"
                             android:layout_width="@dimen/_38sdp"
                             android:layout_height="@dimen/_38sdp"
                             android:layout_centerVertical="true"
                             app:actualImageScaleType="centerCrop"
+                            app:placeholderImage="@drawable/ic_profile_avatar"
                             app:roundAsCircle="true"
                             app:roundedCornerRadius="@dimen/_4sdp" />
 

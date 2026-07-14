@@ -24,11 +24,12 @@
                 android:layout_width="@dimen/_90sdp"
                 android:layout_height="@dimen/_90sdp">
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/menuImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:actualImageScaleType="centerCrop"
+                    app:placeholderImage="@drawable/image_preview"
                     app:placeholderImageScaleType="centerCrop" />
 
 

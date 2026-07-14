@@ -17,13 +17,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_12sdp">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/userCommentImg"
                 android:layout_width="@dimen/_38sdp"
                 android:layout_height="@dimen/_38sdp"
                 android:layout_gravity="center_vertical"
+                app:placeholderImage="@drawable/ic_profile_avatar"
                 app:placeholderImageScaleType="centerCrop"
-                app:roundAsCircle="true" />
+                app:failureImage="@drawable/ic_profile_avatar"
+                app:roundAsCircle="true"
+                fresco:actualImageScaleType="centerCrop" />
 
             <TextView
                 android:id="@+id/userName"

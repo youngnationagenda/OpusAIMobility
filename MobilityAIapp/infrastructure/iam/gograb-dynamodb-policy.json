@@ -1,0 +1,72 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "GoGrabDynamoDBAccess",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:BatchGetItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-users",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-users/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-restaurants",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-restaurants/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-restaurant-menus",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-restaurant-menus/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-restaurant-menu-items",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-restaurant-menu-items/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-food-orders",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-food-orders/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-parcel-orders",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-parcel-orders/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-trips",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-trips/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-requests",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-requests/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-vehicles",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-vehicles/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-vehicle-types",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-ride-types",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-coupons",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-coupons/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-food-categories",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-package-sizes",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-good-types",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-notifications",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-notifications/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-driver-ratings",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-driver-ratings/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-transactions",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-transactions/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-user-documents",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-user-documents/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-service-charges",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-html-pages",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-html-pages/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-withdraw-requests",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-withdraw-requests/index/*",
+        "arn:aws:dynamodb:us-east-1:683541453923:table/gograb-app-config"
+      ]
+    },
+    {
+      "Sid": "GoGrabS3ImageUploads",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::aimobility-uploads-683541453923/gograb/*"
+      ]
+    }
+  ]
+}

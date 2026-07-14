@@ -9,12 +9,12 @@
     <string name="enter_the_email_address">أدخل عنوان البريد الإلكتروني المرتبط بحسابك وسنرسل لك رابطًا عبر البريد الإلكتروني لإعادة تعيين كلمة المرور الخاصة بك</string>
 
     <string name="make_sure_it_matches">تأكد من أنه يطابق الاسم الموجود في بطاقة الهوية الحكومية الخاصة بك.</string>
-    <string name="to_sign_up_you_need">من خلال تحديد موافق والمتابعة أدناه ، أوافق على aimobilityشروط الخدمة ، وشروط خدمة المدفوعات ، وسياسة الخصوصية ، وسياسة عدم التمييز.</string>
+    <string name="to_sign_up_you_need">من خلال تحديد موافق والمتابعة أدناه ، أوافق على OpusAIMobilityشروط الخدمة ، وشروط خدمة المدفوعات ، وسياسة الخصوصية ، وسياسة عدم التمييز.</string>
     <string name="we_ll_email_you_trip_confirmation_and_receipts">سنرسل إليك رسالة إلكترونية لتأكيد الرحلة والإيصالات.</string>
-    <string name="by_selecting_agree_and_continue_below">من خلال تحديد موافق والمتابعة أدناه ، أوافق على شروط خدمة aimobility ، وشروط خدمة المدفوعات ، وسياسة الخصوصية ، وسياسة عدم التمييز.</string>
+    <string name="by_selecting_agree_and_continue_below">من خلال تحديد موافق والمتابعة أدناه ، أوافق على شروط خدمة OpusAIMobility ، وشروط خدمة المدفوعات ، وسياسة الخصوصية ، وسياسة عدم التمييز.</string>
 
-    <string name="go_grab_will_send_you">سوف نرسل لك صفقات الأعضاء فقط ، والإلهام ، ورسائل البريد الإلكتروني التسويقية ، ودفع الإخطارات. يمكنك إلغاء الاشتراك في تلقي هذه في أي وقت في إعدادات حسابك أو مباشرة من إشعار التسويق.aimobility</string>
-    <string name="i_dont_want_to_receive_message">لا أريد تلقي رسائل من aimobility</string>
+    <string name="go_grab_will_send_you">سوف نرسل لك صفقات الأعضاء فقط ، والإلهام ، ورسائل البريد الإلكتروني التسويقية ، ودفع الإخطارات. يمكنك إلغاء الاشتراك في تلقي هذه في أي وقت في إعدادات حسابك أو مباشرة من إشعار التسويق.OpusAIMobility</string>
+    <string name="i_dont_want_to_receive_message">لا أريد تلقي رسائل من OpusAIMobility</string>
 
     <string name="alert">انذار !!!</string>
     <string name="new_cant_empty">كلمة المرور لا يمكن أن تكون فارغة!</string>
@@ -24,19 +24,19 @@
     <string name="scheduled">المقرر</string>
     <string name="history">التاريخ</string>
     <string name="history_one">التاريخ</string>
-    <string name="report_your_lost_items">أبلغ عن العنصر المفقود من خلال النقر على \ "اتصل بنا \" أو \ "إرسال بريد إلكتروني إلى الولايات المتحدة \" أدناه. يُرجى التأكد من تقديم أكبر قدر ممكن من المعلومات ، وسيقوم فريقنا بالاتصال بك قريبًا. \ n \ n لاحظ أن aimobility ليست مسؤولة عن العناصر المتبقية في السيارة بعد الركوب. سنحاول مساعدتك ، لكننا غير قادرين على ضمان حصول الكابتن على العنصر الخاص بك أو يمكنه تسليمه لك على الفور.</string>
+    <string name="report_your_lost_items">أبلغ عن العنصر المفقود من خلال النقر على \ "اتصل بنا \" أو \ "إرسال بريد إلكتروني إلى الولايات المتحدة \" أدناه. يُرجى التأكد من تقديم أكبر قدر ممكن من المعلومات ، وسيقوم فريقنا بالاتصال بك قريبًا. \ n \ n لاحظ أن OpusAIMobility ليست مسؤولة عن العناصر المتبقية في السيارة بعد الركوب. سنحاول مساعدتك ، لكننا غير قادرين على ضمان حصول الكابتن على العنصر الخاص بك أو يمكنه تسليمه لك على الفور.</string>
 
     <string name="home">الصفحة الرئيسية</string>
     <string name="payment">قسط</string>
     <string name="account">حساب</string>
-    <string name="gograb">aimobility</string>
+    <string name="opusaimobility">OpusAIMobility</string>
     <string name="car">السيارات</string>
     <string name="bike">دراجة هوائية</string>
     <string name="food">طعام</string>
     <string name="delivery">توصيل</string>
     <string name="order_food">اطلب الطعام</string>
-    <string name="order_food_with_gograb">اطلب الطعام مع aimobility</string>
-    <string name="use_promo_gograb200_and_get_r_200_off_on_norders_worth_rs_800_or_above">استخدم العرض الترويجي GOGRAB200 واحصل على روبية. 200 قبالة يوم أوامر بقيمة روبية. 800 أو أعلى</string>
+    <string name="order_food_with_opusaimobility">اطلب الطعام مع OpusAIMobility</string>
+    <string name="use_promo_opusaimobility200_and_get_r_200_off_on_norders_worth_rs_800_or_above">استخدم العرض الترويجي OPUSAIMOBILITY200 واحصل على روبية. 200 قبالة يوم أوامر بقيمة روبية. 800 أو أعلى</string>
     <string name="oder_now">اطلب الان</string>
     <string name="book_a_ride">احجز رحلة</string>
     <string name="current_location">موقعك الحالي</string>
@@ -46,7 +46,7 @@
     <string name="get_vaccinated">اصبح ملقحا</string>
     <string name="choose_the_vaccination_cente">اختر مركز التطعيم الذي تفضله ودعنا نوصلك بأمان</string>
     <string name="set_up_a_payment_method">قم بإعداد طريقة الدفع</string>
-    <string name="use_your_payment_methods_to_make_npurchase_on_gograb">استخدم طرق الدفع الخاصة بك لإجراء عملية شراء على aimobility. اعرف المزيد</string>
+    <string name="use_your_payment_methods_to_make_npurchase_on_opusaimobility">استخدم طرق الدفع الخاصة بك لإجراء عملية شراء على OpusAIMobility. اعرف المزيد</string>
     <string name="add_payment_method">إضافة طريقة دفع</string>
 
     <string name="deleted_message">تم حذف هذه الرسالة</string>
@@ -143,7 +143,7 @@
     <string name="amount_charged">المبلغ المشحون</string>
     <string name="_214">$214</string>
     <string name="cash_paid">النقدية المدفوعة</string>
-    <string name="gograb_paid">انتزاع الدفع</string>
+    <string name="opusaimobility_paid">انتزاع الدفع</string>
     <string name="_300">$400</string>
     <string name="_5_have_been_credited_to_your_wallet">تمت إضافتها إلى محفظتك</string>
     <string name="thursday_02_39_pm">Thursday, 02:39 PM</string>
@@ -185,7 +185,7 @@
     <string name="location_heading_denied_step_1">1. الاستفادة من <font color='#000000'> إذن</font></string>
     <string name="location_heading_denied_step_2">2. الاستفادة من <font color='#000000'> موقع </font></string>
     <string name="location_heading_denied_step_3">3. حدد السماح</string>
-    <string name="location_heading_denied_heading">اسمح لـ aimobility بالوصول إلى موقعك للحصول على رحلات أكثر دقة وبلا مجهود ، والبحث عن المطاعم ، وتوصيل الطعام والطرود</string>
+    <string name="location_heading_denied_heading">اسمح لـ OpusAIMobility بالوصول إلى موقعك للحصول على رحلات أكثر دقة وبلا مجهود ، والبحث عن المطاعم ، وتوصيل الطعام والطرود</string>
     <string name="genral_permison">2 .حدد الكاميرا والذباب والوسائط</string>
     <string name="allow">بيئة مفتوحة</string>
 
@@ -229,7 +229,7 @@
     <string name="birth_date">تاريخ الولادة</string>
     <string name="email">بريد الالكتروني</string>
     <string name="phone_number">رقم الهاتف</string>
-    <string name="please_also_enter_your_gograb_password">سنرسل لك بريدًا إلكترونيًا إلى عنوان بريدك الإلكتروني الجديد.</string>
+    <string name="please_also_enter_your_opusaimobility_password">سنرسل لك بريدًا إلكترونيًا إلى عنوان بريدك الإلكتروني الجديد.</string>
     <string name="need_a_new_password"><u>هل تحتاج إلى كلمة مرور جديدة؟</u></string>
     <string name="update_email">تحديث البريد الإلكتروني</string>
     <string name="card">بطاقة</string>
@@ -335,8 +335,8 @@
     <string name="add_more_item">إضافة المزيد من العناصر</string>
     <string name="sub_total">المجموع الفرعي</string>
     <string name="remove_item">إزالة بند</string>
-    <string name="to_upload_image_permission_string">لتحميل الصورة ، اسمح لـ aimobility بالوصول إلى الكاميرا والتخزين</string>
-    <string name="to_upload_image_permission_string_1">لتحميل الصورة ، اسمح لـ aimobility بالوصول إلى الكاميرا والتخزين</string>
+    <string name="to_upload_image_permission_string">لتحميل الصورة ، اسمح لـ OpusAIMobility بالوصول إلى الكاميرا والتخزين</string>
+    <string name="to_upload_image_permission_string_1">لتحميل الصورة ، اسمح لـ OpusAIMobility بالوصول إلى الكاميرا والتخزين</string>
     <string name="view_bucket">عرض سلة (%1$s)</string>
     <string name="start_new_order_under">بدء طلب جديد؟</string>
     <string name="start_new_order">ابدأ طلب جديد</string>
@@ -360,7 +360,7 @@
     <string name="please_select_address">الرجاء تحديد العنوان</string>
     <string name="you_don_t_have_any_nrides_planned">ليس لديك أي رحلات مخططة.</string>
     <string name="let_s_do_something_about_that">لنفعل شيئًا حيال ذلك.</string>
-    <string name="book_a_gograb">احجز GOGRAB</string>
+    <string name="book_a_opusaimobility">احجز OPUSAIMOBILITY</string>
     <string name="when_you_place_your_first_order_it_will_apear_hear">عند تقديم طلبك الأول ، سيظهر هنا</string>
     <string name="find_resturant">ابحث عن مطعم</string>
     <string name="item">\ غرض\</string>
@@ -436,7 +436,7 @@
     <string name="user_name">اسم االمستخدم</string>
     <string name="track_order">ترتيب المسار</string>
     <string name="log_in">يسجل دخول</string>
-    <string name="welcome_to_gograb">مرحبًا بك في aimobility</string>
+    <string name="welcome_to_opusaimobility">مرحبًا بك في OpusAIMobility</string>
     <string name="already_found">وجد بالفعل</string>
     <string name="write_a_message">اكتب رسالة</string>
     <string name="book_without_promo">احجز بدون ترويج</string>
@@ -453,7 +453,7 @@
     <string name="select_another_resturant">الرجاء تحديد مطعم آخر</string>
     <string name="remove_this_payment_method">هل تريد إزالة طريقة الدفع هذه؟</string>
     <string name="removing_this_card_means_you_won_t_be_able_to_use_this_payment_method_any_more">تعني إزالة هذه البطاقة أنك لن تتمكن من استخدام طريقة الدفع هذه بعد الآن</string>
-    <string name="keep_card_on_gograb">احتفظ بالبطاقة في aimobility</string>
+    <string name="keep_card_on_opusaimobility">احتفظ بالبطاقة في OpusAIMobility</string>
     <string name="remove">يزيل</string>
     <string name="sender">مرسل</string>
 

@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.terraai.aimobility.codeclasses.CreditCardNumberEditText
+                <com.yna.opusaimobilityapp.codeclasses.CreditCardNumberEditText
                     android:id="@+id/cardNumberEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -237,7 +237,7 @@
             </LinearLayout>
 
 
-            <com.terraai.aimobility.codeclasses.LoadingButton
+            <com.yna.opusaimobilityapp.codeclasses.LoadingButton
                 android:id="@+id/button_next"
                 android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_38sdp"

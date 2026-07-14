@@ -239,6 +239,10 @@ phases:
       # ── Deploy frontend to S3 + CloudFront ───────────────────────────────────
       - echo "--- Deploying frontend ---"
       - |
+        if [ -z "$S3_FRONTEND_BUCKET" ] || [ -z "$CLOUDFRONT_DISTRIBUTION_ID" ]; then
+          echo "::error::S3_FRONTEND_BUCKET and CLOUDFRONT_DISTRIBUTION_ID must be set"
+          exit 1
+        fi
         cd "$CODEBUILD_SRC_DIR/$APP_DIR"
         aws s3 sync dist/assets "s3://$S3_FRONTEND_BUCKET/assets/" \
           --delete \
@@ -248,17 +252,15 @@ phases:
           --cache-control "no-cache, no-store, must-revalidate" \
           --content-type "text/html" \
           --region us-east-1
-        aws s3 sync dist "s3://$S3_FRONTEND_BUCKET/" \
-          --exclude "assets/*" \
-          --exclude "index.html" \
-          --cache-control "public, max-age=86400" \
-          --region us-east-1
-      - aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*" --region us-east-1
       - echo "Frontend deployed to S3 + CloudFront invalidated"
 
       # ── Deploy Lambda ─────────────────────────────────────────────────────────
       - echo "--- Deploying Lambda ---"
       - |
+        if [ -z "$LAMBDA_FUNCTION_NAME" ]; then
+          echo "::error::LAMBDA_FUNCTION_NAME environment variable must be set"
+          exit 1
+        fi
         cd "$CODEBUILD_SRC_DIR/$APP_DIR"
         aws lambda update-function-code \
           --function-name "$LAMBDA_FUNCTION_NAME" \

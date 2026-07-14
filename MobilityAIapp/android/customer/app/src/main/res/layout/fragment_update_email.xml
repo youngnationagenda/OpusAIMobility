@@ -70,7 +70,7 @@
                 android:layout_marginHorizontal="@dimen/horizontal_margin"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:includeFontPadding="false"
-                android:text="@string/please_also_enter_your_gograb_password"
+                android:text="@string/please_also_enter_your_opusaimobility_password"
                 android:textColor="@color/text_color_black"
                 android:textSize="@dimen/_11sdp" />
 
@@ -127,7 +127,7 @@
         </LinearLayout>
 
 
-        <com.terraai.aimobility.codeclasses.LoadingButton
+        <com.yna.opusaimobilityapp.codeclasses.LoadingButton
             android:id="@+id/saveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

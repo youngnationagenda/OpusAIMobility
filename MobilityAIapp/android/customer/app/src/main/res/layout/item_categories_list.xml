@@ -15,12 +15,13 @@
         android:paddingStart="@dimen/horizontal_margin"
         android:paddingEnd="@dimen/horizontal_margin">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/groceryImage"
             android:layout_width="@dimen/_37sdp"
             android:layout_height="@dimen/_37sdp"
             android:layout_centerHorizontal="true"
             app:actualImageScaleType="centerCrop"
+            app:placeholderImage="@drawable/image_preview"
             app:placeholderImageScaleType="centerCrop" />
 
         <TextView

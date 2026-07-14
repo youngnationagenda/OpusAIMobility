@@ -42,3 +42,18 @@ pnpm-debug.log*
 # ── OS ────────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+
+# ── Android build artifacts ───────────────────────────────────────────────────
+android/customer/app/build/
+android/customer/build/
+android/customer/.gradle/
+android/customer/local.properties
+android/customer/app/google-services.json
+android/customer/**/*.apk
+android/customer/**/*.aab
+android/customer/**/*.jks
+android/customer/**/*.keystore
+android/*.apk
+android/*.aab
+*.jks
+*.keystore
