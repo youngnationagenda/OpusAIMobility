@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.terraai.aimobility.adapter.PagerAdapter;
 import com.terraai.aimobility.codeclasses.RootFragment;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentYourRidesBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentYourRidesBinding;
 
 
 public class YourRidesFragment extends RootFragment implements View.OnClickListener {

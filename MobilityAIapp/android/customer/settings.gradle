@@ -1,3 +1,24 @@
+// =============================================================================
+// OpusAIMobility — Customer Android App
+// settings.gradle
+//
+// Module layout:
+//   :app              — Main application module
+//                       applicationId : com.yna.opusaimobilityapp
+//                       namespace     : com.yna.opusaimobilityapp
+//                       Java packages : com.yna.opusaimobilityapp.*  (GoGrab UI)
+//                                       com.terraai.aimobility.*     (AWS layer)
+//
+//   :pdf              — PDF generation (iText7, isolated to avoid BouncyCastle clash)
+//                       namespace     : com.yna.opusaimobilityapp.pdf
+//
+//   :libraries:pinview — OTP / PIN input view widget
+//                        namespace     : com.chaos.view
+//
+// rootProject.name drives the Gradle build artefact base name and is used
+// by the CI workflow (deploy.yml) to locate the assembled APK outputs.
+// =============================================================================
+
 include ':app'
 include ':pdf'
 include ':libraries:pinview'

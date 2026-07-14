@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentCancelFoodBottomSheetBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentCancelFoodBottomSheetBinding;
 
 
 public class CancelFoodBottomSheet extends BottomSheetDialogFragment implements View.OnClickListener {

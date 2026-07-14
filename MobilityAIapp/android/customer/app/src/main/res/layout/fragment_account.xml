@@ -27,11 +27,12 @@
                 android:layout_marginStart="@dimen/_12sdp">
 
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/profileImg"
                     android:layout_width="@dimen/_60sdp"
                     android:layout_height="@dimen/_60sdp"
                     app:actualImageScaleType="centerCrop"
+                    app:placeholderImage="@drawable/ic_profile_avatar"
                     app:placeholderImageScaleType="centerCrop"
                     app:roundAsCircle="true" />
 

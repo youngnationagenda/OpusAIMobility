@@ -17,13 +17,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.terraai.aimobility.Interface.APICallBackList;
 import com.terraai.aimobility.Interface.AdapterClickListener;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.api.Singleton;
 import com.terraai.aimobility.codeclasses.DataParse;
 import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.codeclasses.SpacesItemDecorationBottom;
-import com.terraai.aimobility.databinding.FragmentBrowseBinding;
+import com.yna.opusaimobilityapp.databinding.FragmentBrowseBinding;
 import com.terraai.aimobility.foodadapter.TopCategoriesAdapter;
 import com.terraai.aimobility.model.CalculationModel;
 import com.terraai.aimobility.model.CategoriesModel;

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.PaymentMethodsModel;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 import java.util.ArrayList;
 

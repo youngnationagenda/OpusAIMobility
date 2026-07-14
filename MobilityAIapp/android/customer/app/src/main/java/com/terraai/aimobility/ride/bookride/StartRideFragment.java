@@ -61,8 +61,8 @@ import com.terraai.aimobility.mapclasses.MapWorker;
 import com.terraai.aimobility.model.GrabCarModel;
 import com.terraai.aimobility.model.LocationModel;
 import com.terraai.aimobility.model.RideTypeModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentStartRideBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentStartRideBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

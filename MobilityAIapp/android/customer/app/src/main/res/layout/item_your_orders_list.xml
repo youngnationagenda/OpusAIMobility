@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageView
+                    <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/food_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -44,7 +44,8 @@
                         android:visibility="visible"
                         app:actualImageScaleType="centerCrop"
                         app:failureImageScaleType="centerCrop"
-                        app:placeholderImageScaleType="centerCrop" />
+                        app:placeholderImageScaleType="centerCrop"
+                        fresco:placeholderImage="@drawable/imagepreview" />
 
                 </RelativeLayout>
 

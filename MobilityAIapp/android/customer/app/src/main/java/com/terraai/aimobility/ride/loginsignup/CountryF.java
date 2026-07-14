@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import com.terraai.aimobility.adapter.CountryAdapter;
 import com.terraai.aimobility.api.Singleton;
 import com.terraai.aimobility.codeclasses.Functions;
 import com.terraai.aimobility.codeclasses.RootFragment;
-import com.terraai.aimobility.databinding.FragmentCountryBinding;
+import com.yna.opusaimobilityapp.databinding.FragmentCountryBinding;
 import com.terraai.aimobility.model.CountryModel;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;

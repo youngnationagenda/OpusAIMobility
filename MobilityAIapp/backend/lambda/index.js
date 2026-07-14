@@ -1,4 +1,6 @@
 'use strict';
+// GoGrab Legacy Integration
+const{handleGoGrab}=require('./gograb-api/gograb-handler');
 const{DynamoDBClient}=require('@aws-sdk/client-dynamodb');
 const{DynamoDBDocumentClient,GetCommand,PutCommand,DeleteCommand,ScanCommand,QueryCommand}=require('@aws-sdk/lib-dynamodb');
 const{CognitoIdentityProviderClient,InitiateAuthCommand,SignUpCommand}=require('@aws-sdk/client-cognito-identity-provider');
@@ -407,6 +409,7 @@ if(path==='/files/presign-upload'&&method==='POST')return await presignUpload(bo
 if(path==='/files/presign-download'&&method==='GET')return await presignDownload(event.queryStringParameters||{});
 if(path==='/devices/token'&&method==='POST')return await registerDeviceToken(body);
 if(path==='/devices/token'&&method==='DELETE')return await removeDeviceToken(body);
+if(path.startsWith('/gograb'))return await handleGoGrab(method,path,segs,body,event.queryStringParameters||{});
 if(path==='/health'&&method==='GET')return ok({status:'ok',timestamp:Date.now(),service:'opusaimobility-api'});
 return err('Not found: '+method+' '+path,404);
 }catch(e){console.error(e);return err(e.message||'Internal error',500);}

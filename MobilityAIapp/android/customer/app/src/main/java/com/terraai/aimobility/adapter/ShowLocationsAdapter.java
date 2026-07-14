@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.Interface.AdapterLongClickListener;
 import com.terraai.aimobility.model.NearbyModelClass;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.ShowLocationItemviewBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.ShowLocationItemviewBinding;
 
 import java.util.ArrayList;
 

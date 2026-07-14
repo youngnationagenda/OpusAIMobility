@@ -14,8 +14,8 @@ import android.webkit.WebViewClient;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentWebViewBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentWebViewBinding;
 
 
 public class WebViewFragment extends Fragment {

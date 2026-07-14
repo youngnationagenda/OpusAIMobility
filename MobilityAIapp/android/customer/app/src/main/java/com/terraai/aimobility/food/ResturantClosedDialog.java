@@ -14,8 +14,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.terraai.aimobility.activitiesandfragment.FoodActivity;
 import com.terraai.aimobility.codeclasses.MyPreferences;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.DialogResturantClosedBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.DialogResturantClosedBinding;
 import com.terraai.aimobility.model.CalculationModel;
 import com.terraai.aimobility.model.ResturantModel;
 

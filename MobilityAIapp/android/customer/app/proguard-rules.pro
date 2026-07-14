@@ -14,12 +14,16 @@
 -keepattributes EnclosingMethod
 -keepattributes InnerClasses
 
-# ─── aimobility Application Classes ──────────────────────────────────────────
+# ─── Application Classes ──────────────────────────────────────────────────────
 # Keep all app classes intact so reflection-based APIs (Room DAOs, Gson models,
 # Retrofit interfaces, WebSocket callbacks) survive R8 obfuscation.
+#
+# Primary package  : com.yna.opusaimobilityapp  (GoGrab UI + all features)
+# AWS service layer: com.terraai.aimobility      (:pdf sub-module + AWS helpers)
+-keep class com.yna.opusaimobilityapp.** { *; }
+-keepclassmembers class com.yna.opusaimobilityapp.** { *; }
 -keep class com.terraai.aimobility.** { *; }
 -keepclassmembers class com.terraai.aimobility.** { *; }
--keep class com.opusaimobility.** { *; }
 
 # ─── AWS Amplify + Cognito ────────────────────────────────────────────────────
 -keep class com.amplifyframework.** { *; }
@@ -229,6 +233,22 @@
     native <methods>;
 }
 
-# ─── REMOVED (Firebase / GeoFire / PaperDB) ──────────────────────────────────
-# These SDKs have been replaced by AWS Amplify + Glide + SharedPreferences.
-# No rules required — they are not in the dependency graph.
+# ─── Firebase + GeoFire ──────────────────────────────────────────────────────
+# Firebase IS in the dependency graph:
+#   OpusAIMobility.java calls FirebaseApp.initializeApp()
+#   GeoFire used for real-time driver location tracking
+#   Firebase Crashlytics + Analytics active via BOM
+-keep class com.google.firebase.** { *; }
+-keepclassmembers class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
+-keep class com.firebase.** { *; }
+-keepclassmembers class com.firebase.** { *; }
+-dontwarn com.firebase.**
+
+# ─── PaperDB (local key-value cache) ─────────────────────────────────────────
+# Paper.init() called in OpusAIMobility.java; keep serialised model classes.
+-keep class io.paperdb.** { *; }
+-dontwarn io.paperdb.**
+-keepclassmembers class * {
+    @io.paperdb.* <fields>;
+}

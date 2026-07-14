@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.terraai.aimobility.activitiesandfragment.SelectLanguageF;
 import com.terraai.aimobility.Interface.AdapterClickListener;
-import com.terraai.aimobility.databinding.ItemLanguageBinding;
+import com.yna.opusaimobilityapp.databinding.ItemLanguageBinding;
 import com.terraai.aimobility.model.LanguageModel;
 
 import java.util.List;

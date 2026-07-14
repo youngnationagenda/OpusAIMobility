@@ -1,0 +1,353 @@
+[
+  {
+    "TableName": "gograb-users",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "email","AttributeType": "S"},
+      {"AttributeName": "phone","AttributeType": "S"},
+      {"AttributeName": "role","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "email-index",
+        "KeySchema": [{"AttributeName": "email","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      },
+      {
+        "IndexName": "phone-index",
+        "KeySchema": [{"AttributeName": "phone","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      },
+      {
+        "IndexName": "role-index",
+        "KeySchema": [{"AttributeName": "role","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"},{"Key": "table","Value": "user"}]
+  },
+  {
+    "TableName": "gograb-restaurants",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "userId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "userId-index",
+        "KeySchema": [{"AttributeName": "userId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"},{"Key": "table","Value": "restaurant"}]
+  },
+  {
+    "TableName": "gograb-restaurant-menus",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "restaurantId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "restaurantId-index",
+        "KeySchema": [{"AttributeName": "restaurantId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-restaurant-menu-items",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "menuId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "menuId-index",
+        "KeySchema": [{"AttributeName": "menuId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-food-orders",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "userId","AttributeType": "S"},
+      {"AttributeName": "restaurantId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "userId-index",
+        "KeySchema": [{"AttributeName": "userId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      },
+      {
+        "IndexName": "restaurantId-index",
+        "KeySchema": [{"AttributeName": "restaurantId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-parcel-orders",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "userId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "userId-index",
+        "KeySchema": [{"AttributeName": "userId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-trips",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "userId","AttributeType": "S"},
+      {"AttributeName": "driverId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "userId-index",
+        "KeySchema": [{"AttributeName": "userId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      },
+      {
+        "IndexName": "driverId-index",
+        "KeySchema": [{"AttributeName": "driverId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-requests",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "userId","AttributeType": "S"},
+      {"AttributeName": "driverId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "userId-index",
+        "KeySchema": [{"AttributeName": "userId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      },
+      {
+        "IndexName": "driverId-index",
+        "KeySchema": [{"AttributeName": "driverId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-vehicles",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "userId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "userId-index",
+        "KeySchema": [{"AttributeName": "userId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-vehicle-types",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [{"AttributeName": "id","AttributeType": "S"}],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-ride-types",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [{"AttributeName": "id","AttributeType": "S"}],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-coupons",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "couponCode","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "couponCode-index",
+        "KeySchema": [{"AttributeName": "couponCode","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-food-categories",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [{"AttributeName": "id","AttributeType": "S"}],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-package-sizes",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [{"AttributeName": "id","AttributeType": "S"}],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-good-types",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [{"AttributeName": "id","AttributeType": "S"}],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-notifications",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "receiverId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "receiverId-index",
+        "KeySchema": [{"AttributeName": "receiverId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-app-config",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "configKey","KeyType": "HASH"}],
+    "AttributeDefinitions": [{"AttributeName": "configKey","AttributeType": "S"}],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-driver-ratings",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "driverId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "driverId-index",
+        "KeySchema": [{"AttributeName": "driverId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-transactions",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "userId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "userId-index",
+        "KeySchema": [{"AttributeName": "userId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-user-documents",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "userId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "userId-index",
+        "KeySchema": [{"AttributeName": "userId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-service-charges",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [{"AttributeName": "id","AttributeType": "S"}],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-html-pages",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "name","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "name-index",
+        "KeySchema": [{"AttributeName": "name","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  },
+  {
+    "TableName": "gograb-withdraw-requests",
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [{"AttributeName": "id","KeyType": "HASH"}],
+    "AttributeDefinitions": [
+      {"AttributeName": "id","AttributeType": "S"},
+      {"AttributeName": "userId","AttributeType": "S"}
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "userId-index",
+        "KeySchema": [{"AttributeName": "userId","KeyType": "HASH"}],
+        "Projection": {"ProjectionType": "ALL"}
+      }
+    ],
+    "Tags": [{"Key": "source","Value": "gograb-migration"}]
+  }
+]

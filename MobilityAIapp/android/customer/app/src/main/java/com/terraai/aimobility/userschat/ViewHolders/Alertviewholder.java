@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 public class Alertviewholder extends RecyclerView.ViewHolder {
 

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.terraai.aimobility.ride.loginsignup.CountryF;
 import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.CountryModel;
-import com.terraai.aimobility.databinding.FCountryItemListBinding;
+import com.yna.opusaimobilityapp.databinding.FCountryItemListBinding;
 
 import java.util.ArrayList;
 import java.util.List;

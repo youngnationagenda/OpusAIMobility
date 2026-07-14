@@ -23,8 +23,8 @@ import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.model.CalculationModel;
 import com.terraai.aimobility.model.MenuDetailsModel;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.ViewBucketWithBottomSheetBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.ViewBucketWithBottomSheetBinding;
 
 import java.util.ArrayList;
 import java.util.HashMap;

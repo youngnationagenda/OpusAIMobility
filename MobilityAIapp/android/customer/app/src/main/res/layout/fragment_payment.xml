@@ -98,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:text="@string/use_your_payment_methods_to_make_npurchase_on_gograb"
+                android:text="@string/use_your_payment_methods_to_make_npurchase_on_opusaimobility"
                 android:textColor="@color/text_color_black"
                 android:textSize="@dimen/text_Size11" />
 

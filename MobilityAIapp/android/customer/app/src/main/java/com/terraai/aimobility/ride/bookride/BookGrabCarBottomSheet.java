@@ -15,8 +15,8 @@ import com.terraai.aimobility.Interface.AdapterClickListener;
 import com.terraai.aimobility.Interface.FragmentCallBack;
 import com.terraai.aimobility.model.GrabCarModel;
 import com.terraai.aimobility.model.RideTypeModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentBookGrabCarBottomSheetBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentBookGrabCarBottomSheetBinding;
 
 import java.util.ArrayList;
 

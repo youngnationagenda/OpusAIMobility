@@ -27,8 +27,8 @@ import com.terraai.aimobility.model.MenuDetailsModel;
 import com.terraai.aimobility.model.MenuModel;
 import com.terraai.aimobility.model.ParentExpandListModel;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentSearchBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentSearchBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

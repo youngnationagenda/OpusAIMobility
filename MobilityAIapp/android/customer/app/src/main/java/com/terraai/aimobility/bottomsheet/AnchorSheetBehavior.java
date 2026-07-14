@@ -46,7 +46,7 @@ import androidx.core.math.MathUtils;
 import androidx.customview.view.AbsSavedState;
 import androidx.customview.widget.ViewDragHelper;
 
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

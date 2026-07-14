@@ -1,0 +1,1 @@
+{"statusCode":200,"headers":{"Content-Type":"application/json","Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"Content-Type,api-key,Api-Key,API-KEY,x-api-key,X-Api-Key,Authorization","Access-Control-Allow-Methods":"GET,POST,PUT,DELETE,OPTIONS"},"body":"{\"code\":\"200\",\"msg\":{\"otp\":\"1234\",\"message\":\"OTP sent\"}}"}

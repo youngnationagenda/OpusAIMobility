@@ -1,7 +1,7 @@
 /**
- * import-legacy-schema.ts — Import TerraAI (gograb) legacy schema into opusaimobility-db
+ * import-legacy-schema.ts — Import TerraAI (opusaimobility) legacy schema into opusaimobility-db
  * 
- * Reads the gograb.sql dump and imports it as a separate `legacy_terraai` schema
+ * Reads the opusaimobility.sql dump and imports it as a separate `legacy_terraai` schema
  * alongside the main `terraai` database. This preserves the original table structure
  * for reference while the new normalized schema serves the application.
  * 
@@ -21,12 +21,12 @@ const PORT = parseInt(process.env.TARGET_DB_PORT || '3306');
 const USER = process.env.TARGET_DB_USER || 'admin_opus';
 const PASS = process.env.TARGET_DB_PASS || '';
 
-const SQL_FILE = process.argv[2] || resolve('D:/omnisonietest/OpusAIMobility/TerraAI/.claude/PHP API/Database/gograb.sql');
+const SQL_FILE = process.argv[2] || resolve('D:/omnisonietest/OpusAIMobility/TerraAI/.claude/PHP API/Database/opusaimobility.sql');
 
 async function main() {
   console.log('');
   console.log('═══════════════════════════════════════════════════════════');
-  console.log('  OpusAIMobility — Import Legacy TerraAI Schema (gograb)');
+  console.log('  OpusAIMobility — Import Legacy TerraAI Schema (opusaimobility)');
   console.log('═══════════════════════════════════════════════════════════');
   console.log(`  Source SQL: ${SQL_FILE}`);
   console.log(`  Target: ${USER}@${HOST}:${PORT}`);

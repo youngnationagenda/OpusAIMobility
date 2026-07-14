@@ -52,7 +52,7 @@
             </RelativeLayout>
 
 
-            <com.terraai.aimobility.codeclasses.LoadingButton
+            <com.yna.opusaimobilityapp.codeclasses.LoadingButton
                 android:id="@+id/confrim_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

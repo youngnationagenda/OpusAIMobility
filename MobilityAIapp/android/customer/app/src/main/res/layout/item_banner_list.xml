@@ -27,13 +27,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/bannerImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 app:actualImageScaleType="centerCrop"
+                app:failureImage="@drawable/image_preview"
                 app:failureImageScaleType="centerCrop"
+                app:placeholderImage="@drawable/image_preview"
                 app:placeholderImageScaleType="centerCrop" />
 
         </RelativeLayout>

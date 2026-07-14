@@ -82,7 +82,7 @@
                                 android:layout_marginTop="@dimen/_2sdp"
                                 android:visibility="visible" />
 
-                            <com.terraai.aimobility.mapclasses.ArchView
+                            <com.yna.opusaimobilityapp.mapclasses.ArchView
                                 android:id="@+id/archView"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -297,7 +297,7 @@
                             android:background="@drawable/lite_gray_line" />
 
 
-                        <com.terraai.aimobility.codeclasses.LoadingButton
+                        <com.yna.opusaimobilityapp.codeclasses.LoadingButton
                             android:id="@+id/delete_btn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -339,7 +339,7 @@
                     android:background="@color/light_grey" />
 
 
-                <com.terraai.aimobility.codeclasses.LoadingButton
+                <com.yna.opusaimobilityapp.codeclasses.LoadingButton
                     android:id="@+id/btn_save_continue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

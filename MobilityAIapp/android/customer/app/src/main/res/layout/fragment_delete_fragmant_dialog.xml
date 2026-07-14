@@ -92,7 +92,7 @@
                     android:layout_centerInParent="true"
                     android:gravity="center"
                     android:stateListAnimator="@null"
-                    android:text="@string/keep_card_on_gograb"
+                    android:text="@string/keep_card_on_opusaimobility"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="@dimen/btn_textSize" />

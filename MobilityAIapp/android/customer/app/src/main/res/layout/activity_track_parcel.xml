@@ -236,12 +236,13 @@
                                             android:layout_marginTop="@dimen/_10sdp">
 
 
-                                            <ImageView
+                                            <com.facebook.drawee.view.SimpleDraweeView
                                                 android:id="@+id/driverImage"
                                                 android:layout_width="@dimen/_40sdp"
                                                 android:layout_height="@dimen/_40sdp"
                                                 android:layout_centerVertical="true"
                                                 app:actualImageScaleType="centerCrop"
+                                                app:placeholderImage="@drawable/ic_profile_avatar"
                                                 app:placeholderImageScaleType="centerCrop"
                                                 app:roundAsCircle="true" />
 
@@ -561,13 +562,14 @@
                                                 android:layout_toEndOf="@+id/imageGo"
                                                 android:background="@color/lite_gray" />
 
-                                            <ImageView
+                                            <com.facebook.drawee.view.SimpleDraweeView
                                                 android:id="@+id/imageGo"
                                                 android:layout_width="@dimen/_25sdp"
                                                 android:layout_height="@dimen/_25sdp"
                                                 android:layout_gravity="center_vertical"
                                                 android:layout_marginBottom="@dimen/_20sdp"
                                                 app:actualImageScaleType="centerCrop"
+                                                app:placeholderImage="@drawable/ic_go_mini"
                                                 app:placeholderImageScaleType="centerCrop" />
 
                                         </RelativeLayout>

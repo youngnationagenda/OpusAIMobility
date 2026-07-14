@@ -16,8 +16,8 @@ import com.terraai.aimobility.foodadapter.ViewBucketAdapter;
 import com.terraai.aimobility.Interface.FragmentCallBack;
 import com.terraai.aimobility.model.CalculationModel;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.DialogNoInternetBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.DialogNoInternetBinding;
 
 import java.util.ArrayList;
 

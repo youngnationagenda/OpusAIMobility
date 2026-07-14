@@ -19,8 +19,8 @@ import com.terraai.aimobility.ride.activeride.RatingFragment;
 import com.terraai.aimobility.Interface.FragmentCallBack;
 import com.terraai.aimobility.model.HistoryModel;
 import com.terraai.aimobility.model.TripHistoryModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentRideFareBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentRideFareBinding;
 
 import java.util.ArrayList;
 
@@ -85,7 +85,7 @@ public class RideHistoryDetail extends Fragment implements View.OnClickListener 
                 binding.tvWalletPay.setText(currencyUnit + Functions.roundoffDecimal(Double.valueOf(historyModel.payCollectFromWallet)));
 
             } else {
-                binding.gograbPayLayout.setVisibility(View.GONE);
+                binding.opusaimobilityPayLayout.setVisibility(View.GONE);
 
             }
 

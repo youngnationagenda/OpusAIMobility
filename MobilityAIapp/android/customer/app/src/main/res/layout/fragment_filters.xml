@@ -230,15 +230,20 @@
 
         </RelativeLayout>
 
-        <com.google.android.material.slider.RangeSlider
+        <com.appyvet.materialrangebar.RangeBar
             android:id="@+id/range_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:layout_marginHorizontal="@dimen/horizontal_margin"
-            app:trackColorActive="@color/app_color"
-            app:trackColorInactive="@color/gray"
-            app:thumbColor="@color/app_color"
-            app:thumbRadius="12dp" />
+            app:mrb_connectingLineColor="@color/gray"
+            app:mrb_pinColor="@color/transparent"
+            app:mrb_pinTextColor="@color/transparent"
+            app:mrb_rangeBar="true"
+            app:mrb_rangeBarColor="@color/gray"
+            app:mrb_selectorColor="@color/app_color"
+            app:mrb_selectorSize="12dp"
+            app:mrb_tickHeight="0dp"
+            app:mrb_tickStart="0" />
 
         <RelativeLayout
             android:id="@+id/applyBtn"

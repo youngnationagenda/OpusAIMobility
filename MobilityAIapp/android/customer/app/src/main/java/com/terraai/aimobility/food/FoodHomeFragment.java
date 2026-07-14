@@ -41,8 +41,8 @@ import com.terraai.aimobility.model.CalculationModel;
 import com.terraai.aimobility.model.CategoriesModel;
 import com.terraai.aimobility.model.NearbyModelClass;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentFoodHomeBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentFoodHomeBinding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

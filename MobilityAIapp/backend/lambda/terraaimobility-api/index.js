@@ -1,9 +1,14 @@
 /**
- * aimobility Lambda API v3.1 — JWT-Only Auth (TERRA-002) + Unified Pool (TERRA-001)
+ * aimobility Lambda API v4.0 — JWT-Only Auth (TERRA-002) + Unified Pool (TERRA-001)
  */
 const db = require('./db');
 const auth = require('./auth');
 const { notifyUser } = require('./notify');
+const { sendMail, sendWelcomeEmail, sendOtpEmail, sendOrderConfirmationEmail } = require('./mailer');
+const { generateUploadUrl, deleteAsset, uploadBase64 } = require('./storage');
+const { sendOtp, verifyStoredOtp } = require('./sms');
+const maps=require('./maps');
+const { handleAdminRoute } = require('./admin-handler');
 
 // API_KEY removed — TERRA-002: API key fallback auth disabled, Cognito JWT is sole auth
 if (!process.env.COGNITO_USER_POOL_ID) {
@@ -105,7 +110,8 @@ const REST_ROUTE_MAP = {
   'carbon/validate': 'health', 'carbon/rate': 'health',
   'defi/asset-loan': 'health', 'defi/insurance-loan': 'health',
   'iot/telemetry': 'health', 'iot/firmware': 'health', 'iot/stream-url': 'health',
-  'stations': 'showCountries',
+    'stations':'showCountries',
+    'admin/dashboard':'getDashboardStats','admin/users':'showUsers','admin/users/add':'addUser','admin/users/edit':'editUser','admin/stores':'showStores','admin/stores/add':'addStore','admin/categories':'showCategories','admin/categories/add':'addCategory','admin/products':'showAllProducts','admin/products/add':'addProduct','admin/countries':'showCountries','admin/taxes':'showTaxes','admin/settings':'addSettings','admin/sliders':'showAppSliderImages','admin/coupons':'showStoreCoupons','admin/orders':'showOrders','admin/withdraw':'showWithdrawRequests','admin/documents':'showUserDocuments','admin/notifications/broadcast':'sendBroadcast','admin/pages':'getHtmlPage','admin/pages/add':'addHtmlPage','vendor/login':'loginVendor','vendor/orders':'showVendorOrders','vendor/orders/detail':'showOrderDetail','upload':'uploadAsset','upload/url':'uploadAsset','upload/delete':'deleteAsset','email/send':'sendEmail',
 };
 
 function getRoute(path) {
@@ -280,10 +286,18 @@ async function handleRoute(route, body) {
     case 'getNearbyDrivers': { const d=await db.scanTable(db.T.DRIVERS,20); return ok(d); }
     case 'trackDriver': return ok({lat:'-1.2921',lng:'36.8219',eta:'5 mins'});
     case 'estimateFare': {
-      // TERRA-003: AI distance endpoint — return shape frontend expects
-      const fromAddr = body.from || body.pickup || body.origin || 'Origin';
-      const toAddr   = body.to   || body.destination || 'Destination';
-      return ok({ distanceKm: 5.0, durationMinutes: 15, estimatedFare: 12.50, distance: '5.0', duration: '15 mins', from: fromAddr, to: toAddr });
+      const fromAddr = body.from || body.pickup || body.origin || '';
+      const toAddr   = body.to   || body.destination || '';
+      // Use real Google Maps if lat/lng provided, else return estimate
+      const oLat = body.origin_lat || body.pickup_lat;
+      const oLng = body.origin_lng || body.pickup_lng;
+      const dLat = body.dest_lat   || body.dropoff_lat;
+      const dLng = body.dest_lng   || body.dropoff_lng;
+      if (oLat && oLng && dLat && dLng) {
+        const result = await maps.estimateFare({ originLat: oLat, originLng: oLng, destLat: dLat, destLng: dLng });
+        return ok({ ...result, from: fromAddr || result.from, to: toAddr || result.to });
+      }
+      return ok({ distanceKm: 5.0, durationMinutes: 15, estimatedFare: 12.50, distance: '5.0 km', duration: '15 mins', from: fromAddr, to: toAddr, status: 'ESTIMATED' });
     }
     case 'showActiveRequest': case 'showRequestDetails': case 'changeDropoffLocation': return ok({});
     case 'showRideTypesParcelOrder': return ok([]);
@@ -449,7 +463,11 @@ async function handleRoute(route, body) {
       timestamp: new Date().toISOString(),
     });
 
-    default: return err('Route not found: /'+route,'404');
+    default: {
+      const adminResult = await handleAdminRoute(route, body).catch(e=>{console.error('[admin]',e.message); return null; });
+      if (adminResult) return adminResult;
+      return err('Route not found: /'+route,'404');
+    }
   }
 }
 

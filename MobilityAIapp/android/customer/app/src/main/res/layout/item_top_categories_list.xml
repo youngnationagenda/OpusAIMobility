@@ -24,7 +24,7 @@
             android:layout_marginStart="@dimen/_2sdp"
             android:layout_marginEnd="@dimen/_2sdp">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/menuImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -32,8 +32,10 @@
                 android:scaleType="centerCrop"
                 android:visibility="visible"
                 app:actualImageScaleType="centerCrop"
+                app:failureImage="@drawable/image_preview"
                 app:failureImageScaleType="centerCrop"
-                app:placeholderImageScaleType="centerCrop" />
+                app:placeholderImageScaleType="centerCrop"
+                fresco:placeholderImage="@drawable/imagepreview" />
 
             <LinearLayout
                 android:layout_width="match_parent"

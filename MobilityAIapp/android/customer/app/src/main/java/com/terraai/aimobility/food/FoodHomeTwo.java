@@ -49,8 +49,8 @@ import com.terraai.aimobility.mapclasses.MapWorker;
 import com.terraai.aimobility.model.CalculationModel;
 import com.terraai.aimobility.model.NearbyModelClass;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentHome2Binding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentHome2Binding;
 import com.squareup.retrofitplus.api.RetrofitRequest;
 import com.squareup.retrofitplus.interfaces.ApiCallback;
 

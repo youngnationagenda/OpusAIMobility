@@ -12,8 +12,8 @@ import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.foodadapter.ReviewAdapter;
 import com.terraai.aimobility.model.RestaurantRatingModel;
 import com.terraai.aimobility.model.ResturantModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentReviewsBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentReviewsBinding;
 
 import java.util.ArrayList;
 

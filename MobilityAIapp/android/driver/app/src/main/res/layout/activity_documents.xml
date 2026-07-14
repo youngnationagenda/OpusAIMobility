@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/colorBackground">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="56dp"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:paddingHorizontal="@dimen/spacing_md" android:background="@color/colorSurface">
+            <ImageView android:id="@+id/ivBack" android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size" android:src="@drawable/ic_back"
+                android:contentDescription="Back"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/docs_title" android:textSize="@dimen/text_xl"
+                android:textColor="@color/colorTextPrimary" android:fontFamily="@font/poppins_semibold"
+                android:layout_marginStart="@dimen/spacing_md"/>
+        </LinearLayout>
+        <ProgressBar android:id="@+id/progressBar" android:layout_width="40dp"
+            android:layout_height="40dp" android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_md" android:visibility="gone"
+            android:indeterminateTint="@color/colorPrimary"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="@dimen/spacing_lg">
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnUploadLicense"
+                style="@style/ButtonSecondary" android:layout_width="match_parent"
+                android:layout_height="52dp" android:text="@string/driver_license"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnUploadId"
+                style="@style/ButtonSecondary" android:layout_width="match_parent"
+                android:layout_height="52dp" android:layout_marginTop="@dimen/spacing_sm"
+                android:text="@string/national_id"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnUploadVehicleReg"
+                style="@style/ButtonSecondary" android:layout_width="match_parent"
+                android:layout_height="52dp" android:layout_marginTop="@dimen/spacing_sm"
+                android:text="@string/vehicle_reg"/>
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnUploadInsurance"
+                style="@style/ButtonSecondary" android:layout_width="match_parent"
+                android:layout_height="52dp" android:layout_marginTop="@dimen/spacing_sm"
+                android:text="@string/insurance"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

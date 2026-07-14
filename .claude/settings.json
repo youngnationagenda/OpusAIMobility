@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(D:\\omnisonietest\\OpusAIMobility\\**)",
+      "Edit(D:\\omnisonietest\\OpusAIMobility\\**)",
+      "Write(D:\\omnisonietest\\OpusAIMobility\\**)",
+      "Glob(D:\\omnisonietest\\OpusAIMobility\\**)",
+      "Grep(D:\\omnisonietest\\OpusAIMobility\\**)",
+      "Bash(git *)",
+      "Bash(gh *)"
+    ],
+    "additionalDirectories": [
+      "D:\\omnisonietest\\OpusAIMobility"
+    ]
+  }
+}

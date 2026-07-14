@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 
 public class LoadingButton extends LinearLayout {
     private static final int TEXT_DIFF = 14;

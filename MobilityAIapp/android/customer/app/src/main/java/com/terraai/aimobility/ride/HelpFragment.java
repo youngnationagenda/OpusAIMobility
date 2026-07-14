@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.Constants;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentHelpBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentHelpBinding;
 
 
 public class HelpFragment extends RootFragment implements View.OnClickListener {

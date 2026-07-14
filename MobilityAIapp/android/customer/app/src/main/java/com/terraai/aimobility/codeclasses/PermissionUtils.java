@@ -8,7 +8,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.core.content.ContextCompat;
 import com.terraai.aimobility.Interface.FragmentCallBack;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import java.util.ArrayList;
 import java.util.List;
 

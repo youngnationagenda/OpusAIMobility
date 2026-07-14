@@ -3,7 +3,7 @@ package com.terraai.aimobility.codeclasses;
 import android.content.Context;
 import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
-import com.terraai.aimobility.R;
+import com.yna.opusaimobilityapp.R;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;

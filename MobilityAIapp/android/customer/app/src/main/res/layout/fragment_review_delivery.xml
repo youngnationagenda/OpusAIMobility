@@ -312,12 +312,13 @@
                         android:layout_height="wrap_content">
 
 
-                        <ImageView
+                        <com.facebook.drawee.view.SimpleDraweeView
                             android:id="@+id/ic_bike"
                             android:layout_width="@dimen/_24sdp"
                             android:layout_height="@dimen/_24sdp"
                             android:layout_centerVertical="true"
                             app:actualImageScaleType="centerCrop"
+                            app:placeholderImage="@drawable/ic_car_star"
                             app:placeholderImageScaleType="centerCrop" />
 
                         <TextView

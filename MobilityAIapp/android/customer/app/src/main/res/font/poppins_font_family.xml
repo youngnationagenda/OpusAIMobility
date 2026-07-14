@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GoGrab / OpusAIMobility — Poppins font family
+    Mirrors the PHP admin panel: Poppins:wght@100;200;300;400;500;600;700
+    Usage:  android:fontFamily="@font/poppins_font_family"
+    Default set globally via android:fontFamily in themes.xml
+-->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Light — weight 300 -->
+    <font
+        android:font="@font/poppins_light"
+        android:fontWeight="300"
+        android:fontStyle="normal"
+        app:font="@font/poppins_light"
+        app:fontWeight="300"
+        app:fontStyle="normal" />
+
+    <!-- Regular — weight 400 -->
+    <font
+        android:font="@font/poppins_regular"
+        android:fontWeight="400"
+        android:fontStyle="normal"
+        app:font="@font/poppins_regular"
+        app:fontWeight="400"
+        app:fontStyle="normal" />
+
+    <!-- Medium — weight 500 -->
+    <font
+        android:font="@font/poppins_medium"
+        android:fontWeight="500"
+        android:fontStyle="normal"
+        app:font="@font/poppins_medium"
+        app:fontWeight="500"
+        app:fontStyle="normal" />
+
+    <!-- SemiBold — weight 600 -->
+    <font
+        android:font="@font/poppins_semibold"
+        android:fontWeight="600"
+        android:fontStyle="normal"
+        app:font="@font/poppins_semibold"
+        app:fontWeight="600"
+        app:fontStyle="normal" />
+
+    <!-- Bold — weight 700 -->
+    <font
+        android:font="@font/poppins_bold"
+        android:fontWeight="700"
+        android:fontStyle="normal"
+        app:font="@font/poppins_bold"
+        app:fontWeight="700"
+        app:fontStyle="normal" />
+
+</font-family>

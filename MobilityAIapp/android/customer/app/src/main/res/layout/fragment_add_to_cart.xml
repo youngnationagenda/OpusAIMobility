@@ -51,7 +51,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/_180sdp">
 
-                        <ImageView
+                        <com.facebook.drawee.view.SimpleDraweeView
                             android:id="@+id/menuImage"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -60,7 +60,8 @@
                             android:visibility="visible"
                             app:actualImageScaleType="centerCrop"
                             app:failureImageScaleType="centerCrop"
-                            app:placeholderImageScaleType="centerCrop" />
+                            app:placeholderImageScaleType="centerCrop"
+                            fresco:placeholderImage="@drawable/imagepreview" />
 
                     </RelativeLayout>
 
@@ -139,7 +140,7 @@
                             android:textSize="@dimen/_12sdp" />
 
 
-                        <com.terraai.aimobility.codeclasses.CustomExpandableListView
+                        <com.yna.opusaimobilityapp.codeclasses.CustomExpandableListView
                             android:id="@+id/item_detail_list"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

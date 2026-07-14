@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">aimobility</string>
+    <string name="app_name" translatable="false">OpusAI Mobility</string>
 
 
     <!--    for map functionality Use-->
@@ -28,12 +28,12 @@
     <string name="enter_the_email_address">Enter the email address associated with your account and we will email you a link to reset your password</string>
 
     <string name="make_sure_it_matches">Make sure it matches the name on your government ID.</string>
-    <string name="to_sign_up_you_need">To sign up you need to be at least 18. Your birthday won\'t be shared with other people who use aimobility</string>
+    <string name="to_sign_up_you_need">To sign up you need to be at least 18. Your birthday won\'t be shared with other people who use OpusAIMobility</string>
     <string name="we_ll_email_you_trip_confirmation_and_receipts">We\'ll email you trip confirmation and receipts.</string>
-    <string name="by_selecting_agree_and_continue_below">By selecting Agree and continue below, I agree to aimobility\'s Terms of Service, Payments Terms of Service, Privacy Policy, and Nondiscrimination Policy.</string>
+    <string name="by_selecting_agree_and_continue_below">By selecting Agree and continue below, I agree to OpusAIMobility\'s Terms of Service, Payments Terms of Service, Privacy Policy, and Nondiscrimination Policy.</string>
 
-    <string name="go_grab_will_send_you">aimobility will send you members-only deals, inspiration, marketing emails, and push notifications. You can opt out of receiving these at any time in your account settings or directly from the marketing notification.</string>
-    <string name="i_dont_want_to_receive_message">I don\'t want to receive messages from aimobility</string>
+    <string name="go_grab_will_send_you">OpusAIMobility will send you members-only deals, inspiration, marketing emails, and push notifications. You can opt out of receiving these at any time in your account settings or directly from the marketing notification.</string>
+    <string name="i_dont_want_to_receive_message">I don\'t want to receive messages from OpusAIMobility</string>
 
     <string name="alert">Alert !!!</string>
     <string name="new_cant_empty">Password can\'t empty !</string>
@@ -43,19 +43,19 @@
     <string name="scheduled">SCHEDULED</string>
     <string name="history">HISTORY</string>
     <string name="history_one">History</string>
-    <string name="report_your_lost_items">Report your lost item by tapping on \'Call US\' or \'Email US\' below. Please make sure to give as much information as possible, and our team willreach out to you soon.\n\nNote that aimobility is not responsible for items left in a car after a ride. We\'ll try to help you, but we are unable to guarantee that a Captain has your item or can immediately deliver it to you.</string>
+    <string name="report_your_lost_items">Report your lost item by tapping on \'Call US\' or \'Email US\' below. Please make sure to give as much information as possible, and our team willreach out to you soon.\n\nNote that OpusAIMobility is not responsible for items left in a car after a ride. We\'ll try to help you, but we are unable to guarantee that a Captain has your item or can immediately deliver it to you.</string>
 
     <string name="home">Home</string>
     <string name="payment">Payment</string>
     <string name="account">Account</string>
-    <string name="gograb">aimobility</string>
+    <string name="opusaimobility">OpusAIMobility</string>
     <string name="car">Car</string>
     <string name="bike">Bike</string>
     <string name="food">Food</string>
     <string name="delivery">Delivery</string>
     <string name="order_food">ORDER FOOD</string>
-    <string name="order_food_with_gograb">Order food with aimobility</string>
-    <string name="use_promo_gograb200_and_get_r_200_off_on_norders_worth_rs_800_or_above">Use promo AIMOBILITY200 and get Rs. 200 off on\norders worth Rs. 800 or above</string>
+    <string name="order_food_with_opusaimobility">Order food with OpusAIMobility</string>
+    <string name="use_promo_opusaimobility200_and_get_r_200_off_on_norders_worth_rs_800_or_above">Use promo OPUSAIMOBILITY200 and get Rs. 200 off on\norders worth Rs. 800 or above</string>
     <string name="oder_now">Oder now</string>
     <string name="book_a_ride">BOOK A RIDE</string>
     <string name="current_location">Your current location</string>
@@ -65,7 +65,7 @@
     <string name="get_vaccinated">Get vaccinated</string>
     <string name="choose_the_vaccination_cente">Choose the vaccination center\nyou prefer and let us get you\nthere safely</string>
     <string name="set_up_a_payment_method">Set up a payment method</string>
-    <string name="use_your_payment_methods_to_make_npurchase_on_gograb">Use your payment methods to make\npurchase on aimobility.Learn more</string>
+    <string name="use_your_payment_methods_to_make_npurchase_on_opusaimobility">Use your payment methods to make\npurchase on OpusAIMobility.Learn more</string>
     <string name="add_payment_method">Add payment method</string>
 
     <string name="deleted_message">This message was deleted</string>
@@ -162,7 +162,7 @@
     <string name="amount_charged">Amount charged</string>
     <string name="_214">$214</string>
     <string name="cash_paid">Cash paid</string>
-    <string name="gograb_paid">aimobility Pay</string>
+    <string name="opusaimobility_paid">OpusAIMobility Pay</string>
     <string name="_300">$400</string>
     <string name="_5_have_been_credited_to_your_wallet">have been credited to your Wallet</string>
     <string name="thursday_02_39_pm">Thursday, 02:39 PM</string>
@@ -204,7 +204,7 @@
     <string name="location_heading_denied_step_1">1. Tap into <font color='#000000'> permission</font></string>
     <string name="location_heading_denied_step_2">2. Tap into <font color='#000000'> Location </font></string>
     <string name="location_heading_denied_step_3">3. Select Allow</string>
-    <string name="location_heading_denied_heading">Allow aimobility to access your location for more accurate and effortless Ride , Restaurant Search, Food and Parcel Delivery</string>
+    <string name="location_heading_denied_heading">Allow OpusAIMobility to access your location for more accurate and effortless Ride , Restaurant Search, Food and Parcel Delivery</string>
     <string name="genral_permison">2. Select Camera and Flies and media </string>
     <string name="allow">Open Setting</string>
 
@@ -248,7 +248,7 @@
     <string name="birth_date">Birth date</string>
     <string name="email">Email</string>
     <string name="phone_number">Phone number</string>
-    <string name="please_also_enter_your_gograb_password">We\'ll send you an email to your new email address.</string>
+    <string name="please_also_enter_your_opusaimobility_password">We\'ll send you an email to your new email address.</string>
     <string name="need_a_new_password"><u>Need a new password?</u></string>
     <string name="update_email">Update email</string>
     <string name="card">Card</string>
@@ -354,8 +354,8 @@
     <string name="add_more_item">Add More Item</string>
     <string name="sub_total">Subtotal</string>
     <string name="remove_item">Remove Item</string>
-    <string name="to_upload_image_permission_string">To Upload Image Allow aimobility to access your camera and storage</string>
-    <string name="to_upload_image_permission_string_1">To Upload Image Allow aimobility to access your camera and storage</string>
+    <string name="to_upload_image_permission_string">To Upload Image Allow OpusAIMobility to access your camera and storage</string>
+    <string name="to_upload_image_permission_string_1">To Upload Image Allow OpusAIMobility to access your camera and storage</string>
     <string name="view_bucket">View basket (%1$s)</string>
     <string name="start_new_order_under">Start new order?</string>
     <string name="start_new_order">Start new order</string>
@@ -379,7 +379,7 @@
     <string name="please_select_address">Please select address</string>
     <string name="you_don_t_have_any_nrides_planned">You don\'t have any \nrides planned.</string>
     <string name="let_s_do_something_about_that">Let\'s do something about that.</string>
-    <string name="book_a_gograb">BOOK A RIDE</string>
+    <string name="book_a_opusaimobility">BOOK A OPUSAIMOBILITY</string>
     <string name="when_you_place_your_first_order_it_will_apear_hear">when you place your first order, it will appear here</string>
     <string name="find_resturant">Find Resturant</string>
     <string name="item">\ item\</string>
@@ -454,7 +454,7 @@
     <string name="user_name">username</string>
     <string name="track_order">Track Order</string>
     <string name="log_in">Log in</string>
-    <string name="welcome_to_gograb">Welcome to aimobility</string>
+    <string name="welcome_to_opusaimobility">Welcome to OpusAIMobility</string>
     <string name="already_found">Already found</string>
     <string name="write_a_message">Write a message</string>
     <string name="book_without_promo">BOOK WITHOUT PROMO</string>
@@ -470,7 +470,7 @@
     <string name="didn_t_get_it">Didn\'t get it?</string>
     <string name="remove_this_payment_method">Remove this payment method?</string>
     <string name="removing_this_card_means_you_won_t_be_able_to_use_this_payment_method_any_more">Removing this card means you won\'t be able to use this payment method any more</string>
-    <string name="keep_card_on_gograb">Keep card on aimobility</string>
+    <string name="keep_card_on_opusaimobility">Keep card on OpusAIMobility</string>
     <string name="remove">Remove</string>
     <string name="sender">Sender</string>
     <string name="edit">Edit</string>

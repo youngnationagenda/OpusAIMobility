@@ -21,12 +21,13 @@
         android:layout_below="@+id/datetxt"
         android:layout_marginTop="@dimen/_10sdp">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/chatImageView"
             android:layout_width="@dimen/_30sdp"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginTop="@dimen/_5sdp"
             app:actualImageScaleType="centerCrop"
+            app:placeholderImage="@drawable/ic_profile_avatar"
             app:placeholderImageScaleType="centerCrop"
             app:roundAsCircle="true" />
 

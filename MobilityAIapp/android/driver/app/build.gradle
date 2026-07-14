@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -16,6 +18,45 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // AWS & Backend build config constants (injected at compile time)
+        buildConfigField "String", "BASE_URL",             '"https://opusaimobility.yna.co.ke/"'
+        buildConfigField "String", "API_URL",              '"https://opusaimobility.yna.co.ke/api/"'
+        buildConfigField "String", "API_GATEWAY_URL",      '"https://pg4ulam66a.execute-api.us-east-1.amazonaws.com/prod/"'
+        buildConfigField "String", "WS_ENDPOINT",          '"wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod"'
+        buildConfigField "String", "COGNITO_USER_POOL_ID", '"us-east-1_LKa4ElQem"'
+        buildConfigField "String", "COGNITO_CLIENT_ID",    '"2am01r4fmsp0s08991ftgub887"'
+        buildConfigField "String", "COGNITO_IDENTITY_POOL",'"us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38"'
+        buildConfigField "String", "COGNITO_REGION",       '"us-east-1"'
+        buildConfigField "String", "S3_BUCKET",            '"opusaimobility-assets-prod"'
+        buildConfigField "String", "S3_REGION",            '"us-east-1"'
+        buildConfigField "String", "SNS_TOPIC",            '"arn:aws:sns:us-east-1:683541453923:opusaimobility-notifications"'
+        buildConfigField "String", "IOT_ENDPOINT",         '"arqymixni12gc-ats.iot.us-east-1.amazonaws.com"'
+        buildConfigField "String", "CLOUDFRONT_URL",       '"https://d22up4o3zhu9gf.cloudfront.net"'
+        buildConfigField "String", "ADMIN_API_URL",        '"https://wqhukwpxqc.execute-api.us-east-1.amazonaws.com/prod/"'
+        buildConfigField "String", "APP_ROLE",             '"driver"'
+
+        // Google Maps key — injected from:
+        //   1. Gradle property:  ./gradlew -PGOOGLE_MAPS_KEY=AIza...  (CodeBuild)
+        //   2. Environment var:  GOOGLE_MAPS_KEY=AIza...             (local)
+        //   3. Fallback:         empty string (app builds but Maps won't render)
+        def mapsKey = project.findProperty("GOOGLE_MAPS_KEY")
+                   ?: System.getenv("GOOGLE_MAPS_KEY")
+                   ?: ""
+        manifestPlaceholders = [googleMapsKey: mapsKey]
+        resValue "string", "google_maps_key", mapsKey
+    }
+
+    signingConfigs {
+        release {
+            def ksFile = System.getenv("KEYSTORE_FILE")
+            if (ksFile != null && !ksFile.isEmpty()) {
+                storeFile     file(ksFile)
+                storePassword System.getenv("KEYSTORE_PASSWORD") ?: ""
+                keyAlias      System.getenv("KEY_ALIAS")         ?: ""
+                keyPassword   System.getenv("KEY_PASSWORD")      ?: ""
+            }
+        }
     }
 
     buildFeatures {
@@ -25,12 +66,44 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix ".debug"
+            // No applicationIdSuffix — keeps package name com.opusaimobility.driver
+            // so google-services.json matches for both debug and release
             debuggable true
+            buildConfigField "boolean", "IS_DEBUG", "true"
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "IS_DEBUG", "false"
+            def ksFile = System.getenv("KEYSTORE_FILE")
+            if (ksFile != null && !ksFile.isEmpty()) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
+        }
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError       false
+        disable 'GradleDependency', 'ObsoleteSdkInt'
+    }
+
+    packagingOptions {
+        resources {
+            excludes += [
+                'META-INF/DEPENDENCIES',
+                'META-INF/LICENSE',
+                'META-INF/LICENSE.txt',
+                'META-INF/NOTICE',
+                'META-INF/NOTICE.txt',
+                'META-INF/*.kotlin_module',
+                'META-INF/INDEX.LIST',
+                'META-INF/BC1024KE.SF',
+                'META-INF/BC2048KE.SF'
+            ]
         }
     }
 
@@ -40,11 +113,105 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy.force 'org.bouncycastle:bcprov-jdk15on:1.70'
+    resolutionStrategy.force 'org.bouncycastle:bcpkix-jdk15on:1.70'
+    // Fix: WorkManager duplicate classes conflict
+    resolutionStrategy.force 'androidx.work:work-runtime:2.8.1'
+    resolutionStrategy.force 'androidx.work:work-runtime-ktx:2.8.1'
+    // Fix: AWS SDK SNS Kotlin metadata conflict
+    resolutionStrategy.force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.21'
+    resolutionStrategy.force 'org.jetbrains.kotlin:kotlin-stdlib-common:1.8.21'
+}
+
 dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+
+    // ── AndroidX ───────────────────────────────────────────────────────────────
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.activity:activity:1.7.0'
+    implementation 'androidx.fragment:fragment:1.5.7'
+    implementation 'androidx.annotation:annotation:1.6.0'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    // ── Room (local DB for offline ride queue) ────────────────────────────────
+    implementation 'androidx.room:room-runtime:2.5.2'
+    annotationProcessor 'androidx.room:room-compiler:2.5.2'
+
+    // ── WorkManager (background location + job dispatch) ──────────────────────
+    implementation 'androidx.work:work-runtime:2.8.1'
+
+    // ── Material Design ──────────────────────────────────────────────────────
+    implementation 'com.google.android.material:material:1.11.0'
+
+    // ── AWS Amplify (Auth + Storage) ─────────────────────────────────────────
+    implementation 'com.amplifyframework:aws-auth-cognito:2.14.0'
+    implementation 'com.amplifyframework:aws-storage-s3:2.14.0'
+    implementation 'com.amplifyframework:core:2.14.0'
+
+    // ── AWS Android SDK (SNS, S3, IoT) ───────────────────────────────────────
+    implementation 'com.amazonaws:aws-android-sdk-core:2.72.0'
+    implementation 'com.amazonaws:aws-android-sdk-sns:2.72.0'
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.72.0'
+    implementation 'com.amazonaws:aws-android-sdk-iot:2.72.0'
+
+    // ── Firebase BOM ─────────────────────────────────────────────────────────
+    implementation platform('com.google.firebase:firebase-bom:32.3.1')
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-database'
+
+    // ── Google Maps + Location ───────────────────────────────────────────────
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.libraries.places:places:3.1.0'
+    implementation 'com.google.maps.android:android-maps-utils:3.4.0'
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
+
+    // ── Networking (Retrofit + OkHttp) ────────────────────────────────────────
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
+
+    // ── WebSocket (OkHttp WebSocket — replaces nv-websocket-client) ───────────
+    // nv-websocket-client removed: use OkHttp WebSocket (already included above)
+
+    // ── JSON ──────────────────────────────────────────────────────────────────
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // ── Image Loading ─────────────────────────────────────────────────────────
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
+
+    // ── Country Code Picker ───────────────────────────────────────────────────
+    implementation 'com.hbb20:ccp:2.5.0'
+
+    // ── Sizing helpers ────────────────────────────────────────────────────────
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
+    implementation 'com.intuit.ssp:ssp-android:1.1.0'
+
+    // ── Rating bar ────────────────────────────────────────────────────────────
+    implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
+
+    // ── Charts (earnings graph) ───────────────────────────────────────────────
+    // MPAndroidChart removed (JitPack). Use a Maven-hosted alternative if needed.
+
+    // ── Custom crash activity ─────────────────────────────────────────────────
+    // cat.ereza:customactivityoncrash removed (JitPack). Using Firebase Crashlytics instead.
+
+    // ── Joda Time ────────────────────────────────────────────────────────────
+    implementation 'joda-time:joda-time:2.12.5'
+
+    // ── Tests ─────────────────────────────────────────────────────────────────
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

@@ -30,7 +30,8 @@ import { searchLocations, calculateRoadDistance } from './services/geminiService
 import { MOCK_ORDERS, MOCK_RIDE_HISTORY } from './constants';
 import { t } from './services/i18n';
 import { notificationService, PushNotification } from './services/notificationService';
-import { Navigation, History, Settings, ChevronLeft, LogOut, Bike, Package, Bell, ShieldAlert, Building2, Clock, ShieldCheck, RefreshCw, Smartphone, X, Utensils, Wallet, ListChecks, Search, MapPin, Loader2, Zap, Activity, BarChart3, Store } from 'lucide-react';
+import { Navigation, History, Settings, ChevronLeft, LogOut, Bike, Package, Bell, ShieldAlert, Building2, Clock, ShieldCheck, RefreshCw, Smartphone, X, Utensils, Wallet, ListChecks, Search, MapPin, Loader2, Zap, Activity, BarChart3, Store, ShoppingBag } from 'lucide-react';
+import OpusAIAdminPanel from './components/OpusAIAdminPanel';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(() => {
@@ -46,6 +47,7 @@ const App: React.FC = () => {
   const [showNotificationTray, setShowNotificationTray] = useState(false);
   const [notificationToast, setNotificationToast] = useState<{ message: string; title?: string; type: NotificationType } | null>(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [showOpusAIAdmin, setShowOpusAIAdmin] = useState(false);
   
   const [booking, setBooking] = useState<BookingState>({
     pickup: { address: "Current Location", lat: 1.2879, lng: 103.8517 },
@@ -329,6 +331,7 @@ const App: React.FC = () => {
       )}
 
       {trackingOrder && <DeliveryTracking order={trackingOrder} onClose={() => setTrackingOrder(null)} />}
+      {showOpusAIAdmin && <OpusAIAdminPanel onClose={() => setShowOpusAIAdmin(false)} />}
 
       <nav className={`hidden md:flex flex-col w-24 h-full items-center py-10 gap-10 z-50 bg-black text-white border-r border-white/5 shadow-2xl`}>
         <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-black font-black text-2xl italic cursor-pointer shadow-xl hover:rotate-6 transition-transform" onClick={() => setMode(user.role === 'rider' ? 'rider' : 'rides')}>O</div>
@@ -336,6 +339,7 @@ const App: React.FC = () => {
           {user.role === 'admin' ? (
             <div className="flex flex-col gap-10">
                <ShieldAlert onClick={() => setMode('admin')} className={`w-7 h-7 cursor-pointer hover:scale-110 transition-all ${mode === 'admin' ? 'text-emerald-400 drop-shadow-[0_0_8px_#10b981]' : 'text-gray-500'}`} />
+               <ShoppingBag onClick={() => setShowOpusAIAdmin(true)} title="OpusAIMobility Admin" className="w-7 h-7 cursor-pointer hover:scale-110 transition-all text-orange-500 hover:text-orange-400 drop-shadow-[0_0_8px_#f97316]" />
             </div>
           ) : user.role === 'rider' ? (
             <div className="flex flex-col gap-6 items-center">

@@ -22,12 +22,19 @@
             android:layout_height="@dimen/_130sdp"
             android:background="@drawable/top_cornors_curve">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/resturant_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:actualImageScaleType="centerCrop"
-                app:placeholderImageScaleType="centerCrop" />
+                app:placeholderImage="@drawable/image_preview"
+                app:placeholderImageScaleType="centerCrop"
+                fresco:roundBottomEnd="false"
+                fresco:roundBottomStart="false"
+                fresco:roundTopEnd="true"
+                fresco:roundTopStart="true"
+                fresco:roundWithOverlayColor="@color/white"
+                fresco:roundedCornerRadius="@dimen/_6sdp" />
 
             <RelativeLayout
                 android:id="@+id/unavailable_layout"

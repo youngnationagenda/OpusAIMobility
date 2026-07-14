@@ -26,8 +26,8 @@ import com.terraai.aimobility.codeclasses.RootFragment;
 import com.terraai.aimobility.codeclasses.MyPreferences;
 import com.terraai.aimobility.Interface.FragmentCallBack;
 import com.terraai.aimobility.model.ConfirmLocationModel;
-import com.terraai.aimobility.R;
-import com.terraai.aimobility.databinding.FragmentConfirmLocationBinding;
+import com.yna.opusaimobilityapp.R;
+import com.yna.opusaimobilityapp.databinding.FragmentConfirmLocationBinding;
 
 
 public class ConfirmLocation extends RootFragment implements OnMapReadyCallback, View.OnClickListener, GoogleMap.OnCameraMoveListener {

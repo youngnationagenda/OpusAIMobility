@@ -38,7 +38,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:fontFamily="@font/airbnbcerealbold"
-                        android:text="@string/gograb"
+                        android:text="@string/opusaimobility"
                         android:textColor="@color/app_color"
                         android:textSize="@dimen/toolbarTextSize" />
 
@@ -265,12 +265,13 @@
                     android:textSize="@dimen/text_Size10" />
 
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/orderFoodImage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_150sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     app:actualImageScaleType="centerCrop"
+                    app:placeholderImage="@drawable/image_preview"
                     app:placeholderImageScaleType="centerCrop" />
 
                 <TextView
@@ -278,14 +279,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:fontFamily="@font/airbnbcerealbold"
-                    android:text="@string/order_food_with_gograb"
+                    android:text="@string/order_food_with_opusaimobility"
                     android:textColor="@color/text_color_black"
                     android:textSize="@dimen/text_Size12" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/use_promo_gograb200_and_get_r_200_off_on_norders_worth_rs_800_or_above"
+                    android:text="@string/use_promo_opusaimobility200_and_get_r_200_off_on_norders_worth_rs_800_or_above"
                     android:textColor="@color/text_color"
                     android:textSize="@dimen/text_Size10" />
 
@@ -481,7 +482,7 @@
 
                 </LinearLayout>
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/vaccineImage"
                     android:layout_width="@dimen/_100sdp"
                     android:layout_height="match_parent"
@@ -489,6 +490,7 @@
                     android:scaleType="centerCrop"
                     app:actualImageResource="@drawable/delivery_image"
                     app:actualImageScaleType="centerCrop"
+                    app:placeholderImage="@drawable/image_preview"
                     app:placeholderImageScaleType="centerCrop"
                     app:roundedCornerRadius="@dimen/_5sdp" />
 
