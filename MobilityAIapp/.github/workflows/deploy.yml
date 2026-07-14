@@ -289,7 +289,7 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Build Customer APK (debug)
-        working-directory: MobilityAIapp/apps/customer
+        working-directory: MobilityAIapp/android/customer
         run: |
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon --warning-mode all \
@@ -315,7 +315,7 @@ jobs:
 
       - name: Upload debug APK to S3
         run: |
-          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/debug -name "*.apk" 2>/dev/null | head -1 || true)
+          APK=$(find MobilityAIapp/android/customer/app/build/outputs/apk/debug -name "*.apk" 2>/dev/null | head -1 || true)
           if [ -z "$APK" ]; then
             echo "::warning::No debug APK found — skipping S3 upload"
             exit 0
@@ -367,16 +367,16 @@ jobs:
 
       - name: Decode keystore
         run: |
-          mkdir -p MobilityAIapp/apps/customer/app
+          mkdir -p MobilityAIapp/android/customer/app
           echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode \
-            > MobilityAIapp/apps/customer/app/release.keystore
-          echo "KEYSTORE_FILE=${{ github.workspace }}/MobilityAIapp/apps/customer/app/release.keystore" >> $GITHUB_ENV
+            > MobilityAIapp/android/customer/app/release.keystore
+          echo "KEYSTORE_FILE=${{ github.workspace }}/MobilityAIapp/android/customer/app/release.keystore" >> $GITHUB_ENV
           echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
           echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Build signed release APK
-        working-directory: MobilityAIapp/apps/customer
+        working-directory: MobilityAIapp/android/customer
         run: |
           chmod +x ./gradlew
           ./gradlew assembleRelease --no-daemon --warning-mode all \
@@ -384,7 +384,7 @@ jobs:
 
       - name: Verify APK signature
         run: |
-          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1 || true)
+          APK=$(find MobilityAIapp/android/customer/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1 || true)
           if [ -z "$APK" ]; then
             echo "::warning::No release APK found — skipping signature verification"
             exit 0
@@ -402,7 +402,7 @@ jobs:
 
       - name: Upload release APK to S3
         run: |
-          APK=$(find MobilityAIapp/apps/customer/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1 || true)
+          APK=$(find MobilityAIapp/android/customer/app/build/outputs/apk/release -name "*.apk" 2>/dev/null | head -1 || true)
           if [ -z "$APK" ]; then
             echo "::warning::No release APK found — skipping S3 upload"
             exit 0
@@ -416,7 +416,7 @@ jobs:
 
       - name: Clean up keystore
         if: always()
-        run: rm -f MobilityAIapp/apps/customer/app/release.keystore
+        run: rm -f MobilityAIapp/android/customer/app/release.keystore
 
   # ===========================================================================
   # 7. DEPLOY — Main Lambda (terraaimobility-api)
