@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ci_* attributes (ci_orientation, ci_drawable, ci_height, etc.) are declared
-     inside the circleindicator AAR library (me.relex:circleindicator:2.1.6).
-     Re-declaring them here causes AAPT2:
-       "Duplicate value for resource 'attr/ci_orientation' with config DEFAULT"
-     Fix: keep this file empty so only the library-supplied attrs are used. -->
+<!-- PageIndicator (com.chahinem:pageindicator) custom attrs.
+     fragment_food_home.xml uses app:piSelectedColor on PageIndicator.
+     The pageindicator library is NOT on Maven Central so we declare the
+     required attrs here to avoid AAPT2 "attribute not found" errors.
+
+     NOTE: ci_* attrs (CircleIndicator) are intentionally NOT declared here
+     because they are already provided by me.relex:circleindicator:2.1.6 AAR.
+     Re-declaring ci_* caused AAPT2 duplicate resource errors. -->
 <resources>
+    <declare-styleable name="PageIndicator">
+        <attr name="piSelectedColor"   format="color"/>
+        <attr name="piUnselectedColor" format="color"/>
+        <attr name="piRadius"          format="dimension"/>
+        <attr name="piPadding"         format="dimension"/>
+        <attr name="piStrokeWidth"     format="dimension"/>
+        <attr name="piAnimDuration"    format="integer"/>
+        <attr name="piCount"           format="integer"/>
+    </declare-styleable>
 </resources>
