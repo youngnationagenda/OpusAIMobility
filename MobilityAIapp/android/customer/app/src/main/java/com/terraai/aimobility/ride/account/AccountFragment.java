@@ -69,6 +69,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+// Fresco imports - required for GenericDraweeHierarchy, RoundingParams, ScalingUtils
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.generic.RoundingParams;
+import com.facebook.drawee.drawable.ScalingUtils;
+
 public class AccountFragment extends RootFragment implements View.OnClickListener {
 
     FragmentAccountBinding binding;
