@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Declares pageindicator custom attrs that AAPT2 needs to find when building.
-     These match com.github.chahine:pageindicator:0.2.8 attrs.xml content.
-     Added because AAPT2 cannot locate them from the AAR's bundled resources. -->
+<!-- CircleIndicator (me.relex:circleindicator:2.1.6) custom attrs
+     These are declared in the library's own attrs.xml but need to be
+     available here to prevent AAPT2 "attribute not found" errors.
+     Library on Maven Central — no JitPack needed. -->
 <resources>
-    <declare-styleable name="PageIndicator">
+    <declare-styleable name="CircleIndicator">
         <attr name="ci_drawable" format="reference"/>
         <attr name="ci_drawable_unselected" format="reference"/>
         <attr name="ci_height" format="dimension"/>
@@ -20,5 +21,7 @@
         <attr name="ci_animator_reverse" format="reference"/>
         <attr name="ci_selectedColor" format="color"/>
         <attr name="ci_unselectedColor" format="color"/>
+        <!-- pageindicator compat alias -->
+        <attr name="ci_drawable_unselected_color" format="color"/>
     </declare-styleable>
 </resources>
