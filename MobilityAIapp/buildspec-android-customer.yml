@@ -1,10 +1,18 @@
 # ==============================================================================
-# OpusAIMobility — Android Customer App Build Spec  (customer-only, ~10 min)
+# OpusAIMobility - Android Customer App Build Spec  (v5 - fix duplicate google_map_key)
 #
 # Builds com.yna.opusaimobilityapp from android/customer/
 # Uploads APK to: s3://opusaimobility-apk-distribution/customer/
 #
-# Env vars injected by CodeBuild project:
+# ROOT CAUSE FIX (v5):
+#   strings.xml declares <string name="google_map_key"> statically AND
+#   app/build.gradle also injects it via: resValue "string", "google_map_key", mapsKey
+#   AAPT merges both into values.xml and throws:
+#     ResourceCompilationException: Can not add resource to table
+#   Fix: sed removes the static declaration from strings.xml before Gradle runs.
+#   The resValue in build.gradle is the authoritative source - it will always be present.
+#
+# Env vars injected by CodeBuild project (Secrets Manager):
 #   KEYSTORE_PASSWORD  <- opusaimobility/android-keystore:storePassword
 #   KEY_ALIAS          <- opusaimobility/android-keystore:keyAlias
 #   KEY_PASSWORD       <- opusaimobility/android-keystore:keyPassword
@@ -28,20 +36,23 @@ phases:
       java: corretto17
       nodejs: 22
     commands:
-      - echo "=== Customer App Install ==="
+      - echo "=== Customer App Install Phase ==="
       - java -version
+      - node --version
 
-      # ── Android SDK ──────────────────────────────────────────────────────────
+      # -- Android SDK ----------------------------------------------------------
       - |
         if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME" ]; then
           SDK="$ANDROID_HOME"
-          echo "SDK at ANDROID_HOME: $SDK"
+          echo "Using pre-installed SDK at ANDROID_HOME: $SDK"
         elif [ -d "/usr/local/android-sdk" ]; then
           SDK="/usr/local/android-sdk"
+          echo "Using SDK at /usr/local/android-sdk"
         elif [ -d "$HOME/android-sdk" ]; then
           SDK="$HOME/android-sdk"
+          echo "Using SDK at HOME: $SDK"
         else
-          echo "Installing Android SDK..."
+          echo "Installing Android SDK command-line tools..."
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd /tmp
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O clt.zip
@@ -52,64 +63,173 @@ phases:
           cd "$CODEBUILD_SRC_DIR"
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" 2>&1 | tail -5 || true
+          echo "Android SDK installed at: $SDK"
         fi
         echo "$SDK" > /tmp/android-sdk-path.txt
+        export ANDROID_HOME="$SDK"
+        export ANDROID_SDK_ROOT="$SDK"
+        export PATH="$PATH:$SDK/cmdline-tools/latest/bin:$SDK/platform-tools:$SDK/build-tools/34.0.0"
         echo "sdk.dir=$SDK" > "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/local.properties"
-        echo "ANDROID_HOME=$SDK"
+        echo "ANDROID_HOME=$ANDROID_HOME"
 
-      # ── Keystore ─────────────────────────────────────────────────────────────
+      # -- FIX: Remove duplicate google_map_key static string declaration --------
+      # strings.xml has a static <string name="google_map_key"> but build.gradle
+      # also injects it via resValue - AAPT cannot add the same resource twice.
+      # We remove the static declaration so only the resValue version survives.
+      - echo "=== Removing duplicate google_map_key from strings.xml ==="
+      - |
+        STRINGS_XML="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/src/main/res/values/strings.xml"
+        if grep -q 'name="google_map_key"' "$STRINGS_XML"; then
+          # Use sed to delete the line containing the static google_map_key declaration
+          sed -i '/<string name="google_map_key"/d' "$STRINGS_XML"
+          echo "REMOVED static google_map_key declaration from strings.xml"
+          grep -c 'google_map_key' "$STRINGS_XML" && echo "WARNING: still found google_map_key references" || echo "CLEAN: no more static declarations"
+        else
+          echo "google_map_key not found in strings.xml - already clean"
+        fi
+
+      # -- Decode keystore from Secrets Manager ----------------------------------
+      - echo "=== Decoding customer keystore ==="
       - |
         aws secretsmanager get-secret-value \
           --secret-id "opusaimobility/android-keystore" \
           --query "SecretString" --output text --region us-east-1 | \
         node -e "
           const s=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
-          require('fs').writeFileSync(
-            process.env.CODEBUILD_SRC_DIR+'/'+process.env.CUSTOMER_APP_DIR+'/app/terraai-release.jks',
-            Buffer.from(s.keystoreBase64,'base64')
-          );
-          console.log('Customer keystore decoded:',Buffer.from(s.keystoreBase64,'base64').length,'bytes');
+          const dest=process.env.CODEBUILD_SRC_DIR+'/'+process.env.CUSTOMER_APP_DIR+'/app/terraai-release.jks';
+          require('fs').writeFileSync(dest, Buffer.from(s.keystoreBase64,'base64'));
+          console.log('Customer keystore decoded:',Buffer.from(s.keystoreBase64,'base64').length,'bytes ->',dest);
         "
 
-      # ── google-services.json — inject Maps key ───────────────────────────────
+      # -- Inject Google Maps key into google-services.json ----------------------
+      - echo "=== Patching google-services.json ==="
       - |
         node -e "
           const fs=require('fs');
           const p=process.env.CODEBUILD_SRC_DIR+'/'+process.env.CUSTOMER_APP_DIR+'/app/google-services.json';
           try {
             const gsj=JSON.parse(fs.readFileSync(p,'utf8'));
+            const key=process.env.GOOGLE_MAPS_KEY||'';
             if(gsj.client&&gsj.client[0]&&gsj.client[0].api_key){
-              gsj.client[0].api_key[0].current_key=process.env.GOOGLE_MAPS_KEY||'';
+              gsj.client[0].api_key[0].current_key=key;
               fs.writeFileSync(p,JSON.stringify(gsj,null,2));
-              console.log('Customer Maps key injected');
+              console.log('Customer google-services.json: Maps key patched ('+(key?'real key':'empty - Maps will not render')+')');
             }
-          } catch(e){console.warn('gsj patch skipped:',e.message);}
+          } catch(e){ console.warn('google-services.json patch skipped:',e.message); }
         "
 
-      # ── gradlew permissions ───────────────────────────────────────────────────
+      # -- gradlew permissions ---------------------------------------------------
       - chmod +x "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/gradlew"
+      - echo "Install phase complete"
 
   build:
     commands:
-      - echo BUILD_PHASE_START
-      - echo SRC_DIR_IS=$CODEBUILD_SRC_DIR
-      - SDK=$(cat /tmp/android-sdk-path.txt 2>/dev/null || echo "$HOME/android-sdk") && export ANDROID_HOME="$SDK" && export ANDROID_SDK_ROOT="$SDK" && echo "ANDROID_HOME=$ANDROID_HOME"
-      - cd "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR" && echo "sdk.dir=$ANDROID_HOME" > local.properties && echo local.properties_ok
-      - export KEYSTORE_FILE="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/terraai-release.jks"
-      - cd "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR" && ./gradlew assembleDebug "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" --no-daemon --no-build-cache --rerun-tasks --stacktrace 2>&1
-      - find "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build" -name "*.apk" 2>/dev/null || echo "No APK found"
+      - echo "=== Customer App Build Phase ==="
+      - echo "CODEBUILD_SRC_DIR=$CODEBUILD_SRC_DIR"
+
+      # Re-source SDK path (env vars do not persist across CodeBuild phases)
+      - |
+        SDK=$(cat /tmp/android-sdk-path.txt 2>/dev/null || echo "$HOME/android-sdk")
+        export ANDROID_HOME="$SDK"
+        export ANDROID_SDK_ROOT="$SDK"
+        export PATH="$PATH:$SDK/cmdline-tools/latest/bin:$SDK/platform-tools:$SDK/build-tools/34.0.0"
+        export GRADLE_USER_HOME="$HOME/.gradle"
+        echo "ANDROID_HOME=$ANDROID_HOME"
+
+        # Re-write local.properties (phase boundary may have cleared it)
+        cd "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR"
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+        cat local.properties
+
+        # Double-check the duplicate was removed (extra safety for phase boundary)
+        STRINGS_XML="$(pwd)/app/src/main/res/values/strings.xml"
+        if grep -q 'name="google_map_key"' "$STRINGS_XML" 2>/dev/null; then
+          sed -i '/<string name="google_map_key"/d' "$STRINGS_XML"
+          echo "BUILD_PHASE: removed residual google_map_key static declaration"
+        else
+          echo "BUILD_PHASE: strings.xml is clean - no duplicate google_map_key"
+        fi
+
+        export KEYSTORE_FILE="$(pwd)/app/terraai-release.jks"
+        echo "KEYSTORE_FILE=$KEYSTORE_FILE"
+        ls -la "$KEYSTORE_FILE" 2>/dev/null && echo "Keystore present" || echo "WARNING: Keystore not found"
+
+        # -- Debug APK ------------------------------------------------------
+        echo "--- Building Customer debug APK ---"
+        ./gradlew assembleDebug \
+          "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" \
+          --no-daemon \
+          --no-build-cache \
+          --rerun-tasks \
+          --stacktrace \
+          2>&1
+        GRADLE_EXIT=$?
+        echo "Gradle debug exit code: $GRADLE_EXIT"
+        if [ $GRADLE_EXIT -ne 0 ]; then
+          echo "ERROR: Gradle assembleDebug failed with exit $GRADLE_EXIT"
+          exit $GRADLE_EXIT
+        fi
+
+        # -- Release APK ----------------------------------------------------
+        if [ -f "$KEYSTORE_FILE" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
+          echo "--- Building Customer release APK ---"
+          ./gradlew assembleRelease \
+            "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" \
+            --no-daemon \
+            --no-build-cache \
+            --rerun-tasks \
+            --stacktrace \
+            2>&1 || echo "WARNING: Release build failed - continuing with debug only"
+        else
+          echo "Keystore not available - skipping release build"
+        fi
+
+        # -- List produced APKs ---------------------------------------------
+        echo "--- APK outputs ---"
+        find "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build/outputs" -name "*.apk" 2>/dev/null || echo "No APK files produced"
 
   post_build:
     commands:
-      - echo POST_BUILD_START
-      - echo SRC_DIR_IS=$CODEBUILD_SRC_DIR
-      - APK="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build/outputs/apk/debug/app-debug.apk"
-      - test -f "$APK" && aws s3 cp "$APK" "s3://$S3_APK_BUCKET/customer/debug/aimobility-customer-debug-latest.apk" --region us-east-1 && echo APK_UPLOADED || echo APK_NOT_FOUND
-      - echo Customer build complete
+      - echo "=== Customer App Post-Build ==="
+      - BUILD_TS=$(date -u +%Y%m%d-%H%M%S)
+      - COMMIT_SHORT=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-8)
+
+      # -- Upload Debug APK ----------------------------------------------------
+      - |
+        DEBUG_APK="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build/outputs/apk/debug/app-debug.apk"
+        if [ -f "$DEBUG_APK" ]; then
+          aws s3 cp "$DEBUG_APK" \
+            "s3://$S3_APK_BUCKET/customer/debug/aimobility-customer-debug-${BUILD_TS}-${COMMIT_SHORT}.apk" \
+            --region us-east-1
+          aws s3 cp "$DEBUG_APK" \
+            "s3://$S3_APK_BUCKET/customer/debug/aimobility-customer-debug-latest.apk" \
+            --region us-east-1
+          echo "APK_UPLOADED: s3://$S3_APK_BUCKET/customer/debug/aimobility-customer-debug-latest.apk"
+        else
+          echo "APK_NOT_FOUND: $DEBUG_APK"
+          exit 1
+        fi
+
+      # -- Upload Release APK (if built) ---------------------------------------
+      - |
+        RELEASE_APK="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build/outputs/apk/release/app-release.apk"
+        if [ -f "$RELEASE_APK" ]; then
+          aws s3 cp "$RELEASE_APK" \
+            "s3://$S3_APK_BUCKET/customer/release/aimobility-customer-${BUILD_TS}-${COMMIT_SHORT}.apk" \
+            --region us-east-1
+          aws s3 cp "$RELEASE_APK" \
+            "s3://$S3_APK_BUCKET/customer/release/aimobility-customer-latest.apk" \
+            --region us-east-1
+          echo "RELEASE_APK_UPLOADED"
+        else
+          echo "Release APK not built - skipping"
+        fi
+
+      - echo "Customer build complete - ${BUILD_TS}"
 
 artifacts:
   files:
-    - "**/*"
+    - "**/*.apk"
   base-directory: "MobilityAIapp/android/customer/app/build/outputs"
   discard-paths: no
   name: customer-apk-artifacts
@@ -117,3 +237,5 @@ artifacts:
 cache:
   paths:
     - /root/.gradle/wrapper/**/*
+    - /root/.gradle/caches/**/*
+    - MobilityAIapp/android/customer/.gradle/**/*
