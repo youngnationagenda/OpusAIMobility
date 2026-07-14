@@ -125,43 +125,22 @@ android {
     sourceSets {
         main {
             java {
-                // Exclude the entire com.terraai.aimobility source tree.
+                // Exclude the ENTIRE com.terraai.aimobility source tree.
                 //
-                // RATIONALE: The com.yna.opusaimobilityapp.* tree is the actively maintained
-                // migration target and compiles cleanly. The com.terraai.aimobility.* tree
-                // is the legacy package with API incompatibilities across:
-                //   - CCP library (isValid, registerPhoneNumberTextView removed in 2.5.0)
+                // RATIONALE: The com.yna.opusaimobilityapp.* tree is the maintained target.
+                // Previously com.yna imported 3 things from com.terraai - all now ported:
+                //   - aws/AWSManager -> com.yna.opusaimobilityapp.aws.AWSManager
+                //   - aws/AWSPushService -> com.yna.opusaimobilityapp.aws.AWSPushService
+                //   - codeclasses/ProgressBarDrawable -> com.yna.opusaimobilityapp.codeclasses.ProgressBarDrawable
+                // com.yna.codeclasses.OpusAIMobility updated to use com.yna.aws.* imports.
+                //
+                // The com.terraai tree has widespread API incompatibilities:
+                //   - CCP 2.5.0 (isValid, registerPhoneNumberTextView removed)
                 //   - google-maps-services (overviewPolyline, mGetReference field access)
-                //   - SingleDateAndTimePicker v2 API changes
-                //   - GeoFire (geoQuery field access changes)
-                //
-                // The com.yna.opusaimobilityapp.* files only import 3 items from com.terraai:
-                //   - com.terraai.aimobility.aws.AWSManager
-                //   - com.terraai.aimobility.aws.AWSPushService
-                //   - com.terraai.aimobility.codeclasses.ProgressBarDrawable
-                // These 3 classes remain compiled (not excluded).
-                //
-                // NOTE: Exclusion uses ** to exclude entire subdirectories but keeps
-                // the aws/, codeclasses/ top-level files needed by com.yna.
-                // Exclude only the specific com.terraai.aimobility source files that have
-                // API incompatibilities with current library versions.
-                // ALL other files compile cleanly and are kept.
-                //
-                // CCP 2.5.0 API removals (isValid, registerPhoneNumberTextView, etc.):
-                exclude 'com/terraai/aimobility/ride/loginsignup/**'
-                exclude 'com/terraai/aimobility/ride/account/AddPhoneNumFragment.java'
-                // google-maps-services 0.1.20 field access issues (overviewPolyline, mGetReference):
-                exclude 'com/terraai/aimobility/mapclasses/**'
-                exclude 'com/terraai/aimobility/ride/activeride/ActiveRideA.java'
-                exclude 'com/terraai/aimobility/ride/bookride/RideOrRentFragment.java'
-                exclude 'com/terraai/aimobility/ride/bookride/StartRideFragment.java'
-                // SingleDateAndTimePicker v2 API (setMinDate, addOnDateChangedListener):
-                exclude 'com/terraai/aimobility/food/AddToCartFragment.java'
-                exclude 'com/terraai/aimobility/food/PlaceOrdersFragment.java'
-                exclude 'com/terraai/aimobility/parcel/fragmentandactivities/ReviewDeliveryFragment.java'
-                // PageIndicator attachToRecyclerView / RangeSlider API:
-                exclude 'com/terraai/aimobility/food/FoodHomeFragment.java'
-                exclude 'com/terraai/aimobility/food/FiltersFragment.java'
+                //   - SingleDateAndTimePicker v2 API
+                //   - GeoFire API changes
+                // Fixing 50+ cascading files is out of scope for CI/CD build fixes.
+                exclude 'com/terraai/**'
             }
         }
     }
