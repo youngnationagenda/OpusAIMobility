@@ -241,8 +241,8 @@ dependencies {
     // Tree RecyclerView (parcel expandable list) — JitPack
     implementation 'com.github.TellH:RecyclerTreeView:1.2.0'
 
-    // Page Indicator — JitPack (custom attrs declared in pageindicator_attrs.xml)
-    implementation 'com.github.chahine:pageindicator:0.2.8'
+    // Circle/Page Indicator — Maven Central (fragment_food_home.xml uses me.relex.circleindicator)
+    implementation 'me.relex:circleindicator:2.1.6'
 
     // Image Cropper (vanniktech — Maven Central)
     implementation 'com.vanniktech:android-image-cropper:4.3.3'
