@@ -787,7 +787,7 @@ jobs:
         if: ${{ secrets.S3_APK_BUCKET != '' }}
         run: |
           APK_PATH=MobilityAIapp/android/customer/app/build/outputs/apk/debug
-          APK_FILE=$(ls $APK_PATH/*.apk | head -1)
+          APK_FILE=$(ls $APK_PATH/*.apk 2>/dev/null | head -1 || echo "")
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           aws s3 cp "$APK_FILE" \
             "s3://${{ secrets.S3_APK_BUCKET }}/customer/debug/opusaimobility-customer-debug-${SHORT_SHA}.apk" \
