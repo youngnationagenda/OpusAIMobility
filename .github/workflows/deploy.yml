@@ -244,8 +244,8 @@ jobs:
           docker build \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
-            -f MobilityAIapp/infra/docker/terra-api/Dockerfile \
-            MobilityAIapp/apps/terra-api/
+            -f MobilityAIapp/infrastructure/docker/terra-api/Dockerfile \
+            MobilityAIapp/infrastructure/docker/terra-api/
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
