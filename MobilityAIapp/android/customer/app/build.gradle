@@ -142,6 +142,7 @@ android {
                 exclude 'com/firebase/**'
                 exclude 'com/google/firebase/**'
                 exclude 'com/google/maps/**'
+                exclude 'com/github/**'
                 exclude 'com/rilixtech/**'
                 exclude 'com/theartofdev/**'
                 exclude 'com/klinker/**'
