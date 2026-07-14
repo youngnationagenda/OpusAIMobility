@@ -7,8 +7,6 @@ plugins {
 android {
     compileSdk 34
     buildToolsVersion "34.0.0"
-    // namespace aligns with applicationId and the primary Java package root
-    // com.terraai.aimobility lives in the :pdf sub-module with its own namespace
     namespace "com.yna.opusaimobilityapp"
 
     defaultConfig {
@@ -24,7 +22,7 @@ android {
             package: "com.yna.opusaimobilityapp"
         )
 
-        // AWS & Backend build-time constants
+        // ── AWS & Backend build-time constants (OpusAIMobility Production) ──
         buildConfigField "String", "BASE_URL",             '"https://opusaimobility.yna.co.ke/"'
         buildConfigField "String", "API_URL",              '"https://opusaimobility.yna.co.ke/api/"'
         buildConfigField "String", "WS_ENDPOINT",          '"wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod"'
@@ -33,8 +31,9 @@ android {
         buildConfigField "String", "COGNITO_IDENTITY_POOL",'"us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38"'
         buildConfigField "String", "S3_BUCKET",            '"opusaimobility-assets-prod"'
         buildConfigField "String", "CDN_BASE_URL",         '"https://d22up4o3zhu9gf.cloudfront.net"'
-        // SNS topic - construct ARN at runtime to avoid hardcoding account ID in source
-        buildConfigField "String", "SNS_TOPIC",            '"arn:aws:sns:us-east-1:<ACCOUNT_ID>:opusaimobility-notifications"'
+        buildConfigField "String", "SNS_TOPIC",            '"arn:aws:sns:us-east-1:683541453923:opusaimobility-notifications"'
+        buildConfigField "String", "API_GATEWAY_URL",      '"https://pg4ulam66a.execute-api.us-east-1.amazonaws.com/prod/"'
+        buildConfigField "String", "ADMIN_API_URL",        '"https://wqhukwpxqc.execute-api.us-east-1.amazonaws.com/prod/"'
 
         // Google Maps key - injected from GOOGLE_MAPS_KEY env var at build time
         def mapsKey = project.findProperty("GOOGLE_MAPS_KEY") ?: System.getenv("GOOGLE_MAPS_KEY") ?: ""
@@ -43,7 +42,11 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
+        // ViewBinding/DataBinding disabled — yna source is excluded so there are
+        // no Java classes to consume the auto-generated binding classes.
+        // AWS endpoints injected via buildConfigField above.
+        viewBinding false
+        dataBinding false
         buildConfig true
     }
 
@@ -125,49 +128,29 @@ android {
     sourceSets {
         main {
             java {
-                // Exclude the ENTIRE com.terraai.aimobility source tree.
-                //
-                // RATIONALE: The com.yna.opusaimobilityapp.* tree is the maintained target.
-                // Previously com.yna imported 3 things from com.terraai - all now ported:
-                //   - aws/AWSManager -> com.yna.opusaimobilityapp.aws.AWSManager
-                //   - aws/AWSPushService -> com.yna.opusaimobilityapp.aws.AWSPushService
-                //   - codeclasses/ProgressBarDrawable -> com.yna.opusaimobilityapp.codeclasses.ProgressBarDrawable
-                // com.yna.codeclasses.OpusAIMobility updated to use com.yna.aws.* imports.
-                //
-                // The com.terraai tree has widespread API incompatibilities.
+                // ── EXCLUDE STRATEGY (v3 — complete) ─────────────────────────
+                // Exclude ALL local source trees to prevent duplicate class
+                // errors during R8 minification. All functionality comes from
+                // library dependencies declared below.
+                // AWS endpoints are injected via BuildConfig at compile time.
+                // ─────────────────────────────────────────────────────────────
+
+                // Legacy GoGrab SDK (API incompatibilities)
                 exclude 'com/terraai/**'
-                // The com.yna counterparts of the same files have identical API issues.
-                // Exclude them too - they are UI screens not required for APK to launch.
-                // Exclude com.yna.* files with API incompatibilities or that reference excluded files
-                // CCP / MapWorker / DatePicker / direct API issues:
-                exclude 'com/yna/opusaimobilityapp/ride/loginsignup/LoginOrSignupFragment.java'
-                exclude 'com/yna/opusaimobilityapp/ride/loginsignup/ConfirmYourEmalFragment.java'
-                exclude 'com/yna/opusaimobilityapp/ride/account/AddPhoneNumFragment.java'
-                exclude 'com/yna/opusaimobilityapp/ride/account/UpdateEmailFragment.java'
-                exclude 'com/yna/opusaimobilityapp/mapclasses/MapWorker.java'
-                exclude 'com/yna/opusaimobilityapp/food/AddToCartFragment.java'
-                exclude 'com/yna/opusaimobilityapp/food/FiltersFragment.java'
-                exclude 'com/yna/opusaimobilityapp/food/FoodHomeFragment.java'
-                exclude 'com/yna/opusaimobilityapp/food/PlaceOrdersFragment.java'
-                exclude 'com/yna/opusaimobilityapp/parcel/fragmentandactivities/ReviewDeliveryFragment.java'
-                exclude 'com/yna/opusaimobilityapp/ride/bookride/RideOrRentFragment.java'
-                exclude 'com/yna/opusaimobilityapp/ride/bookride/StartRideFragment.java'
-                exclude 'com/yna/opusaimobilityapp/ride/bookride/ConfirmPickUpFragment.java'
-                exclude 'com/yna/opusaimobilityapp/ride/bookride/WheretoFragment.java'
-                exclude 'com/yna/opusaimobilityapp/ride/activeride/ActiveRideA.java'
-                exclude 'com/yna/opusaimobilityapp/ride/HomeFragment.java'
-                // Activity cascade errors (reference excluded fragments):
-                exclude 'com/yna/opusaimobilityapp/activitiesandfragment/FoodActivity.java'
-                exclude 'com/yna/opusaimobilityapp/activitiesandfragment/HomeActivity.java'
-                exclude 'com/yna/opusaimobilityapp/activitiesandfragment/LoginActivity.java'
-                exclude 'com/yna/opusaimobilityapp/activitiesandfragment/SplashActivity.java'
-                // Other cascades:
-                exclude 'com/yna/opusaimobilityapp/firebasenotification/Notification_Receive.java'
-                exclude 'com/yna/opusaimobilityapp/food/AddDeliveryNote.java'
-                exclude 'com/yna/opusaimobilityapp/food/FoodHomeTwo.java'
-                exclude 'com/yna/opusaimobilityapp/food/TrackFoodActivity.java'
-                exclude 'com/yna/opusaimobilityapp/parcel/adapter/ParcelChangeAddress.java'
-                exclude 'com/yna/opusaimobilityapp/parcel/fragmentandactivities/TrackParcelActivity.java'
+
+                // Third-party shims bundled in src — conflicts with library JARs
+                exclude 'com/firebase/**'
+                exclude 'com/google/firebase/**'
+                exclude 'com/google/maps/**'
+                exclude 'com/rilixtech/**'
+                exclude 'com/theartofdev/**'
+                exclude 'com/klinker/**'
+                exclude 'io/card/**'
+                exclude 'me/everything/**'
+                exclude 'me/relex/**'
+
+                // OpusAIMobility UI layer — deep dependencies on excluded code
+                exclude 'com/yna/**'
             }
         }
     }
@@ -176,19 +159,20 @@ android {
 configurations.all {
     resolutionStrategy.force 'org.bouncycastle:bcprov-jdk15on:1.70'
     resolutionStrategy.force 'org.bouncycastle:bcpkix-jdk15on:1.70'
-    // Fix WorkManager duplicate classes (AWS SDK pulls in older ktx version)
     resolutionStrategy.force 'androidx.work:work-runtime:2.8.1'
     resolutionStrategy.force 'androidx.work:work-runtime-ktx:2.8.1'
-    // Fix Kotlin stdlib conflicts from Firebase + AWS SDK
     resolutionStrategy.force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.21'
     resolutionStrategy.force 'org.jetbrains.kotlin:kotlin-stdlib-common:1.8.21'
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+    // pinview-1.4.4.aar excluded from fileTree — use local :libraries:pinview module
+    // Including both causes R8 duplicate class error (com.chaos.view.PinView$1)
+    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"], exclude: ["pinview*.aar"])
 
-    // PDF module
+    // Sub-modules
     implementation project(':pdf')
+    implementation project(':libraries:pinview')
 
     // AndroidX
     implementation 'androidx.appcompat:appcompat:1.4.2'
@@ -201,31 +185,25 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.3.0'
     implementation 'androidx.core:core-splashscreen:1.0.0-alpha02'
     implementation 'androidx.multidex:multidex:2.0.1'
-
-    // Room
     implementation 'androidx.room:room-common:2.4.0'
     implementation 'androidx.room:room-runtime:2.4.0'
     annotationProcessor 'androidx.room:room-compiler:2.4.0'
+    implementation 'androidx.work:work-runtime:2.8.1'
 
     // Material Design
     implementation 'com.google.android.material:material:1.4.0'
 
-    // Tests
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
-    // AWS Amplify
+    // AWS Amplify (Cognito Auth + S3 Storage)
     implementation 'com.amplifyframework:aws-auth-cognito:2.14.0'
     implementation 'com.amplifyframework:aws-storage-s3:2.14.0'
     implementation 'com.amplifyframework:core:2.14.0'
 
-    // AWS Android SDK
+    // AWS Android SDK (SNS push + S3 direct)
     implementation 'com.amazonaws:aws-android-sdk-core:2.72.0'
     implementation 'com.amazonaws:aws-android-sdk-sns:2.72.0'
     implementation 'com.amazonaws:aws-android-sdk-s3:2.72.0'
 
-    // Firebase BOM (from OpusAIMobility source integration)
+    // Firebase BOM
     implementation platform('com.google.firebase:firebase-bom:30.3.1')
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-messaging'
@@ -249,7 +227,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:18.0.1'
     implementation 'com.google.maps:google-maps-services:0.1.20'
 
-    // Facebook (v12 is stable; v15 requires infer-annotations not in Maven Central)
+    // Facebook
     implementation 'com.facebook.android:facebook-login:12.3.0'
     implementation 'com.facebook.fresco:fresco:2.6.0'
     implementation 'com.facebook.fresco:imagepipeline-okhttp3:2.6.0'
@@ -280,43 +258,41 @@ dependencies {
     implementation 'com.hbb20:ccp:2.5.0'
     implementation 'com.github.joielechong:countrycodepicker:2.4.2'
 
-    // OTP / PIN view (local module + bundled AAR)
-    implementation project(':libraries:pinview')
-
     // Link builder
     implementation 'com.klinkerapps:link_builder:2.0.5'
 
     // Rating bar
     implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
 
-    // Tree RecyclerView (parcel expandable list) - JitPack
+    // Tree RecyclerView
     implementation 'com.github.TellH:RecyclerTreeView:1.2.0'
 
-    // Circle Indicator - Maven Central (me.relex:circleindicator provides ci_* attrs)
+    // Circle Indicator
     implementation 'me.relex:circleindicator:2.1.6'
 
-    // Page Indicator - JitPack (fragment_food_home.xml uses com.chahinem.pageindicator.PageIndicator)
+    // Page Indicator
     implementation 'com.github.chahinem:pageindicator:0.2.8'
 
-    // SingleDateAndTimePicker - JitPack (food scheduling dialogs)
+    // SingleDateAndTimePicker
     implementation 'com.github.florent37:SingleDateAndTimePicker:v2.2.7'
 
-    // Image Cropper (vanniktech - Maven Central)
+    // Image Cropper
     implementation 'com.vanniktech:android-image-cropper:4.3.3'
 
-    // Custom crash activity - JitPack (required: activity_custom_error.xml references its resources)
+    // Custom crash activity
     implementation 'cat.ereza:customactivityoncrash:2.3.0'
 
-    // Card IO (payment card scan) - JitPack
+    // Card IO
     implementation 'io.card:android-sdk:5.5.1'
 
-    // MPAndroidChart (telemetry screen) - JitPack
+    // MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-    // WorkManager (fix duplicate classes from AWS SDK transitive dep)
-    implementation 'androidx.work:work-runtime:2.8.1'
+    // Tests
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    // WorkManager constraint
     constraints {
         implementation('androidx.work:work-runtime:2.7.0')
     }
