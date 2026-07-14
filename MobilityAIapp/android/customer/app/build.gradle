@@ -246,7 +246,7 @@ dependencies {
     implementation 'me.relex:circleindicator:2.1.6'
 
     // Page Indicator - JitPack (fragment_food_home.xml uses com.chahinem.pageindicator.PageIndicator)
-    implementation 'com.chahinem:pageindicator:0.2.6'
+    implementation 'com.chahinem:pageindicator:0.2.8'
 
     // Image Cropper (vanniktech - Maven Central)
     implementation 'com.vanniktech:android-image-cropper:4.3.3'
