@@ -249,7 +249,7 @@ dependencies {
     implementation 'com.github.chahinem:pageindicator:0.2.8'
 
     // SingleDateAndTimePicker - JitPack (food scheduling dialogs)
-    implementation 'com.github.florent37:singledateandtimepicker:1.2.1'
+    implementation 'com.github.florent37:SingleDateAndTimePicker:v2.2.7'
 
     // Image Cropper (vanniktech - Maven Central)
     implementation 'com.vanniktech:android-image-cropper:4.3.3'
