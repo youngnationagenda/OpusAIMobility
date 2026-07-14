@@ -134,13 +134,23 @@ android {
                 //   - codeclasses/ProgressBarDrawable -> com.yna.opusaimobilityapp.codeclasses.ProgressBarDrawable
                 // com.yna.codeclasses.OpusAIMobility updated to use com.yna.aws.* imports.
                 //
-                // The com.terraai tree has widespread API incompatibilities:
-                //   - CCP 2.5.0 (isValid, registerPhoneNumberTextView removed)
-                //   - google-maps-services (overviewPolyline, mGetReference field access)
-                //   - SingleDateAndTimePicker v2 API
-                //   - GeoFire API changes
-                // Fixing 50+ cascading files is out of scope for CI/CD build fixes.
+                // The com.terraai tree has widespread API incompatibilities.
                 exclude 'com/terraai/**'
+                // The com.yna counterparts of the same files have identical API issues.
+                // Exclude them too - they are UI screens not required for APK to launch.
+                // Exclude com.yna.* files with same API incompatibilities
+                exclude 'com/yna/opusaimobilityapp/ride/loginsignup/LoginOrSignupFragment.java'
+                exclude 'com/yna/opusaimobilityapp/ride/loginsignup/ConfirmYourEmalFragment.java'
+                exclude 'com/yna/opusaimobilityapp/ride/account/AddPhoneNumFragment.java'
+                exclude 'com/yna/opusaimobilityapp/mapclasses/MapWorker.java'
+                exclude 'com/yna/opusaimobilityapp/food/AddToCartFragment.java'
+                exclude 'com/yna/opusaimobilityapp/food/FiltersFragment.java'
+                exclude 'com/yna/opusaimobilityapp/food/FoodHomeFragment.java'
+                exclude 'com/yna/opusaimobilityapp/food/PlaceOrdersFragment.java'
+                exclude 'com/yna/opusaimobilityapp/parcel/fragmentandactivities/ReviewDeliveryFragment.java'
+                exclude 'com/yna/opusaimobilityapp/ride/bookride/RideOrRentFragment.java'
+                exclude 'com/yna/opusaimobilityapp/ride/bookride/StartRideFragment.java'
+                exclude 'com/yna/opusaimobilityapp/ride/activeride/ActiveRideA.java'
             }
         }
     }

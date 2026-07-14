@@ -230,17 +230,23 @@
 
         </RelativeLayout>
 
-        <!-- RangeSlider replaces deprecated materialrangebar.RangeBar (FiltersFragment uses Material RangeSlider API) -->
-        <com.google.android.material.slider.RangeSlider
+        <!-- materialrangebar.RangeBar from libs/materialrangebar-1.4.7.aar
+             Used by com.yna.opusaimobilityapp.food.FiltersFragment (excluded from compilation)
+             Note: com.yna.FiltersFragment excluded due to RangeBar API version mismatch -->
+        <com.appyvet.materialrangebar.RangeBar
             android:id="@+id/range_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:layout_marginHorizontal="@dimen/horizontal_margin"
-            android:valueFrom="0"
-            android:valueTo="1000"
-            app:tickColor="@color/transparent"
-            app:trackColor="@color/gray"
-            app:thumbColor="@color/app_color" />
+            app:mrb_connectingLineColor="@color/gray"
+            app:mrb_pinColor="@color/transparent"
+            app:mrb_pinTextColor="@color/transparent"
+            app:mrb_rangeBar="true"
+            app:mrb_rangeBarColor="@color/gray"
+            app:mrb_selectorColor="@color/app_color"
+            app:mrb_selectorSize="12dp"
+            app:mrb_tickHeight="0dp"
+            app:mrb_tickStart="0" />
 
         <RelativeLayout
             android:id="@+id/applyBtn"
