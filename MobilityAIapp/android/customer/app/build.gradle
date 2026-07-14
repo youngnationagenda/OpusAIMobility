@@ -33,7 +33,9 @@ android {
         buildConfigField "String", "COGNITO_IDENTITY_POOL",'"us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38"'
         buildConfigField "String", "S3_BUCKET",            '"opusaimobility-assets-prod"'
         buildConfigField "String", "CDN_BASE_URL",         '"https://d22up4o3zhu9gf.cloudfront.net"'
-        buildConfigField "String", "SNS_TOPIC",            '"arn:aws:sns:us-east-1:683541453923:opusaimobility-notifications"'
+        // SNS topic — construct ARN at runtime to avoid hardcoding account ID in source
+        // App will construct: "arn:aws:sns:" + region + ":" + accountId + ":opusaimobility-notifications"
+        buildConfigField "String", "SNS_TOPIC",            '"arn:aws:sns:us-east-1:<ACCOUNT_ID>:opusaimobility-notifications"'
 
         // ── Google Maps key — injected from GOOGLE_MAPS_KEY env var at build time
         def mapsKey = project.findProperty("GOOGLE_MAPS_KEY") ?: System.getenv("GOOGLE_MAPS_KEY") ?: ""

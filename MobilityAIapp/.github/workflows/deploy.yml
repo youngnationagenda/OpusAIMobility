@@ -739,9 +739,7 @@ jobs:
           echo "authToken=${{ secrets.JITPACK_TOKEN }}" >> MobilityAIapp/android/customer/gradle.properties
 
       # ── Build debug APK (always) ───────────────────────────────────────────
-      # -- Run lint (catches stale imports, resource errors, XML issues) -----------------
-      # ── Build debug APK (always) ───────────────────────────────────────────
-      # -- Run lint (catches stale imports, resource errors, XML issues) -----------------
+      # -- Run lint (catches stale imports, resource errors, XML issues) -------
       - name: Run lint
         working-directory: MobilityAIapp/android/customer
         run: ./gradlew lint --no-daemon
@@ -788,6 +786,10 @@ jobs:
         run: |
           APK_PATH=MobilityAIapp/android/customer/app/build/outputs/apk/debug
           APK_FILE=$(ls $APK_PATH/*.apk 2>/dev/null | head -1 || echo "")
+          if [ -z "$APK_FILE" ]; then
+            echo "::warning::No debug APK found — skipping S3 upload"
+            exit 0
+          fi
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           aws s3 cp "$APK_FILE" \
             "s3://${{ secrets.S3_APK_BUCKET }}/customer/debug/opusaimobility-customer-debug-${SHORT_SHA}.apk" \
@@ -799,6 +801,10 @@ jobs:
         run: |
           APK_PATH=MobilityAIapp/android/customer/app/build/outputs/apk/release
           APK_FILE=$(ls $APK_PATH/*.apk 2>/dev/null | head -1 || echo "")
+          if [ -z "$APK_FILE" ]; then
+            echo "::warning::No release APK found — skipping S3 upload"
+            exit 0
+          fi
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
           aws s3 cp "$APK_FILE" \
             "s3://${{ secrets.S3_APK_BUCKET }}/customer/release/opusaimobility-customer-release-${SHORT_SHA}.apk" \
