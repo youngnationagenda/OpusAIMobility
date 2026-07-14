@@ -226,8 +226,8 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'joda-time:joda-time:2.10.14'
 
-    // Country Code Picker - using 2.2.0 for API compatibility (isValid, registerPhoneNumberTextView)
-    implementation 'com.hbb20:ccp:2.2.0'
+    // Country Code Picker
+    implementation 'com.hbb20:ccp:2.5.0'
     implementation 'com.github.joielechong:countrycodepicker:2.4.2'
 
     // OTP / PIN view (local module + bundled AAR)
@@ -249,7 +249,7 @@ dependencies {
     implementation 'com.github.chahinem:pageindicator:0.2.8'
 
     // SingleDateAndTimePicker - JitPack (food scheduling dialogs)
-    implementation 'com.github.florent37:singledateandtimepicker:1.2.4'
+    implementation 'com.github.florent37:singledateandtimepicker:1.2.1'
 
     // Image Cropper (vanniktech - Maven Central)
     implementation 'com.vanniktech:android-image-cropper:4.3.3'
