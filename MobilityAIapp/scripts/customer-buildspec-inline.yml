@@ -1,0 +1,106 @@
+version: 0.2
+
+env:
+  variables:
+    CUSTOMER_APP_DIR: MobilityAIapp/android/customer
+    S3_APK_BUCKET: opusaimobility-apk-distribution
+  secrets-manager:
+    KEYSTORE_PASSWORD: opusaimobility/android-keystore:storePassword
+    KEY_ALIAS: opusaimobility/android-keystore:keyAlias
+    KEY_PASSWORD: opusaimobility/android-keystore:keyPassword
+    GOOGLE_MAPS_KEY: terraai/google-maps:GOOGLE_MAPS_KEY
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+      nodejs: 22
+    commands:
+      - java -version
+      - |
+        if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME" ]; then
+          SDK="$ANDROID_HOME"
+        elif [ -d "/usr/local/android-sdk" ]; then
+          SDK="/usr/local/android-sdk"
+        elif [ -d "$HOME/android-sdk" ]; then
+          SDK="$HOME/android-sdk"
+        else
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd /tmp
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O clt.zip
+          unzip -q clt.zip -d /tmp/clt_extract
+          mv /tmp/clt_extract/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          SDK="$HOME/android-sdk"
+          PATH="$PATH:$SDK/cmdline-tools/latest/bin"
+          cd "$CODEBUILD_SRC_DIR"
+          yes | sdkmanager --licenses
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" 2>&1 | tail -3 || true
+        fi
+        printf '%s' "$SDK" > /tmp/sdkpath.txt
+        printf 'sdk.dir=%s\n' "$SDK" > "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/local.properties"
+        echo SDK_SET_TO="$SDK"
+      - |
+        SFILE="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/src/main/res/values/strings.xml"
+        echo "=== FIX: Removing duplicate google_map_key from strings.xml ==="
+        echo "File: $SFILE"
+        grep -n google_map_key "$SFILE" || echo "No google_map_key lines found"
+        sed -i '/google_map_key/d' "$SFILE"
+        echo "After sed:"
+        grep -n google_map_key "$SFILE" && echo "WARN:still_present" || echo "CLEAN:removed_OK"
+      - |
+        aws secretsmanager get-secret-value \
+          --secret-id opusaimobility/android-keystore \
+          --query SecretString --output text --region us-east-1 \
+          > /tmp/kssecret.json
+        DEST="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/terraai-release.jks"
+        node -e "var s=JSON.parse(require('fs').readFileSync('/tmp/kssecret.json','utf8'));require('fs').writeFileSync('$DEST',Buffer.from(s.keystoreBase64,'base64'));console.log('ks-bytes:'+Buffer.from(s.keystoreBase64,'base64').length);"
+        rm -f /tmp/kssecret.json
+        echo keystore_decoded
+      - chmod +x "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/gradlew"
+      - echo install_complete
+
+  build:
+    commands:
+      - |
+        SDK=$(cat /tmp/sdkpath.txt 2>/dev/null)
+        test -z "$SDK" && SDK="$HOME/android-sdk"
+        export ANDROID_HOME="$SDK"
+        export GRADLE_USER_HOME="$HOME/.gradle"
+        APPDIR="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR"
+        cd "$APPDIR"
+        printf 'sdk.dir=%s\n' "$ANDROID_HOME" > local.properties
+        sed -i '/google_map_key/d' "app/src/main/res/values/strings.xml" 2>/dev/null && echo BUILD_PHASE_dup_removed || echo BUILD_PHASE_not_found
+        export KEYSTORE_FILE="$APPDIR/app/terraai-release.jks"
+        echo "KEYSTORE_FILE=$KEYSTORE_FILE"
+        ./gradlew assembleDebug "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" --no-daemon --no-build-cache --rerun-tasks --stacktrace 2>&1
+        GRADLE_EXIT=$?
+        echo "GRADLE_EXIT=$GRADLE_EXIT"
+        find "$APPDIR/app/build/outputs" -name "*.apk" 2>/dev/null || echo no_apks_found
+        exit $GRADLE_EXIT
+
+  post_build:
+    commands:
+      - |
+        BUILD_TS=$(date -u +%Y%m%d-%H%M%S)
+        COMMIT_SHORT=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-8)
+        D="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build/outputs/apk/debug/app-debug.apk"
+        if [ -f "$D" ]; then
+          aws s3 cp "$D" "s3://$S3_APK_BUCKET/customer/debug/aimobility-customer-debug-${BUILD_TS}-${COMMIT_SHORT}.apk" --region us-east-1
+          aws s3 cp "$D" "s3://$S3_APK_BUCKET/customer/debug/aimobility-customer-debug-latest.apk" --region us-east-1
+          echo APK_UPLOADED
+        else
+          echo APK_NOT_FOUND
+          exit 1
+        fi
+
+artifacts:
+  files:
+    - "**/*.apk"
+  base-directory: MobilityAIapp/android/customer/app/build/outputs
+  discard-paths: no
+  name: customer-apk-artifacts
+
+cache:
+  paths:
+    - /root/.gradle/wrapper/**/*
+    - /root/.gradle/caches/**/*

@@ -27,9 +27,9 @@ public class AWSManager {
 
     public static final String COGNITO_REGION        = "us-east-1";
     public static final String COGNITO_USER_POOL_ID  = "us-east-1_LKa4ElQem";
-    public static final String COGNITO_APP_CLIENT_ID = "3a207uin5o3p4k1ngk334crntl";
+    public static final String COGNITO_APP_CLIENT_ID = "2am01r4fmsp0s08991ftgub887"; // terraaimobility-android
     public static final String COGNITO_IDENTITY_POOL = "us-east-1:a89c4453-5965-4a4e-97c7-3ba1a99cdd38";
-    public static final String S3_BUCKET = "aimobility-uploads-683541453923";
+    public static final String S3_BUCKET = "opusaimobility-assets-prod";
     public static final String S3_REGION = "us-east-1";
     public static final String WS_ENDPOINT = "wss://z4sof7ojdf.execute-api.us-east-1.amazonaws.com/prod";
     public static final String PINPOINT_APP_ID = "20d7e36cc4094a04b63b7fd1e5596fcf";

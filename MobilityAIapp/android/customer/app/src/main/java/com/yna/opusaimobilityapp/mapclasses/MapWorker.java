@@ -319,7 +319,8 @@ public class MapWorker {
 
     @SuppressLint("ResourceType")
     public Polyline addPolyline(DirectionsResult results, GoogleMap mMap) {
-        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
+        // Fix: in google-maps-services 0.1.20, EncodedPolyline has field .encodedPath not .getEncodedPath()
+        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.encodedPath);
         PolylineOptions polyOptions = new PolylineOptions();
         polyOptions.width(8);
         polyOptions.color(context.getResources().getColor(R.color.app_color));
@@ -331,7 +332,7 @@ public class MapWorker {
 
 
     public void addPolylineWithAnimation(DirectionsResult results, GoogleMap mMap) {
-        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
+        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.encodedPath);
         MapAnimator.getInstance().clearMapRoute();
         MapAnimator.getInstance().animateRoute(mMap, decodedPath, true);
     }

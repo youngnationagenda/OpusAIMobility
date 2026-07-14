@@ -14,7 +14,6 @@ import androidx.core.app.NotificationCompat;
 
 import com.yna.opusaimobilityapp.Constants;
 import com.yna.opusaimobilityapp.R;
-import com.yna.opusaimobilityapp.activitiesandfragment.HomeActivity;
 import com.yna.opusaimobilityapp.codeclasses.MyPreferences;
 
 import org.json.JSONObject;
@@ -210,8 +209,9 @@ public class AWSPushService {
 
     private static Intent buildTapIntent(Context context, String type,
                                          String rideId, String orderId) {
-        // Using com.yna.opusaimobilityapp.activitiesandfragment.HomeActivity
-        Intent intent = new Intent(context, HomeActivity.class);
+        // Use launch intent to avoid importing specific activity class
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        if (intent == null) intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         switch (type) {
