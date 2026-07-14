@@ -1,0 +1,119 @@
+# ==============================================================================
+# OpusAIMobility — Android Customer App Build Spec  (customer-only, ~10 min)
+#
+# Builds com.yna.opusaimobilityapp from android/customer/
+# Uploads APK to: s3://opusaimobility-apk-distribution/customer/
+#
+# Env vars injected by CodeBuild project:
+#   KEYSTORE_PASSWORD  <- opusaimobility/android-keystore:storePassword
+#   KEY_ALIAS          <- opusaimobility/android-keystore:keyAlias
+#   KEY_PASSWORD       <- opusaimobility/android-keystore:keyPassword
+#   GOOGLE_MAPS_KEY    <- terraai/google-maps:GOOGLE_MAPS_KEY
+# ==============================================================================
+version: 0.2
+
+env:
+  variables:
+    CUSTOMER_APP_DIR: "MobilityAIapp/android/customer"
+    S3_APK_BUCKET:    "opusaimobility-apk-distribution"
+  secrets-manager:
+    KEYSTORE_PASSWORD: "opusaimobility/android-keystore:storePassword"
+    KEY_ALIAS:         "opusaimobility/android-keystore:keyAlias"
+    KEY_PASSWORD:      "opusaimobility/android-keystore:keyPassword"
+    GOOGLE_MAPS_KEY:   "terraai/google-maps:GOOGLE_MAPS_KEY"
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+      nodejs: 22
+    commands:
+      - echo "=== Customer App Install ==="
+      - java -version
+
+      # ── Android SDK ──────────────────────────────────────────────────────────
+      - |
+        if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME" ]; then
+          SDK="$ANDROID_HOME"
+          echo "SDK at ANDROID_HOME: $SDK"
+        elif [ -d "/usr/local/android-sdk" ]; then
+          SDK="/usr/local/android-sdk"
+        elif [ -d "$HOME/android-sdk" ]; then
+          SDK="$HOME/android-sdk"
+        else
+          echo "Installing Android SDK..."
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd /tmp
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O clt.zip
+          unzip -q clt.zip -d /tmp/clt_extract
+          mv /tmp/clt_extract/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          SDK="$HOME/android-sdk"
+          export PATH="$PATH:$SDK/cmdline-tools/latest/bin"
+          cd "$CODEBUILD_SRC_DIR"
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" 2>&1 | tail -5 || true
+        fi
+        echo "$SDK" > /tmp/android-sdk-path.txt
+        echo "sdk.dir=$SDK" > "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/local.properties"
+        echo "ANDROID_HOME=$SDK"
+
+      # ── Keystore ─────────────────────────────────────────────────────────────
+      - |
+        aws secretsmanager get-secret-value \
+          --secret-id "opusaimobility/android-keystore" \
+          --query "SecretString" --output text --region us-east-1 | \
+        node -e "
+          const s=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+          require('fs').writeFileSync(
+            process.env.CODEBUILD_SRC_DIR+'/'+process.env.CUSTOMER_APP_DIR+'/app/terraai-release.jks',
+            Buffer.from(s.keystoreBase64,'base64')
+          );
+          console.log('Customer keystore decoded:',Buffer.from(s.keystoreBase64,'base64').length,'bytes');
+        "
+
+      # ── google-services.json — inject Maps key ───────────────────────────────
+      - |
+        node -e "
+          const fs=require('fs');
+          const p=process.env.CODEBUILD_SRC_DIR+'/'+process.env.CUSTOMER_APP_DIR+'/app/google-services.json';
+          try {
+            const gsj=JSON.parse(fs.readFileSync(p,'utf8'));
+            if(gsj.client&&gsj.client[0]&&gsj.client[0].api_key){
+              gsj.client[0].api_key[0].current_key=process.env.GOOGLE_MAPS_KEY||'';
+              fs.writeFileSync(p,JSON.stringify(gsj,null,2));
+              console.log('Customer Maps key injected');
+            }
+          } catch(e){console.warn('gsj patch skipped:',e.message);}
+        "
+
+      # ── gradlew permissions ───────────────────────────────────────────────────
+      - chmod +x "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/gradlew"
+
+  build:
+    commands:
+      - echo BUILD_PHASE_START
+      - echo SRC_DIR_IS=$CODEBUILD_SRC_DIR
+      - SDK=$(cat /tmp/android-sdk-path.txt 2>/dev/null || echo "$HOME/android-sdk") && export ANDROID_HOME="$SDK" && export ANDROID_SDK_ROOT="$SDK" && echo "ANDROID_HOME=$ANDROID_HOME"
+      - cd "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR" && echo "sdk.dir=$ANDROID_HOME" > local.properties && echo local.properties_ok
+      - export KEYSTORE_FILE="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/terraai-release.jks"
+      - cd "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR" && ./gradlew assembleDebug "-PGOOGLE_MAPS_KEY=${GOOGLE_MAPS_KEY:-}" --no-daemon --no-build-cache --rerun-tasks --stacktrace 2>&1
+      - find "$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build" -name "*.apk" 2>/dev/null || echo "No APK found"
+
+  post_build:
+    commands:
+      - echo POST_BUILD_START
+      - echo SRC_DIR_IS=$CODEBUILD_SRC_DIR
+      - APK="$CODEBUILD_SRC_DIR/$CUSTOMER_APP_DIR/app/build/outputs/apk/debug/app-debug.apk"
+      - test -f "$APK" && aws s3 cp "$APK" "s3://$S3_APK_BUCKET/customer/debug/aimobility-customer-debug-latest.apk" --region us-east-1 && echo APK_UPLOADED || echo APK_NOT_FOUND
+      - echo Customer build complete
+
+artifacts:
+  files:
+    - "**/*"
+  base-directory: "MobilityAIapp/android/customer/app/build/outputs"
+  discard-paths: no
+  name: customer-apk-artifacts
+
+cache:
+  paths:
+    - /root/.gradle/wrapper/**/*

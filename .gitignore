@@ -78,6 +78,13 @@ health-response.json
 _*.js
 _*.sh
 
+# ── Local build environment (NEVER commit — contains plaintext secrets) ───
+.build-env
+
+# ── Base64 encoded artifacts (local codebuild helpers) ────────────
+github_b64.txt
+github_buildspec_b64.txt
+
 # ── CodeBuild sandbox session files ───────────────────────────────
 codebuild-sandbox-key
 codebuild-sandbox-key.pub
