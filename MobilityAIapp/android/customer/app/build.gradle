@@ -121,6 +121,45 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    sourceSets {
+        main {
+            java {
+                // Exclude the entire com.terraai.aimobility source tree.
+                //
+                // RATIONALE: The com.yna.opusaimobilityapp.* tree is the actively maintained
+                // migration target and compiles cleanly. The com.terraai.aimobility.* tree
+                // is the legacy package with API incompatibilities across:
+                //   - CCP library (isValid, registerPhoneNumberTextView removed in 2.5.0)
+                //   - google-maps-services (overviewPolyline, mGetReference field access)
+                //   - SingleDateAndTimePicker v2 API changes
+                //   - GeoFire (geoQuery field access changes)
+                //
+                // The com.yna.opusaimobilityapp.* files only import 3 items from com.terraai:
+                //   - com.terraai.aimobility.aws.AWSManager
+                //   - com.terraai.aimobility.aws.AWSPushService
+                //   - com.terraai.aimobility.codeclasses.ProgressBarDrawable
+                // These 3 classes remain compiled (not excluded).
+                //
+                // NOTE: Exclusion uses ** to exclude entire subdirectories but keeps
+                // the aws/, codeclasses/ top-level files needed by com.yna.
+                exclude 'com/terraai/aimobility/activities/**'
+                exclude 'com/terraai/aimobility/activitiesandfragment/**'
+                exclude 'com/terraai/aimobility/adapter/**'
+                exclude 'com/terraai/aimobility/api/**'
+                exclude 'com/terraai/aimobility/bottomsheet/**'
+                exclude 'com/terraai/aimobility/firebasenotification/**'
+                exclude 'com/terraai/aimobility/food/**'
+                exclude 'com/terraai/aimobility/foodadapter/**'
+                exclude 'com/terraai/aimobility/mapclasses/**'
+                exclude 'com/terraai/aimobility/model/**'
+                exclude 'com/terraai/aimobility/parcel/**'
+                exclude 'com/terraai/aimobility/ride/**'
+                exclude 'com/terraai/aimobility/services/**'
+                exclude 'com/terraai/aimobility/userschat/**'
+            }
+        }
+    }
 }
 
 configurations.all {
