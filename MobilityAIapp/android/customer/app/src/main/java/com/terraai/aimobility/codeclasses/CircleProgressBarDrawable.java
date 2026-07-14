@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -90,7 +91,11 @@ public class CircleProgressBarDrawable extends ProgressBarDrawable {
 
     @Override
     public int getOpacity() {
-        return DrawableUtils.getOpacityFromColor(mPaint.getColor());
+        // Replaced DrawableUtils.getOpacityFromColor (Fresco internal) with standard Android API
+        int alpha = Color.alpha(mPaint.getColor());
+        if (alpha == 0) return PixelFormat.TRANSPARENT;
+        if (alpha == 255) return PixelFormat.OPAQUE;
+        return PixelFormat.TRANSLUCENT;
     }
 
     @Override

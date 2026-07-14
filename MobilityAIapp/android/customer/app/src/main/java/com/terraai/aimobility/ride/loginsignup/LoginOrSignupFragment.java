@@ -33,16 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * LoginOrSignupFragment — AWS Cognito / aimobility API authentication.
- *
- * MIGRATION from Firebase/Google/Facebook:
- *  - FirebaseAuth       → AWSManager.emailLogin() / Cognito
- *  - GoogleSignIn       → Removed (use email/phone login instead)
- *  - Facebook SDK login → Removed (use email/phone login instead)
- *
- * Social login (Google/Apple) can be re-added via AWS Cognito Federated Identities
- * using the standard Android Google Sign-In SDK pointing to a Cognito Identity Pool
- * — no Firebase dependency required.
+ * LoginOrSignupFragment - AWS Cognito / aimobility API authentication.
  */
 public class LoginOrSignupFragment extends RootFragment implements View.OnClickListener {
 
@@ -74,7 +65,7 @@ public class LoginOrSignupFragment extends RootFragment implements View.OnClickL
 
     private void initializeListeners() {
 
-        // Google and Facebook buttons hidden — AWS Cognito used instead
+        // Google and Facebook buttons hidden - AWS Cognito used instead
         if (binding.googleLoginBtn != null)   binding.googleLoginBtn.setVisibility(View.GONE);
         if (binding.facebookLoginBtn != null) binding.facebookLoginBtn.setVisibility(View.GONE);
 
@@ -107,8 +98,9 @@ public class LoginOrSignupFragment extends RootFragment implements View.OnClickL
             @Override public void afterTextChanged(Editable s) {}
             @Override
             public void onTextChanged(CharSequence s, int st, int b, int c) {
+                // CCP 2.5.0: isValidFullNumber() replaces isValid()
                 boolean valid = binding.etPhoneNumber.getText().length() > 0
-                        && binding.ccp.isValid();
+                        && binding.ccp.isValidFullNumber();
                 setButtonEnabled(valid);
             }
         });
@@ -134,8 +126,9 @@ public class LoginOrSignupFragment extends RootFragment implements View.OnClickL
 
     private void initLayouts() {
         binding.ccp.setCountryForNameCode(countryIos);
-        binding.ccp.registerPhoneNumberTextView(binding.etPhoneNumber);
-        binding.ccp.enablePhoneAutoFormatter(false);
+        // CCP 2.5.0: registerCarrierNumberEditText replaces registerPhoneNumberTextView
+        binding.ccp.registerCarrierNumberEditText(binding.etPhoneNumber);
+        // enablePhoneAutoFormatter removed - not available in CCP 2.5.0
         binding.etCountry.setText(countryName + " (" + countryCode + ")");
     }
 
@@ -188,7 +181,7 @@ public class LoginOrSignupFragment extends RootFragment implements View.OnClickL
         }
     }
 
-    // ── Email check (does user exist in Cognito/DB?) ─────────────────────────
+    // Email check (does user exist in Cognito/DB?)
     private void checkEmailIsExistOrNot() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -274,7 +267,8 @@ public class LoginOrSignupFragment extends RootFragment implements View.OnClickL
                             : " (+" + countryCode + ")");
                     binding.etCountry.setText(label);
                     binding.ccp.setCountryForNameCode(countryIos);
-                    setButtonEnabled(binding.ccp.isValid());
+                    // CCP 2.5.0: isValidFullNumber() replaces isValid()
+                    setButtonEnabled(binding.ccp.isValidFullNumber());
                 }
             }
         });
@@ -287,7 +281,7 @@ public class LoginOrSignupFragment extends RootFragment implements View.OnClickL
         ft.replace(R.id.loginContainer_f, countryF).addToBackStack(null).commit();
     }
 
-    // ── Phone verification ───────────────────────────────────────────────────
+    // Phone verification
     public void methodCallapiVerifyphoneno(String phoneNo) {
         JSONObject sendobj = new JSONObject();
         try {
@@ -337,7 +331,7 @@ public class LoginOrSignupFragment extends RootFragment implements View.OnClickL
                 });
     }
 
-    // ── Country list from API ────────────────────────────────────────────────
+    // Country list from API
     private void callApiForCountryList() {
         JSONObject params = new JSONObject();
         RetrofitRequest.JsonPostRequest(binding.getRoot().getContext(),

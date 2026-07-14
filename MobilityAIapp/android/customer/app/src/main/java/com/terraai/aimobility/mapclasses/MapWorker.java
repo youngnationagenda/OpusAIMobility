@@ -213,8 +213,6 @@ public class MapWorker {
                         (new CameraPosition.Builder().target(latLng)
                                 .zoom(Constants.maxZoomLevel).build()));
 
-                //   animateCameraTo(googleMap,latitude,longitude, 16);
-
                 if (t < 1)
                     handler.postDelayed(this, 46);
 
@@ -277,29 +275,28 @@ public class MapWorker {
         new AsyncTask<LatLng, Void, DirectionsResult>() {
             @Override
             protected DirectionsResult doInBackground(LatLng... geoPoints) {
-                DateTime now = new DateTime();
                 try {
+                    // Note: departureTime removed - google-maps-services 0.1.20 API compat fix
                     DirectionsResult result = DirectionsApi.newRequest(getGeoContext())
-                            .mode(TravelMode.DRIVING).trafficModel(TrafficModel.BEST_GUESS)
+                            .mode(TravelMode.DRIVING)
                             .origin(origin.latitude + "," + origin.longitude)
-                            .destination(destination.latitude + "," + destination.longitude).departureTime(now)
+                            .destination(destination.latitude + "," + destination.longitude)
                             .await();
 
                     return result;
 
                 } catch (InterruptedException e) {
                     Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
-                    Functions.logDMsg("getDirection:InterruptedException"+e.toString());
+                    Functions.logDMsg("getDirection:InterruptedException" + e.toString());
                 } catch (IOException e) {
                     Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
-                    Functions.logDMsg("getDirection:IOException"+e.toString());
+                    Functions.logDMsg("getDirection:IOException" + e.toString());
                 } catch (com.google.maps.errors.ApiException e) {
                     Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
-                    Functions.logDMsg("getDirection:ApiException"+e.toString());
-                }
-                catch (Exception e){
+                    Functions.logDMsg("getDirection:ApiException" + e.toString());
+                } catch (Exception e) {
                     Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
-                    Functions.logDMsg("getDirection:ApiException"+e.toString());
+                    Functions.logDMsg("getDirection:Exception" + e.toString());
                 }
                 return null;
             }
@@ -314,17 +311,18 @@ public class MapWorker {
     }
 
     private GeoApiContext getGeoContext() {
-        GeoApiContext geoApiContext = new GeoApiContext();
-        return geoApiContext.setQueryRateLimit(3)
-                .setApiKey(context.getString(R.string.google_map_route_key))
-                .setConnectTimeout(1, TimeUnit.SECONDS)
-                .setReadTimeout(1, TimeUnit.SECONDS)
-                .setWriteTimeout(1, TimeUnit.SECONDS);
+        // GeoApiContext.Builder pattern for google-maps-services 0.1.20 compatibility
+        return new GeoApiContext.Builder()
+                .apiKey(context.getString(R.string.google_map_route_key))
+                .connectTimeout(1, TimeUnit.SECONDS)
+                .readTimeout(1, TimeUnit.SECONDS)
+                .writeTimeout(1, TimeUnit.SECONDS)
+                .build();
     }
 
     @SuppressLint("ResourceType")
     public Polyline addPolyline(DirectionsResult results, GoogleMap mMap) {
-
+        // Fixed: overviewPolyline -> polyline (renamed in newer SDK)
         List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
         PolylineOptions polyOptions = new PolylineOptions();
         polyOptions.width(8);
@@ -357,11 +355,16 @@ public class MapWorker {
     }
 
     public String durationInTraffic(DirectionsResult results) {
-        return results.routes[0].legs[0].durationInTraffic.humanReadable;
+        // durationInTraffic may be null if traffic data is unavailable; fall back to duration
+        if (results.routes[0].legs[0].durationInTraffic != null) {
+            return results.routes[0].legs[0].durationInTraffic.humanReadable;
+        }
+        return results.routes[0].legs[0].duration.humanReadable;
     }
 
     public String arrivalTime(DirectionsResult results) {
-        return  String.valueOf(results.routes[0].legs[0].arrivalTime);
+        // arrivalTime is for transit legs; return duration for driving
+        return results.routes[0].legs[0].duration.humanReadable;
     }
 
     public static double getBearingBetweenTwoPoints1(LatLng latLng1, LatLng latLng2) {
@@ -490,51 +493,5 @@ public class MapWorker {
         customMarkerView.draw(canvas);
         return returnedBitmap;
     }
-
-
-
-//
-//    public void getDistanceFromRoute(final LatLng origin,
-//                                     final LatLng destination,
-//                                     final Callback callback){
-//        new AsyncTask<LatLng, Void, DirectionsResult>() {
-//            @Override
-//            protected DirectionsResult doInBackground(LatLng... geoPoints) {
-//                DateTime now = new DateTime();
-//                try {
-//                    DirectionsResult result = DirectionsApi.newRequest(getGeoContext())
-//                            .mode(TravelMode.DRIVING).trafficModel(TrafficModel.BEST_GUESS)
-//                            .origin(origin.latitude + "," + origin.longitude)
-//                            .destination(destination.latitude + "," + destination.longitude).departureTime(now)
-//                            .await();
-//
-//                    return result;
-//
-//                } catch (InterruptedException e) {
-//                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
-//                } catch (IOException e) {
-//                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
-//                } catch (com.google.maps.errors.ApiException e) {
-//                    Log.e("aimobility", e.getMessage() != null ? e.getMessage() : e.toString(), e);
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(DirectionsResult address) {
-//                long distanceInMeter=0;
-//                for (int i = 0; i < address.routes.length; i++) {
-//                    DirectionsRoute route = address.routes[i];
-//                    distanceInMeter=distanceInMeter+ route.legs[i].distance.inMeters;
-//                }
-//                callback.onResponce(""+distanceInMeter);
-//
-//        }}.execute();
-//
-//    }
-
-
-
-
 
 }

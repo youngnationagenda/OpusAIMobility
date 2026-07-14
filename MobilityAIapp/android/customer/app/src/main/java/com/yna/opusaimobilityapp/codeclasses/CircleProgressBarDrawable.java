@@ -4,11 +4,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import com.facebook.drawee.drawable.DrawableUtils;
-import com.facebook.drawee.drawable.ProgressBarDrawable;
 
 public class CircleProgressBarDrawable extends ProgressBarDrawable {
 
@@ -92,7 +91,11 @@ public class CircleProgressBarDrawable extends ProgressBarDrawable {
 
     @Override
     public int getOpacity() {
-        return DrawableUtils.getOpacityFromColor(mPaint.getColor());
+        // Replaced DrawableUtils.getOpacityFromColor (Fresco internal) with standard Android API
+        int alpha = Color.alpha(mPaint.getColor());
+        if (alpha == 0) return PixelFormat.TRANSPARENT;
+        if (alpha == 255) return PixelFormat.OPAQUE;
+        return PixelFormat.TRANSLUCENT;
     }
 
     @Override
@@ -110,7 +113,6 @@ public class CircleProgressBarDrawable extends ProgressBarDrawable {
         mPaint.setColor(color);
 
         Rect bounds = getBounds();
-        // find center point
         int xpos = bounds.left + bounds.width() / 2;
         int ypos = bounds.bottom - bounds.height() / 2;
         RectF rectF = new RectF(xpos - radius, ypos - radius, xpos + radius, ypos + radius);

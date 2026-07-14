@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- activity_telemetry.xml — TERRA-081 -->
+<!-- activity_telemetry.xml - TERRA-081 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -26,281 +26,556 @@
         android:progressTint="#6366F1"
         android:visibility="gone" />
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="match_parent">
 
-            <!-- ── Section Header: Speed ───────────────────────────── -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TRIP SPEED"
-                android:textColor="#9CA3AF"
-                android:textSize="10sp"
-                android:letterSpacing="0.2"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Chart 1: Line Chart — Trip Speed -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="#0F172A"
-                android:layout_marginBottom="20dp">
-
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chart_speed"
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:layout_margin="8dp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- ── Section Header: Trips Per Day ──────────────────── -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TRIPS PER DAY (LAST 7 DAYS)"
-                android:textColor="#9CA3AF"
-                android:textSize="10sp"
-                android:letterSpacing="0.2"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Chart 2: Bar Chart — Trips Per Day -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="#0F172A"
-                android:layout_marginBottom="20dp">
-
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/chart_trips_per_day"
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:layout_margin="8dp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- ── Section Header: Ride Status ────────────────────── -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RIDE STATUS BREAKDOWN"
-                android:textColor="#9CA3AF"
-                android:textSize="10sp"
-                android:letterSpacing="0.2"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Chart 3: Pie Chart — Ride Status -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="#0F172A"
-                android:layout_marginBottom="20dp">
-
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/chart_ride_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="260dp"
-                    android:layout_margin="8dp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- ── Section Header: Battery Level ──────────────────── -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BATTERY LEVEL DURING RIDE"
-                android:textColor="#9CA3AF"
-                android:textSize="10sp"
-                android:letterSpacing="0.2"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Chart 4: Line Chart — Battery Level -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
-                app:cardBackgroundColor="#0F172A"
-                android:layout_marginBottom="20dp">
-
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chart_battery"
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:layout_margin="8dp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- ── Live Metric Cards (preserved from original) ──── -->
-
-            <!-- Eco Score Card -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="LIVE TELEMETRY"
-                android:textColor="#9CA3AF"
-                android:textSize="10sp"
-                android:letterSpacing="0.2"
-                android:layout_marginBottom="8dp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_eco_score"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="24dp"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#D1FAE5">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ECO SCORE"
-                        android:textColor="#065F46"
-                        android:textSize="10sp"
-                        android:letterSpacing="0.15" />
-
-                    <TextView
-                        android:id="@+id/tv_eco_score"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="—"
-                        android:textColor="#10B981"
-                        android:textSize="48sp"
-                        android:textStyle="bold" />
-
-                    <ProgressBar
-                        android:id="@+id/pb_eco_score"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:max="100"
-                        android:progress="0"
-                        android:progressTint="#10B981"
-                        android:layout_marginTop="8dp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Temperature Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
+                <!-- Status -->
+                <TextView
+                    android:id="@+id/tv_status"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
+                    android:text="--"
+                    android:textColor="#9CA3AF"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Battery Health Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     app:cardCornerRadius="16dp"
-                    app:cardBackgroundColor="#0F172A">
+                    app:cardBackgroundColor="#0F172A"
+                    android:layout_marginBottom="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="14dp">
+                        android:padding="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="BATTERY"
+                            android:text="BATTERY HEALTH"
                             android:textColor="#6B7280"
-                            android:textSize="9sp" />
+                            android:textSize="10sp" />
 
                         <TextView
-                            android:id="@+id/tv_battery_temp"
+                            android:id="@+id/tv_health"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="—"
+                            android:text="--"
                             android:textColor="#10B981"
-                            android:textSize="22sp"
+                            android:textSize="32sp"
                             android:textStyle="bold" />
+
+                        <ProgressBar
+                            android:id="@+id/pb_health"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:max="100"
+                            android:progress="0"
+                            android:progressTint="#10B981"
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
+                <!-- Metrics Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardBackgroundColor="#0F172A">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardBackgroundColor="#0F172A">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="CYCLE COUNT"
+                                android:textColor="#6B7280"
+                                android:textSize="9sp" />
+
+                            <TextView
+                                android:id="@+id/tv_cycle_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardBackgroundColor="#0F172A">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="EFFICIENCY"
+                                android:textColor="#6B7280"
+                                android:textSize="9sp" />
+
+                            <TextView
+                                android:id="@+id/tv_efficiency"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- Energy & Brake Wear Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardBackgroundColor="#0F172A">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ENERGY TOTAL"
+                                android:textColor="#6B7280"
+                                android:textSize="9sp" />
+
+                            <TextView
+                                android:id="@+id/tv_energy_total"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardBackgroundColor="#0F172A">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="BRAKE WEAR"
+                                android:textColor="#6B7280"
+                                android:textSize="9sp" />
+
+                            <TextView
+                                android:id="@+id/tv_brake_wear"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="#F59E0B"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <ProgressBar
+                                android:id="@+id/pb_brake_wear"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="6dp"
+                                android:max="100"
+                                android:progress="0"
+                                android:progressTint="#F59E0B"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- Swap Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardBackgroundColor="#0F172A">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="SWAP COUNT"
+                                android:textColor="#6B7280"
+                                android:textSize="9sp" />
+
+                            <TextView
+                                android:id="@+id/tv_swap_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardBackgroundColor="#0F172A">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="LAST SWAP"
+                                android:textColor="#6B7280"
+                                android:textSize="9sp" />
+
+                            <TextView
+                                android:id="@+id/tv_last_swap"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- Charts section (existing) -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TRIP SPEED"
+                    android:textColor="#9CA3AF"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.2"
+                    android:layout_marginBottom="8dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardBackgroundColor="#0F172A"
+                    android:layout_marginBottom="20dp">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_speed"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_margin="8dp" />
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TRIPS PER DAY (LAST 7 DAYS)"
+                    android:textColor="#9CA3AF"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.2"
+                    android:layout_marginBottom="8dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardBackgroundColor="#0F172A"
+                    android:layout_marginBottom="20dp">
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/chart_trips_per_day"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_margin="8dp" />
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="RIDE STATUS BREAKDOWN"
+                    android:textColor="#9CA3AF"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.2"
+                    android:layout_marginBottom="8dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardBackgroundColor="#0F172A"
+                    android:layout_marginBottom="20dp">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/chart_ride_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="260dp"
+                        android:layout_margin="8dp" />
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BATTERY LEVEL DURING RIDE"
+                    android:textColor="#9CA3AF"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.2"
+                    android:layout_marginBottom="8dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardBackgroundColor="#0F172A"
+                    android:layout_marginBottom="20dp">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_battery"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_margin="8dp" />
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Live Metric Cards -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LIVE TELEMETRY"
+                    android:textColor="#9CA3AF"
+                    android:textSize="10sp"
+                    android:letterSpacing="0.2"
+                    android:layout_marginBottom="8dp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_eco_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="24dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="#D1FAE5">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="14dp">
+                        android:padding="20dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="MOTOR"
-                            android:textColor="#6B7280"
-                            android:textSize="9sp" />
+                            android:text="ECO SCORE"
+                            android:textColor="#065F46"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.15" />
 
                         <TextView
-                            android:id="@+id/tv_motor_temp"
+                            android:id="@+id/tv_eco_score"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="—"
-                            android:textColor="#6366F1"
-                            android:textSize="22sp"
+                            android:text="--"
+                            android:textColor="#10B981"
+                            android:textSize="48sp"
                             android:textStyle="bold" />
+
+                        <ProgressBar
+                            android:id="@+id/pb_eco_score"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:max="100"
+                            android:progress="0"
+                            android:progressTint="#10B981"
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
+                <!-- Temperature Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardBackgroundColor="#0F172A">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="14dp">
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardBackgroundColor="#0F172A">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="CTRL"
-                            android:textColor="#6B7280"
-                            android:textSize="9sp" />
+                            android:orientation="vertical"
+                            android:padding="14dp">
 
-                        <TextView
-                            android:id="@+id/tv_controller_temp"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="BATTERY"
+                                android:textColor="#6B7280"
+                                android:textSize="9sp" />
+
+                            <TextView
+                                android:id="@+id/tv_battery_temp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="#10B981"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginEnd="6dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardBackgroundColor="#0F172A">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="—"
-                            android:textColor="#F59E0B"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="MOTOR"
+                                android:textColor="#6B7280"
+                                android:textSize="9sp" />
+
+                            <TextView
+                                android:id="@+id/tv_motor_temp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="#6366F1"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="6dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardBackgroundColor="#0F172A">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="CTRL"
+                                android:textColor="#6B7280"
+                                android:textSize="9sp" />
+
+                            <TextView
+                                android:id="@+id/tv_controller_temp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="#F59E0B"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
             </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>
