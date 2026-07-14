@@ -3,8 +3,8 @@
 
 
     <!--    for map functionality Use-->
-       <string name="google_map_key" translatable="false">google_map_key_here</string>
-   
+    <!-- google_map_key is injected via resValue in app/build.gradle -->
+    <!-- Do NOT declare it here statically: causes AAPT ResourceCompilationException -->
     <string name="google_map_route_key" translatable="false">google_map_route_key</string>
  
 
