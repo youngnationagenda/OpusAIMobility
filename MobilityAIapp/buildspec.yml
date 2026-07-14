@@ -260,11 +260,15 @@ phases:
       - echo "--- Deploying Lambda ---"
       - |
         cd "$CODEBUILD_SRC_DIR/$APP_DIR"
+        cd "$CODEBUILD_SRC_DIR/$APP_DIR"
+        if [ -z "$LAMBDA_FUNCTION_NAME" ]; then
+          echo "::error::LAMBDA_FUNCTION_NAME environment variable must be set"
+          exit 1
+        fi
         aws lambda update-function-code \
           --function-name "$LAMBDA_FUNCTION_NAME" \
-          --zip-file fileb://lambda-latest.zip \
+          --zip-file  \
           --region us-east-1
-        echo "terraaimobility-api Lambda deployed"
 
         # Also deploy admin Lambda with same code
         aws lambda update-function-code \
