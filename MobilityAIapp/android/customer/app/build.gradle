@@ -241,7 +241,7 @@ dependencies {
     // Tree RecyclerView (parcel expandable list) — JitPack
     implementation 'com.github.TellH:RecyclerTreeView:1.2.0'
 
-    // Page Indicator — JitPack
+    // Page Indicator — JitPack (custom attrs declared in pageindicator_attrs.xml)
     implementation 'com.github.chahine:pageindicator:0.2.8'
 
     // Image Cropper (vanniktech — Maven Central)
