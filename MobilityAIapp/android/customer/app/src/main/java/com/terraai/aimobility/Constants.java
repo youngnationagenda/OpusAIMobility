@@ -26,7 +26,7 @@ public class Constants {
     public static final String UPLOAD_URL   = BASE_URL + "api/upload";
 
     // ─── AWS SNS ──────────────────────────────────────────────────────────────
-    public static final String SNS_TOPIC = "arn:aws:sns:us-east-1:683541453923:opusaimobility-notifications";
+    public static final String SNS_TOPIC = BuildConfig.SNS_TOPIC;
 
     // ─── App Links ────────────────────────────────────────────────────────────
     public static final String TERMS_CONDITIONS = APILINK + "getHtmlPage?name=terms_conditions";
